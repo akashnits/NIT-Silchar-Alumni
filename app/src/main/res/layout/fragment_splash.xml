@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/full1"
-    tools:context="com.akash.android.nitsilcharalumni.SplashFragment">
+    tools:context="com.akash.android.nitsilcharalumni.ui.SplashFragment">
 
     <ProgressBar
         android:id="@+id/pbSplashScreen"

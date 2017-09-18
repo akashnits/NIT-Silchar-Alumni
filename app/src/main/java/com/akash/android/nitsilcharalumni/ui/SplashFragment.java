@@ -1,4 +1,4 @@
-package com.akash.android.nitsilcharalumni;
+package com.akash.android.nitsilcharalumni.ui;
 
 
 import android.os.Bundle;
@@ -10,6 +10,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.Toast;
+
+import com.akash.android.nitsilcharalumni.R;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
