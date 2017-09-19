@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "1081552565030",
+    "firebase_url": "https://nit-silchar-alumni.firebaseio.com",
+    "project_id": "nit-silchar-alumni",
+    "storage_bucket": "nit-silchar-alumni.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1081552565030:android:6b4c4ea7370e4189",
+        "android_client_info": {
+          "package_name": "com.akash.android.nitsilcharalumni"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1081552565030-o1vmn1nr7hepcncgl0v1a3ocd48r554h.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCQflgBWk-tf7ene11rRByQuKFPN_N6_Gc"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

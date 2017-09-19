@@ -1,6 +1,7 @@
 package com.akash.android.nitsilcharalumni.ui;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
@@ -69,7 +70,7 @@ public class SplashFragment extends Fragment {
             @Override
             public void run() {
             pbSplashScreen.setVisibility(View.GONE);
-                Toast.makeText(getActivity(), "Launch LoginActivity", Toast.LENGTH_SHORT).show();
+                startActivity(new Intent(getActivity(), LoginActivity.class));
             }
         }, SPLASH_TIME_OUT);
     }
