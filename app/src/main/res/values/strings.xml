@@ -6,4 +6,9 @@
     <string name="facebook_app_id">884032345105170</string>
     <string name="fb_login_protocol_scheme">fb884032345105170</string>
 
+    <string-array name="typeOfUser">
+        <item>Alumni</item>
+        <item>Student</item>
+        <item>Faculty</item>
+    </string-array>
 </resources>

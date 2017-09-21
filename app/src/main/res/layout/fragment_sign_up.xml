@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true"
-    android:background="@drawable/index"
+    android:background="@drawable/wallpaper"
     tools:context=".ui.SignUpActivity">
 
     <LinearLayout
@@ -68,7 +68,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:hintTextAppearance="@style/HintText"
-            android:layout_marginBottom="37dp">
+            android:layout_marginBottom="13dp">
 
             <EditText
                 android:id="@+id/edit_text_password_create_1"
@@ -86,7 +86,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:hintTextAppearance="@style/HintText"
-            android:layout_marginBottom="37dp">
+            android:layout_marginBottom="13dp">
 
             <EditText
                 android:id="@+id/edit_text_password_create_2"
@@ -99,42 +99,64 @@
                 android:textSize="23dp" />
         </android.support.design.widget.TextInputLayout>
 
-        <LinearLayout
-            android:layout_width="match_parent"
+        <RadioGroup xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="23sp"
+                android:textColor="@android:color/white"
                 android:text="Gender"/>
             <RadioButton
                 android:id="@+id/radioButtonMale"
                 android:layout_width="97dp"
-                android:layout_marginStart="80dp"
+                android:layout_marginStart="40dp"
+                android:buttonTint="@color/colorPrimary"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="12dp"
                 android:textColor="@android:color/white"
+                android:textSize="23sp"
                 android:text="Male" />
 
             <RadioButton
                 android:id="@+id/radioButtonFemale"
-                android:layout_width="97dp"
+                android:layout_width="131dp"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="12dp"
+                android:buttonTint="@color/colorPrimary"
+                android:textSize="23sp"
                 android:text="Female"
                 android:textColor="@android:color/white" />
+        </RadioGroup>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <TextView
+                android:id="@+id/tvTypeofUser"
+                android:layout_width="175dp"
+                android:layout_height="wrap_content"
+                android:text="Type of user"
+                android:layout_marginBottom="13dp"
+                android:layout_marginStart="2dp"
+                android:textColor="@android:color/white"
+                android:textSize="23sp" />
+
+            <Spinner
+                android:layout_width="121dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/spinner"
+                android:popupBackground="@color/cardview_light_background"
+                android:backgroundTint="@color/colorPrimary"
+                android:layout_marginLeft="45dp"
+                android:spinnerMode="dialog"
+                android:layout_marginTop="5dp" />
         </LinearLayout>
 
-
-        <TextView
-            android:id="@+id/tvTypeofUser"
-            android:layout_width="175dp"
-            android:layout_height="wrap_content"
-            android:text="Type of user"
-            android:layout_marginStart="2dp"
-            android:textColor="@android:color/white"
-            android:textSize="23sp" />
 
         <Button
             android:id="@+id/btn_create_account_final"
