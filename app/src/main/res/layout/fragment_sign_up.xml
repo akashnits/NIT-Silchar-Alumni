@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:fillViewport="true"
     android:background="@drawable/wallpaper"
-    tools:context=".ui.SignUpActivity">
+    tools:context=".ui.activities.SignUpActivity">
 
     <LinearLayout
         android:id="@+id/linear_layout_create_account_activity"
@@ -180,7 +180,7 @@
                 style="@style/LoginCreateText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Already have account" />
+                android:text="Already have account? " />
 
             <TextView
                 android:id="@+id/tv_sign_in"

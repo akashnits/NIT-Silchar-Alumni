@@ -1,6 +1,7 @@
-package com.akash.android.nitsilcharalumni.ui;
+package com.akash.android.nitsilcharalumni.ui.fragments;
 
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -19,9 +20,11 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.akash.android.nitsilcharalumni.R;
+import com.akash.android.nitsilcharalumni.ui.activities.LoginActivity;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import butterknife.Unbinder;
 
 /**
@@ -29,7 +32,7 @@ import butterknife.Unbinder;
  * Use the {@link SignUpFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class SignUpFragment extends Fragment   {
+public class SignUpFragment extends Fragment {
 
 
     @BindView(R.id.edit_text_username_create)
@@ -122,5 +125,10 @@ public class SignUpFragment extends Fragment   {
     public void onDestroyView() {
         super.onDestroyView();
         unbinder.unbind();
+    }
+
+    @OnClick(R.id.tv_sign_in)
+    public void onViewClicked() {
+        startActivity(new Intent(getActivity(), LoginActivity.class));
     }
 }

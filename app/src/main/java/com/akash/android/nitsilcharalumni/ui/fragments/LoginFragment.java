@@ -1,24 +1,25 @@
-package com.akash.android.nitsilcharalumni.ui;
+package com.akash.android.nitsilcharalumni.ui.fragments;
 
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.TextInputEditText;
-import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
+import android.widget.EditText;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.akash.android.nitsilcharalumni.R;
+import com.akash.android.nitsilcharalumni.ui.activities.SignUpActivity;
 import com.facebook.login.widget.LoginButton;
 import com.google.android.gms.common.SignInButton;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import butterknife.Unbinder;
 
 /**
@@ -29,33 +30,23 @@ import butterknife.Unbinder;
 public class LoginFragment extends Fragment {
 
 
-    @BindView(R.id.login_button)
-    LoginButton loginButton;
-    @BindView(R.id.tvForgetPassword)
-    TextView tvForgetPassword;
-    @BindView(R.id.btSignIn)
-    Button btSignIn;
-    @BindView(R.id.tvEmail)
-    TextView tvEmail;
-    @BindView(R.id.tvPassword)
-    TextView tvPassword;
-    @BindView(R.id.tvOR)
-    TextView tvOR;
-    @BindView(R.id.sign_in_button)
-    SignInButton signInButton;
-    @BindView(R.id.etEmail)
-    TextInputEditText etEmail;
-    @BindView(R.id.tilEmail)
-    TextInputLayout tilEmail;
-    @BindView(R.id.etPassword)
-    TextInputEditText etPassword;
-    @BindView(R.id.tilPassword)
-    TextInputLayout tilPassword;
+    @BindView(R.id.login_title)
+    TextView loginTitle;
+    @BindView(R.id.username)
+    EditText username;
+    @BindView(R.id.password)
+    EditText password;
+    Unbinder unbinder;
     @BindView(R.id.tvNewUser)
     TextView tvNewUser;
-    @BindView(R.id.tvSignUp)
-    TextView tvSignUp;
-    Unbinder unbinder;
+    @BindView(R.id.tvCreateAccount)
+    TextView tvCreateAccount;
+    @BindView(R.id.sign_in_button)
+    SignInButton signInButton;
+    @BindView(R.id.login_button)
+    LoginButton loginButton;
+    @BindView(R.id.relativeLayout)
+    RelativeLayout relativeLayout;
 
     public LoginFragment() {
         // Required empty public constructor
@@ -92,18 +83,18 @@ public class LoginFragment extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        tvSignUp.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(getActivity(), SignUpActivity.class);
-                startActivity(intent);
-            }
-        });
+        signInButton.setSize(SignInButton.SIZE_ICON_ONLY);
     }
+
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         unbinder.unbind();
+    }
+
+    @OnClick(R.id.tvCreateAccount)
+    public void onViewClicked() {
+        startActivity(new Intent(getActivity(), SignUpActivity.class));
     }
 }

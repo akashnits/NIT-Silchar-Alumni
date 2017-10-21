@@ -1,0 +1,18 @@
+package com.akash.android.nitsilcharalumni.dagger;
+
+import com.akash.android.nitsilcharalumni.NITSilcharAlumniApp;
+import com.akash.android.nitsilcharalumni.ui.activities.LoginActivity;
+import com.akash.android.nitsilcharalumni.ui.activities.SplashScreenActivity;
+
+import javax.inject.Singleton;
+
+import dagger.Component;
+
+
+
+@Singleton @Component(modules = {AppModule.class})
+public interface AppComponent {
+
+    void inject(NITSilcharAlumniApp nitSilcharAlumniApp);
+
+}
