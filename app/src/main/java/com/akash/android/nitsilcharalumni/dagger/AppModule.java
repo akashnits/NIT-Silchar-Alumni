@@ -3,6 +3,8 @@ package com.akash.android.nitsilcharalumni.dagger;
 
 import android.content.Context;
 
+import com.akash.android.nitsilcharalumni.ui.fragments.LoginFragment;
+
 import javax.inject.Singleton;
 
 import dagger.Module;
@@ -19,4 +21,5 @@ import dagger.Provides;
     @Provides @Singleton Context providesAppContext(){
         return app;
     }
+
 }
