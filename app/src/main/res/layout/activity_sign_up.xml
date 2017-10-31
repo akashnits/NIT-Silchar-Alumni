@@ -1,8 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<fragment
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/fragmentSignup"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:name="com.akash.android.nitsilcharalumni.ui.fragments.SignUpFragment"
+    >
+    <FrameLayout
+        android:id="@+id/signUpContainer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
     />
+
+</LinearLayout>

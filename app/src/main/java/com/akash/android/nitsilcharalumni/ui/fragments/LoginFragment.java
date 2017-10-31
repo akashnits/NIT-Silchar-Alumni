@@ -13,16 +13,12 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.akash.android.nitsilcharalumni.NITSilcharAlumniApp;
 import com.akash.android.nitsilcharalumni.R;
-import com.akash.android.nitsilcharalumni.dagger.DaggerAppComponent;
 import com.akash.android.nitsilcharalumni.login.ILoginView;
 import com.akash.android.nitsilcharalumni.login.LoginPresenter;
 import com.akash.android.nitsilcharalumni.ui.activities.SignUpActivity;
 import com.facebook.login.widget.LoginButton;
 import com.google.android.gms.common.SignInButton;
-
-import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
