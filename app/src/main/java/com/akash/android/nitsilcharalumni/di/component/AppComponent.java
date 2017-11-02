@@ -19,10 +19,5 @@ public interface AppComponent {
 
     void inject(NITSilcharAlumniApp nitSilcharAlumniApp);
 
-    @ApplicationContext
-    Context getContext();
-
-    Application getApplication();
-
     DataManager getDataManager();
 }

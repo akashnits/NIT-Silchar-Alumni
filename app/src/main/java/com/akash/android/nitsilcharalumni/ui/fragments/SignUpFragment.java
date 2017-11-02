@@ -18,6 +18,7 @@ import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -33,7 +34,12 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.akash.android.nitsilcharalumni.BuildConfig;
+import com.akash.android.nitsilcharalumni.NITSilcharAlumniApp;
 import com.akash.android.nitsilcharalumni.R;
+import com.akash.android.nitsilcharalumni.data.DataManager;
+import com.akash.android.nitsilcharalumni.di.component.DaggerSignUpFragmentComponent;
+import com.akash.android.nitsilcharalumni.di.component.SignUpFragmentComponent;
+import com.akash.android.nitsilcharalumni.di.module.SignUpFragmentModule;
 import com.akash.android.nitsilcharalumni.ui.activities.LoginActivity;
 import com.akash.android.nitsilcharalumni.ui.activities.SignUpActivity;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -43,6 +49,8 @@ import com.google.android.gms.tasks.Task;
 
 import java.util.List;
 import java.util.Locale;
+
+import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -102,11 +110,10 @@ public class SignUpFragment extends Fragment {
 
     public static final String TAG = SignUpFragment.class.getSimpleName();
 
-    private static final int REQUEST_PERMISSIONS_REQUEST_CODE = 34;
+    private SignUpFragmentComponent signUpFragmentComponent;
 
-    protected Location mLastLocation;
-
-    private String mPlaceName;
+    @Inject
+    DataManager mDataManager;
 
     public SignUpFragment() {
         // Required empty public constructor
@@ -126,6 +133,8 @@ public class SignUpFragment extends Fragment {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+
+        getSignUpFragmentComponent().inject(this);
         setRetainInstance(true);
         super.onCreate(savedInstanceState);
     }
@@ -142,6 +151,11 @@ public class SignUpFragment extends Fragment {
     @Override
     public void onViewCreated(final View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        String placeName= mDataManager.getCurrentLocation();
+
+        if(placeName != null && !TextUtils.isEmpty(placeName)){
+            editTextChooseLocation.setText(placeName);
+        }
         final ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(),
                 R.array.typeOfUser, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -181,12 +195,13 @@ public class SignUpFragment extends Fragment {
         }
     }
 
-
-    @Override
-    public void setUserVisibleHint(boolean isVisibleToUser) {
-        if(isVisibleToUser && mPlaceName != null){
-            editTextChooseLocation.setText(mPlaceName);
+    public SignUpFragmentComponent getSignUpFragmentComponent(){
+        if(signUpFragmentComponent == null){
+            signUpFragmentComponent = DaggerSignUpFragmentComponent.builder()
+                    .signUpFragmentModule(new SignUpFragmentModule(this))
+                    .appComponent(NITSilcharAlumniApp.get(getContext()).getAppComponent())
+                    .build();
         }
-        super.setUserVisibleHint(isVisibleToUser);
+        return signUpFragmentComponent;
     }
 }

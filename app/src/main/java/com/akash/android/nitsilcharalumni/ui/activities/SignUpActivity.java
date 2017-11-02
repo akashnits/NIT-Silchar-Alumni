@@ -19,7 +19,6 @@ public class SignUpActivity extends AppCompatActivity  {
             getSupportFragmentManager()
                     .beginTransaction()
                     .replace(R.id.signUpContainer, signUpFragment)
-                    .addToBackStack(null)
                     .commit();
         }
     }

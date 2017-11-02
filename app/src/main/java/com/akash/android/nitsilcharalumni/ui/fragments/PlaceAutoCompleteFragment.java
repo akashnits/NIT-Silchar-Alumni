@@ -4,6 +4,7 @@ package com.akash.android.nitsilcharalumni.ui.fragments;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.view.InflateException;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,6 +34,7 @@ public class PlaceAutoCompleteFragment extends Fragment implements PlaceSelectio
 
 
     private PlaceAutoCompleteFragmentComponent placeAutoCompleteFragmentComponent;
+    private static View view;
 
     @Inject
     DataManager mDatamanager;
@@ -56,7 +58,18 @@ public class PlaceAutoCompleteFragment extends Fragment implements PlaceSelectio
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_place_auto_complete, container, false);
+        if(view != null){
+            ViewGroup parent= (ViewGroup) view.getParent();
+
+            if(parent != null)
+                parent.removeView(view);
+        }
+        try{
+            view= inflater.inflate(R.layout.fragment_place_auto_complete, container, false);
+        }catch (InflateException e){
+            e.printStackTrace();
+        }
+        return view;
     }
 
     @Override
@@ -92,4 +105,8 @@ public class PlaceAutoCompleteFragment extends Fragment implements PlaceSelectio
         return placeAutoCompleteFragmentComponent;
     }
 
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+    }
 }
