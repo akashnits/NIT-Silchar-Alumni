@@ -151,11 +151,7 @@ public class SignUpFragment extends Fragment {
     @Override
     public void onViewCreated(final View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        String placeName= mDataManager.getCurrentLocation();
 
-        if(placeName != null && !TextUtils.isEmpty(placeName)){
-            editTextChooseLocation.setText(placeName);
-        }
         final ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(),
                 R.array.typeOfUser, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -203,5 +199,15 @@ public class SignUpFragment extends Fragment {
                     .build();
         }
         return signUpFragmentComponent;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        String placeName= mDataManager.getCurrentLocation();
+
+        if(placeName != null && !TextUtils.isEmpty(placeName)){
+            editTextChooseLocation.setText(placeName);
+        }
     }
 }
