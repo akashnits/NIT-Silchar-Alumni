@@ -161,6 +161,12 @@ public class SignUpFragment extends Fragment {
                 if(adapterView != null && adapterView.getChildCount() != 0) {
                     ((TextView) adapterView.getChildAt(0)).setTextColor(Color.WHITE);
                     ((TextView) adapterView.getChildAt(0)).setTextSize(20);
+                    String selected= adapterView.getItemAtPosition(i).toString();
+                    if(selected.equals("Student") || selected.equals("Alumni")){
+                        btnCreateAccountFinal.setText("Next");
+                    }else{
+                        btnCreateAccountFinal.setText("Create Account");
+                    }
                 }
             }
 
