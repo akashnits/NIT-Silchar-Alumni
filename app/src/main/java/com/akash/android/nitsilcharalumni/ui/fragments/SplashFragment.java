@@ -26,7 +26,7 @@ import butterknife.Unbinder;
  */
 public class SplashFragment extends Fragment {
 
-    private static int SPLASH_TIME_OUT = 3000;
+    private static int SPLASH_TIME_OUT = 1000;
     @BindView(R.id.pbSplashScreen)
     ProgressBar pbSplashScreen;
     Unbinder unbinder;

@@ -3,6 +3,7 @@
     package="com.akash.android.nitsilcharalumni">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
 
     <application
         android:allowBackup="true"
@@ -11,14 +12,21 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ui.activities.SplashScreenActivity">
+
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyBLHm6tgkOzrWRU30AOKA7yWaBfIlZf8NE"/>
+
+        <activity android:name=".ui.activities.SplashScreenActivity"
+            android:noHistory="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ui.activities.LoginActivity" />
+        <activity android:name=".ui.activities.LoginActivity"
+                  android:windowSoftInputMode="stateHidden"
+                  android:launchMode="singleTask"/>
 
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
@@ -40,7 +48,9 @@
                 <data android:scheme="@string/fb_login_protocol_scheme" />
             </intent-filter>
         </activity>
-        <activity android:name=".ui.activities.SignUpActivity"></activity>
+        <activity android:name=".ui.activities.SignUpActivity"
+                  android:windowSoftInputMode="stateHidden"
+                  android:launchMode="singleTop"></activity>
     </application>
 
 </manifest>
