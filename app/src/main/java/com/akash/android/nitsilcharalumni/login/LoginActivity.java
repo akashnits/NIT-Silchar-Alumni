@@ -1,4 +1,4 @@
-package com.akash.android.nitsilcharalumni.ui.activities;
+package com.akash.android.nitsilcharalumni.login;
 
 import android.content.Context;
 import android.support.v7.app.AppCompatActivity;
@@ -10,12 +10,12 @@ import com.akash.android.nitsilcharalumni.R;
 
 import javax.inject.Inject;
 
-public class SplashScreenActivity extends AppCompatActivity {
+public class LoginActivity extends AppCompatActivity {
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_splash_screen);
+        setContentView(R.layout.activity_login);
     }
 }

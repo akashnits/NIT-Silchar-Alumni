@@ -1,4 +1,4 @@
-package com.akash.android.nitsilcharalumni.ui.fragments;
+package com.akash.android.nitsilcharalumni.login;
 
 
 import android.content.Intent;
@@ -15,9 +15,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.akash.android.nitsilcharalumni.R;
-import com.akash.android.nitsilcharalumni.login.ILoginView;
-import com.akash.android.nitsilcharalumni.login.LoginPresenter;
-import com.akash.android.nitsilcharalumni.ui.activities.SignUpActivity;
+import com.akash.android.nitsilcharalumni.signup.SignUpActivity;
 import com.facebook.login.widget.LoginButton;
 import com.google.android.gms.common.SignInButton;
 
@@ -27,7 +25,7 @@ import butterknife.OnClick;
 import butterknife.Unbinder;
 
 
-public class LoginFragment extends Fragment implements ILoginView {
+public class LoginFragment extends Fragment {
 
 
     @BindView(R.id.tvLoginTitle)
@@ -77,17 +75,7 @@ public class LoginFragment extends Fragment implements ILoginView {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         signInButton.setSize(SignInButton.SIZE_ICON_ONLY);
-        LoginPresenter loginPresenter = new LoginPresenter(this);
-    }
 
-    @Override
-    public void onLoginSuccess() {
-        Toast.makeText(getContext(), "Login Successful", Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public void onLoginError() {
-        Toast.makeText(getContext(), "Invalid credentials", Toast.LENGTH_SHORT).show();
     }
 
     @Override

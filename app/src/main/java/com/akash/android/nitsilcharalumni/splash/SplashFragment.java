@@ -1,4 +1,4 @@
-package com.akash.android.nitsilcharalumni.ui.fragments;
+package com.akash.android.nitsilcharalumni.splash;
 
 
 import android.content.Intent;
@@ -12,7 +12,7 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 
 import com.akash.android.nitsilcharalumni.R;
-import com.akash.android.nitsilcharalumni.ui.activities.LoginActivity;
+import com.akash.android.nitsilcharalumni.login.LoginActivity;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;

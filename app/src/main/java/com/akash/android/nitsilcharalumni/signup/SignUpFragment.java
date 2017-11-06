@@ -1,4 +1,4 @@
-package com.akash.android.nitsilcharalumni.ui.fragments;
+package com.akash.android.nitsilcharalumni.signup;
 
 
 import android.content.Intent;
@@ -21,14 +21,14 @@ import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.akash.android.nitsilcharalumni.BaseView;
 import com.akash.android.nitsilcharalumni.NITSilcharAlumniApp;
 import com.akash.android.nitsilcharalumni.R;
 import com.akash.android.nitsilcharalumni.data.DataManager;
 import com.akash.android.nitsilcharalumni.di.component.DaggerSignUpFragmentComponent;
 import com.akash.android.nitsilcharalumni.di.component.SignUpFragmentComponent;
 import com.akash.android.nitsilcharalumni.di.module.SignUpFragmentModule;
-import com.akash.android.nitsilcharalumni.ui.activities.LoginActivity;
-import com.akash.android.nitsilcharalumni.ui.activities.SignUpActivity;
+import com.akash.android.nitsilcharalumni.login.LoginActivity;
 
 import javax.inject.Inject;
 
@@ -42,7 +42,7 @@ import butterknife.Unbinder;
  * Use the {@link SignUpFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class SignUpFragment extends Fragment {
+public class SignUpFragment extends Fragment implements SignUpContract.View {
 
 
     public static final String TAG = SignUpFragment.class.getSimpleName();
@@ -197,5 +197,10 @@ public class SignUpFragment extends Fragment {
         if (placeName != null && !TextUtils.isEmpty(placeName)) {
             editTextChooseLocation.setText(placeName);
         }
+    }
+
+    @Override
+    public void setPresenter(SignUpContract.Presenter presenter) {
+
     }
 }

@@ -1,18 +1,14 @@
 package com.akash.android.nitsilcharalumni.ui.fragments;
 
 
-import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.util.Log;
 import android.view.InflateException;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import com.akash.android.nitsilcharalumni.NITSilcharAlumniApp;
 import com.akash.android.nitsilcharalumni.R;
@@ -20,13 +16,10 @@ import com.akash.android.nitsilcharalumni.di.component.DaggerPlaceAutoCompleteFr
 import com.akash.android.nitsilcharalumni.di.component.PlaceAutoCompleteFragmentComponent;
 import com.akash.android.nitsilcharalumni.di.module.PlaceAutoCompleteFragmentModule;
 import com.akash.android.nitsilcharalumni.data.DataManager;
-import com.akash.android.nitsilcharalumni.ui.activities.SignUpActivity;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
 import com.google.android.gms.location.places.ui.PlaceSelectionListener;
-
-import java.util.List;
 
 import javax.inject.Inject;
 
