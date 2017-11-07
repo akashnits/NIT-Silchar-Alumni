@@ -1,16 +1,19 @@
 package com.akash.android.nitsilcharalumni.signup;
 
 
+import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -20,8 +23,8 @@ import android.widget.RadioButton;
 import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import com.akash.android.nitsilcharalumni.BaseView;
 import com.akash.android.nitsilcharalumni.NITSilcharAlumniApp;
 import com.akash.android.nitsilcharalumni.R;
 import com.akash.android.nitsilcharalumni.data.DataManager;
@@ -29,6 +32,9 @@ import com.akash.android.nitsilcharalumni.di.component.DaggerSignUpFragmentCompo
 import com.akash.android.nitsilcharalumni.di.component.SignUpFragmentComponent;
 import com.akash.android.nitsilcharalumni.di.module.SignUpFragmentModule;
 import com.akash.android.nitsilcharalumni.login.LoginActivity;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.inject.Inject;
 
@@ -42,7 +48,8 @@ import butterknife.Unbinder;
  * Use the {@link SignUpFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class SignUpFragment extends Fragment implements SignUpContract.View {
+public class SignUpFragment extends Fragment implements SignUpContract.View, AdapterView.OnItemSelectedListener,
+        View.OnFocusChangeListener{
 
 
     public static final String TAG = SignUpFragment.class.getSimpleName();
@@ -92,6 +99,8 @@ public class SignUpFragment extends Fragment implements SignUpContract.View {
 
     private boolean isAlumnus;
 
+    private SignUpContract.Presenter mPresenter;
+
     @Inject
     DataManager mDataManager;
 
@@ -131,31 +140,14 @@ public class SignUpFragment extends Fragment implements SignUpContract.View {
     public void onViewCreated(final View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        final ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(),
-                R.array.typeOfUser, android.R.layout.simple_spinner_item);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                if (adapterView != null && adapterView.getChildCount() != 0) {
-                    ((TextView) adapterView.getChildAt(0)).setTextColor(Color.BLACK);
-                    ((TextView) adapterView.getChildAt(0)).setTextSize(14);
-                    String selected = adapterView.getItemAtPosition(i).toString();
-                    isAlumnus= selected.equals("Alumni");
-                    if (selected.equals("Student") || selected.equals("Alumni")) {
-                        btnCreateAccountFinal.setText("Next");
-                    } else {
-                        btnCreateAccountFinal.setText("Create Account");
-                    }
-                }
-            }
+        mPresenter.loadSpinnerDropdownUser(getContext());
+        spinner.setOnItemSelectedListener(this);
 
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-
-            }
-        });
-        spinner.setAdapter(adapter);
+        editTextUsernameCreate.setOnFocusChangeListener(this);
+        editTextEmailCreate.setOnFocusChangeListener(this);
+        editTextPasswordCreate1.setOnFocusChangeListener(this);
+        editTextPasswordCreate2.setOnFocusChangeListener(this);
+        editTextChooseLocation.setOnFocusChangeListener(this);
     }
 
     @Override
@@ -169,13 +161,13 @@ public class SignUpFragment extends Fragment implements SignUpContract.View {
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.edit_text_choose_location:
-                ((SignUpActivity) getActivity()).showPlaceAutoCompleteFragment();
+                    mPresenter.loadPlaceAutoCompleteFragment();
                 break;
             case R.id.tv_sign_in:
-                startActivity(new Intent(getActivity(), LoginActivity.class));
+                mPresenter.loadLoginActivity();
                 break;
             case R.id.btn_create_account_final:
-                ((SignUpActivity) getActivity()).showAlumniOrStudentSignUpFragment(isAlumnus);
+                mPresenter.loadAlumniOrStudentSignUpFragment();
         }
     }
 
@@ -201,6 +193,90 @@ public class SignUpFragment extends Fragment implements SignUpContract.View {
 
     @Override
     public void setPresenter(SignUpContract.Presenter presenter) {
+        mPresenter= presenter;
+    }
 
+    @Override
+    public void showSpinnerDropdownUser(ArrayAdapter<CharSequence> adapter) {
+        spinner.setAdapter(adapter);
+    }
+
+    @Override
+    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+        mPresenter.loadTextOnButton(adapterView,view,i);
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> adapterView) {
+        Toast.makeText(getContext(), "Nothing selected", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void showTextOnButton(String selected) {
+        btnCreateAccountFinal.setText(selected);
+    }
+
+    @Override
+    public void commitPlaceAutoCompleteFragment() {
+        ((SignUpActivity) getActivity()).showPlaceAutoCompleteFragment();
+    }
+
+    @Override
+    public void commitAlumniOrStudentSignUpFragment() {
+        ((SignUpActivity) getActivity()).showAlumniOrStudentSignUpFragment(isAlumnus);
+    }
+
+    @Override
+    public void showLoginActivity() {
+        startActivity(new Intent(getActivity(), LoginActivity.class));
+    }
+
+    @Override
+    public void onFocusChange(View view, boolean hasFocus) {
+        if(!hasFocus){
+            int id= view.getId();
+            Editable editable= ((EditText) view).getText();
+            switch (id){
+                case R.id.edit_text_username_create:
+                    if(!TextUtils.isEmpty(editable)){
+                        String regx = "^[\\p{L} .'-]+$";
+                        Pattern pattern = Pattern.compile(regx, Pattern.CASE_INSENSITIVE);
+                        Matcher matcher = pattern.matcher(editable);
+                        if(!matcher.find() && editTextUsernameCreate != null){
+                            editTextUsernameCreate.setError("Invalid name");
+                        }
+                    }else if(editTextUsernameCreate != null)
+                    {
+                        editTextUsernameCreate.setError("Enter name");
+                    }
+                    break;
+                case R.id.edit_text_email_create:
+                     if(!TextUtils.isEmpty(editable)){
+                            if(!Patterns.EMAIL_ADDRESS.matcher(editable).find() && editTextEmailCreate != null){
+                                editTextEmailCreate.setError("Invalid email");
+                            }
+                        }else if(editTextEmailCreate != null){
+                            editTextEmailCreate.setError("Enter email");
+                     }
+                        break;
+                case R.id.edit_text_password_create_1:
+                    if(!TextUtils.isEmpty(editable)){
+                        if(editable.length() < 6 && editTextPasswordCreate1 !=  null){
+                            editTextPasswordCreate1.setError("Password should be of 6 characters min ");
+                        }
+                    }else if(editTextPasswordCreate1 != null){
+                        editTextPasswordCreate1.setError("Enter password");
+                    }
+                    break;
+                case R.id.edit_text_password_create_2:
+                        String pass1= editTextPasswordCreate1 != null? editTextPasswordCreate1.getText().toString(): null;
+                        String pass2= editTextPasswordCreate2 != null? editTextPasswordCreate2.getText().toString(): null;
+                        if(pass1 != null && pass2 != null && !pass1.equals(pass2) && editTextPasswordCreate2 != null){
+                        editTextPasswordCreate2.setError("Password mismatch");
+                }
+                    break;
+                default: break;
+            }
+        }
     }
 }
