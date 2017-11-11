@@ -1,10 +1,12 @@
 package com.akash.android.nitsilcharalumni.signup;
 
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.IdRes;
 import android.support.annotation.Nullable;
+import android.support.design.widget.BaseTransientBottomBar;
+import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
@@ -13,13 +15,13 @@ import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -32,6 +34,7 @@ import com.akash.android.nitsilcharalumni.di.component.DaggerSignUpFragmentCompo
 import com.akash.android.nitsilcharalumni.di.component.SignUpFragmentComponent;
 import com.akash.android.nitsilcharalumni.di.module.SignUpFragmentModule;
 import com.akash.android.nitsilcharalumni.login.LoginActivity;
+import com.akash.android.nitsilcharalumni.utils.ActivityUtils;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -49,7 +52,7 @@ import butterknife.Unbinder;
  * create an instance of this fragment.
  */
 public class SignUpFragment extends Fragment implements SignUpContract.View, AdapterView.OnItemSelectedListener,
-        View.OnFocusChangeListener{
+        View.OnFocusChangeListener, RadioGroup.OnCheckedChangeListener {
 
 
     public static final String TAG = SignUpFragment.class.getSimpleName();
@@ -79,11 +82,7 @@ public class SignUpFragment extends Fragment implements SignUpContract.View, Ada
     TextView tvTypeofUser;
     @BindView(R.id.spinner)
     Spinner spinner;
-    @BindView(R.id.edit_text_choose_location)
-    EditText editTextChooseLocation;
-    @BindView(R.id.til_choose_location)
-    TextInputLayout tilChooseLocation;
-    @BindView(R.id.btn_create_account_final)
+    @BindView(R.id.validateSignUpForm)
     Button btnCreateAccountFinal;
     @BindView(R.id.tv_already_have_account)
     TextView tvAlreadyHaveAccount;
@@ -94,10 +93,14 @@ public class SignUpFragment extends Fragment implements SignUpContract.View, Ada
     @BindView(R.id.signUpFragment)
     ScrollView signUpFragment;
     Unbinder unbinder;
+    @BindView(R.id.rgMaleFemale)
+    RadioGroup rgMaleFemale;
 
     private SignUpFragmentComponent signUpFragmentComponent;
 
-    private boolean isAlumnus;
+    private String mGender;
+
+    private String mTypeOfUser;
 
     private SignUpContract.Presenter mPresenter;
 
@@ -142,12 +145,12 @@ public class SignUpFragment extends Fragment implements SignUpContract.View, Ada
 
         mPresenter.loadSpinnerDropdownUser(getContext());
         spinner.setOnItemSelectedListener(this);
+        rgMaleFemale.setOnCheckedChangeListener(this);
 
         editTextUsernameCreate.setOnFocusChangeListener(this);
         editTextEmailCreate.setOnFocusChangeListener(this);
         editTextPasswordCreate1.setOnFocusChangeListener(this);
         editTextPasswordCreate2.setOnFocusChangeListener(this);
-        editTextChooseLocation.setOnFocusChangeListener(this);
     }
 
     @Override
@@ -157,17 +160,25 @@ public class SignUpFragment extends Fragment implements SignUpContract.View, Ada
     }
 
 
-    @OnClick({R.id.edit_text_choose_location, R.id.tv_sign_in, R.id.btn_create_account_final})
+    @OnClick({R.id.tv_sign_in, R.id.validateSignUpForm})
     public void onViewClicked(View view) {
         switch (view.getId()) {
-            case R.id.edit_text_choose_location:
-                    mPresenter.loadPlaceAutoCompleteFragment();
-                break;
             case R.id.tv_sign_in:
                 mPresenter.loadLoginActivity();
                 break;
-            case R.id.btn_create_account_final:
-                mPresenter.loadAlumniOrStudentSignUpFragment();
+            case R.id.validateSignUpForm:
+                boolean isValid= mPresenter.validateSignUpForm(editTextUsernameCreate.getText(),
+                        editTextUsernameCreate,
+                        editTextEmailCreate.getText(), editTextEmailCreate,
+                        editTextPasswordCreate1.getText(), editTextPasswordCreate1,
+                        editTextPasswordCreate2.getText(), editTextPasswordCreate2,
+                        mGender,
+                        mTypeOfUser);
+                if(isValid)
+                    mPresenter.loadAlumniOrStudentSignUpFragment();
+                else
+                    Snackbar.make(getView(), "Please enter details correctly",
+                            BaseTransientBottomBar.LENGTH_SHORT).show();
         }
     }
 
@@ -181,19 +192,10 @@ public class SignUpFragment extends Fragment implements SignUpContract.View, Ada
         return signUpFragmentComponent;
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        String placeName = mDataManager.getCurrentLocation();
-
-        if (placeName != null && !TextUtils.isEmpty(placeName)) {
-            editTextChooseLocation.setText(placeName);
-        }
-    }
 
     @Override
     public void setPresenter(SignUpContract.Presenter presenter) {
-        mPresenter= presenter;
+        mPresenter = presenter;
     }
 
     @Override
@@ -203,7 +205,7 @@ public class SignUpFragment extends Fragment implements SignUpContract.View, Ada
 
     @Override
     public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-        mPresenter.loadTextOnButton(adapterView,view,i);
+        mTypeOfUser = mPresenter.loadTextOnButton(adapterView, view, i);
     }
 
     @Override
@@ -223,7 +225,7 @@ public class SignUpFragment extends Fragment implements SignUpContract.View, Ada
 
     @Override
     public void commitAlumniOrStudentSignUpFragment() {
-        ((SignUpActivity) getActivity()).showAlumniOrStudentSignUpFragment(isAlumnus);
+        ((SignUpActivity) getActivity()).showAlumniOrStudentSignUpFragment(true);
     }
 
     @Override
@@ -233,50 +235,40 @@ public class SignUpFragment extends Fragment implements SignUpContract.View, Ada
 
     @Override
     public void onFocusChange(View view, boolean hasFocus) {
-        if(!hasFocus){
-            int id= view.getId();
-            Editable editable= ((EditText) view).getText();
-            switch (id){
+        if (!hasFocus) {
+            int id = view.getId();
+            Editable editable = ((EditText) view).getText();
+            switch (id) {
                 case R.id.edit_text_username_create:
-                    if(!TextUtils.isEmpty(editable)){
-                        String regx = "^[\\p{L} .'-]+$";
-                        Pattern pattern = Pattern.compile(regx, Pattern.CASE_INSENSITIVE);
-                        Matcher matcher = pattern.matcher(editable);
-                        if(!matcher.find() && editTextUsernameCreate != null){
-                            editTextUsernameCreate.setError("Invalid name");
-                        }
-                    }else if(editTextUsernameCreate != null)
-                    {
-                        editTextUsernameCreate.setError("Enter name");
-                    }
+                    mPresenter.validateName(editable, editTextUsernameCreate);
                     break;
                 case R.id.edit_text_email_create:
-                     if(!TextUtils.isEmpty(editable)){
-                            if(!Patterns.EMAIL_ADDRESS.matcher(editable).find() && editTextEmailCreate != null){
-                                editTextEmailCreate.setError("Invalid email");
-                            }
-                        }else if(editTextEmailCreate != null){
-                            editTextEmailCreate.setError("Enter email");
-                     }
-                        break;
+                    mPresenter.validateEmail(editable, editTextEmailCreate);
+                    break;
                 case R.id.edit_text_password_create_1:
-                    if(!TextUtils.isEmpty(editable)){
-                        if(editable.length() < 6 && editTextPasswordCreate1 !=  null){
-                            editTextPasswordCreate1.setError("Password should be of 6 characters min ");
-                        }
-                    }else if(editTextPasswordCreate1 != null){
-                        editTextPasswordCreate1.setError("Enter password");
-                    }
+                    mPresenter.validatePassword(editable, editTextPasswordCreate1);
                     break;
                 case R.id.edit_text_password_create_2:
-                        String pass1= editTextPasswordCreate1 != null? editTextPasswordCreate1.getText().toString(): null;
-                        String pass2= editTextPasswordCreate2 != null? editTextPasswordCreate2.getText().toString(): null;
-                        if(pass1 != null && pass2 != null && !pass1.equals(pass2) && editTextPasswordCreate2 != null){
-                        editTextPasswordCreate2.setError("Password mismatch");
-                }
+                    mPresenter.validateRepassword(editTextPasswordCreate1, editTextPasswordCreate2);
                     break;
-                default: break;
+                default:
+                    break;
             }
+        }
+    }
+
+    @Override
+    public void onCheckedChanged(RadioGroup group, @IdRes int checkedId) {
+        switch(checkedId){
+            case R.id.radioButtonMale:
+                mGender= "male";
+                break;
+            case R.id.radioButtonFemale:
+                mGender= "female";
+                break;
+            default:
+                mGender= null;
+                break;
         }
     }
 }
