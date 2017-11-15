@@ -175,7 +175,7 @@
         <Button
             android:id="@+id/validateSignUpForm"
             android:layout_width="match_parent"
-            android:layout_height="60dp"
+            android:layout_height="45dp"
             android:background="@drawable/round_cornors_green"
             android:text="Next"
             android:textSize="20sp"

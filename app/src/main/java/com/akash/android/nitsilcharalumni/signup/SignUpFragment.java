@@ -175,7 +175,7 @@ public class SignUpFragment extends Fragment implements SignUpContract.View, Ada
                         mGender,
                         mTypeOfUser);
                 if(isValid)
-                    mPresenter.loadAlumniOrStudentSignUpFragment();
+                    mPresenter.loadPlaceAutoCompleteFragment();
                 else
                     Snackbar.make(getView(), "Please enter details correctly",
                             BaseTransientBottomBar.LENGTH_SHORT).show();
