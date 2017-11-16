@@ -224,11 +224,6 @@ public class SignUpFragment extends Fragment implements SignUpContract.View, Ada
     }
 
     @Override
-    public void commitAlumniOrStudentSignUpFragment() {
-        ((SignUpActivity) getActivity()).showAlumniOrStudentSignUpFragment(true);
-    }
-
-    @Override
     public void showLoginActivity() {
         startActivity(new Intent(getActivity(), LoginActivity.class));
     }

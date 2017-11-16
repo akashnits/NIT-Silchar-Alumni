@@ -55,10 +55,6 @@ public class SignUpPresenter implements SignUpContract.Presenter {
         mSignUpView.commitPlaceAutoCompleteFragment();
     }
 
-    @Override
-    public void loadAlumniOrStudentSignUpFragment() {
-        mSignUpView.commitAlumniOrStudentSignUpFragment();
-    }
 
     @Override
     public void loadLoginActivity() {

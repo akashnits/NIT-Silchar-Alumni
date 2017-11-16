@@ -24,8 +24,6 @@ public class SignUpContract {
 
         void commitPlaceAutoCompleteFragment();
 
-        void commitAlumniOrStudentSignUpFragment();
-
         void showLoginActivity();
     }
 
@@ -36,8 +34,6 @@ public class SignUpContract {
         String loadTextOnButton(AdapterView<?> adapterView, android.view.View view, int i);
 
         void loadPlaceAutoCompleteFragment();
-
-        void loadAlumniOrStudentSignUpFragment();
 
         void loadLoginActivity();
 

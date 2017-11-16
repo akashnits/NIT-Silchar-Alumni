@@ -1,4 +1,4 @@
-package com.akash.android.nitsilcharalumni.ui.fragments;
+package com.akash.android.nitsilcharalumni.signup.placeAutoComplete;
 
 
 import android.content.Intent;
@@ -6,9 +6,11 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.CardView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 
 import com.akash.android.nitsilcharalumni.NITSilcharAlumniApp;
@@ -39,13 +41,19 @@ import static android.app.Activity.RESULT_OK;
  * Use the {@link PlaceAutoCompleteFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class PlaceAutoCompleteFragment extends Fragment {
+public class PlaceAutoCompleteFragment extends Fragment implements PlaceAutoCompleteContract.View {
 
     public static final int PLACE_AUTOCOMPLETE_REQUEST_CODE = 1;
+
+    private PlaceAutoCompleteContract.Presenter mPresenter;
 
     @BindView(R.id.etChoosePlace)
     EditText etChoosePlace;
     Unbinder unbinder;
+    @BindView(R.id.btSignUpOrNext)
+    Button btChooseLocation;
+    @BindView(R.id.chooseLocationLayout)
+    CardView chooseLocationLayout;
     private PlaceAutoCompleteFragmentComponent placeAutoCompleteFragmentComponent;
     @Inject
     DataManager mDatamanager;
@@ -63,6 +71,7 @@ public class PlaceAutoCompleteFragment extends Fragment {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
         getPlaceAutoCompleteFragmentComponent().inject(this);
+        mPresenter= new PlaceAutoCompletePresenter(this);
     }
 
     @Override
@@ -103,18 +112,27 @@ public class PlaceAutoCompleteFragment extends Fragment {
         unbinder.unbind();
     }
 
-    @OnClick(R.id.etChoosePlace)
-    public void onViewClicked() {
-        try {
-            Intent intent =
-                    new PlaceAutocomplete.IntentBuilder(PlaceAutocomplete.MODE_OVERLAY)
-                            .build(getActivity());
-            startActivityForResult(intent, PLACE_AUTOCOMPLETE_REQUEST_CODE);
-        } catch (GooglePlayServicesRepairableException e) {
-            // TODO: Handle the error.
-        } catch (GooglePlayServicesNotAvailableException e) {
-            // TODO: Handle the error.
+    @OnClick({R.id.etChoosePlace, R.id.btSignUpOrNext})
+    public void onViewClicked(View view) {
+
+        switch (view.getId()){
+            case R.id.etChoosePlace:
+                try {
+                    Intent intent =
+                            new PlaceAutocomplete.IntentBuilder(PlaceAutocomplete.MODE_OVERLAY)
+                                    .build(getActivity());
+                    startActivityForResult(intent, PLACE_AUTOCOMPLETE_REQUEST_CODE);
+                } catch (GooglePlayServicesRepairableException e) {
+                    // TODO: Handle the error.
+                } catch (GooglePlayServicesNotAvailableException e) {
+                    // TODO: Handle the error.
+                }
+                break;
+            case R.id.btSignUpOrNext:
+                mPresenter.loadAlumniOrStudentSignUpFragment();
+                break;
         }
+
     }
 
     @Override
@@ -133,5 +151,15 @@ public class PlaceAutoCompleteFragment extends Fragment {
                 // The user canceled the operation.
             }
         }
+    }
+
+    @Override
+    public void setPresenter(PlaceAutoCompleteContract.Presenter presenter) {
+        mPresenter= presenter;
+    }
+
+    @Override
+    public void commitAlumniOrStudentSignUpFragment() {
+        ((SignUpActivity) getActivity()).showAlumniOrStudentSignUpFragment(true);
     }
 }

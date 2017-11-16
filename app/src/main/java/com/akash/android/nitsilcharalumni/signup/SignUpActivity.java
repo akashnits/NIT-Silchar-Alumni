@@ -5,9 +5,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
 import com.akash.android.nitsilcharalumni.R;
-import com.akash.android.nitsilcharalumni.ui.fragments.AlumniOrStudentSignUpFragment;
-import com.akash.android.nitsilcharalumni.ui.fragments.PlaceAutoCompleteFragment;
-import com.akash.android.nitsilcharalumni.signup.SignUpFragment;
+import com.akash.android.nitsilcharalumni.signup.placeAutoComplete.PlaceAutoCompleteFragment;
 import com.akash.android.nitsilcharalumni.utils.ActivityUtils;
 
 public class SignUpActivity extends AppCompatActivity {

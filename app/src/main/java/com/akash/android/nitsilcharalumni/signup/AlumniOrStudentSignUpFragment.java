@@ -1,4 +1,4 @@
-package com.akash.android.nitsilcharalumni.ui.fragments;
+package com.akash.android.nitsilcharalumni.signup;
 
 
 import android.graphics.Color;
