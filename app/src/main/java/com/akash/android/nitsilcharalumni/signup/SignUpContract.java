@@ -9,6 +9,7 @@ import android.widget.EditText;
 
 import com.akash.android.nitsilcharalumni.BasePresenter;
 import com.akash.android.nitsilcharalumni.BaseView;
+import com.akash.android.nitsilcharalumni.model.User;
 
 /**
  * This specifies the contract between the view and the presenter.
@@ -22,7 +23,7 @@ public class SignUpContract {
 
         void showTextOnButton(String selected);
 
-        void commitPlaceAutoCompleteFragment();
+        void commitPlaceAutoCompleteFragment(User user, char[] password);
 
         void showLoginActivity();
     }
@@ -33,7 +34,7 @@ public class SignUpContract {
 
         String loadTextOnButton(AdapterView<?> adapterView, android.view.View view, int i);
 
-        void loadPlaceAutoCompleteFragment();
+        void loadPlaceAutoCompleteFragment(User user, char[] password);
 
         void loadLoginActivity();
 

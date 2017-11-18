@@ -20,6 +20,8 @@ import com.akash.android.nitsilcharalumni.data.DataManager;
 import com.akash.android.nitsilcharalumni.di.component.DaggerPlaceAutoCompleteFragmentComponent;
 import com.akash.android.nitsilcharalumni.di.component.PlaceAutoCompleteFragmentComponent;
 import com.akash.android.nitsilcharalumni.di.module.PlaceAutoCompleteFragmentModule;
+import com.akash.android.nitsilcharalumni.mainActivity.MainActivity;
+import com.akash.android.nitsilcharalumni.model.User;
 import com.akash.android.nitsilcharalumni.signup.SignUpActivity;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
@@ -67,8 +69,13 @@ public class PlaceAutoCompleteFragment extends Fragment implements PlaceAutoComp
         // Required empty public constructor
     }
 
-    public static PlaceAutoCompleteFragment newInstance() {
-        return new PlaceAutoCompleteFragment();
+    public static PlaceAutoCompleteFragment newInstance(User user, char[] password) {
+        PlaceAutoCompleteFragment placeAutoCompleteFragment= new PlaceAutoCompleteFragment();
+        Bundle args= new Bundle();
+        args.putParcelable("user", user);
+        args.putCharArray("password", password);
+        placeAutoCompleteFragment.setArguments(args);
+        return placeAutoCompleteFragment;
     }
 
     @Override
@@ -137,10 +144,23 @@ public class PlaceAutoCompleteFragment extends Fragment implements PlaceAutoComp
                 }
                 break;
             case R.id.btSignUpOrNext:
-                if(!mDatamanager.getTypeOfUser().equals("Faculty"))
-                    mPresenter.loadAlumniOrStudentSignUpFragment();
-                else
-                    Toast.makeText(getContext(), "Let faculty sign up", Toast.LENGTH_SHORT).show();
+                boolean flag = mPresenter.validateLocationEntered(etChoosePlace.getText());
+                if(flag) {
+                    Bundle b= getArguments();
+                    User user= b.getParcelable("user");
+                    char[] password= b.getCharArray("password");
+                    if(user != null) {
+                        user.setmLocation(etChoosePlace.getText().toString());
+                    }
+                    if (!mDatamanager.getTypeOfUser().equals("Faculty"))
+                        mPresenter.loadAlumniOrStudentSignUpFragment(user, password);
+                    else{
+                        //TODO: Sign up goes  here
+                        mPresenter.createAccountWithEmailAndPassword(getActivity(), user.getmEmail(), password);
+                    }
+                }else {
+                    Snackbar.make(getView(), "Please select location", Snackbar.LENGTH_SHORT).show();
+                }
                 break;
         }
 
@@ -170,8 +190,20 @@ public class PlaceAutoCompleteFragment extends Fragment implements PlaceAutoComp
     }
 
     @Override
-    public void commitAlumniOrStudentSignUpFragment() {
+    public void commitAlumniOrStudentSignUpFragment(User user, char[] password) {
         boolean isAlumnus= mDatamanager.getTypeOfUser().equals("Alumni");
-        ((SignUpActivity) getActivity()).showAlumniOrStudentSignUpFragment(isAlumnus);
+        ((SignUpActivity) getActivity()).showAlumniOrStudentSignUpFragment(user, password, isAlumnus);
+    }
+
+    @Override
+    public void showErrorMessage() {
+        Toast.makeText(getContext(), "Authentication failed.",
+                Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void showMainActivity() {
+        startActivity(new Intent(getActivity(), MainActivity.class));
+        ((SignUpActivity) getActivity()).finish();
     }
 }

@@ -11,10 +11,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.akash.android.nitsilcharalumni.R;
+import com.akash.android.nitsilcharalumni.model.User;
 import com.akash.android.nitsilcharalumni.utils.ActivityUtils;
-
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class SignUpPresenter implements SignUpContract.Presenter {
 
@@ -51,8 +49,8 @@ public class SignUpPresenter implements SignUpContract.Presenter {
     }
 
     @Override
-    public void loadPlaceAutoCompleteFragment() {
-        mSignUpView.commitPlaceAutoCompleteFragment();
+    public void loadPlaceAutoCompleteFragment(User user, char[] password) {
+        mSignUpView.commitPlaceAutoCompleteFragment(user, password);
     }
 
 

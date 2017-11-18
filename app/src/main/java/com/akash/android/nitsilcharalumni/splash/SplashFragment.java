@@ -13,6 +13,8 @@ import android.widget.ProgressBar;
 
 import com.akash.android.nitsilcharalumni.R;
 import com.akash.android.nitsilcharalumni.login.LoginActivity;
+import com.akash.android.nitsilcharalumni.mainActivity.MainActivity;
+import com.google.firebase.auth.FirebaseAuth;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -26,7 +28,10 @@ import butterknife.Unbinder;
  */
 public class SplashFragment extends Fragment {
 
+    private FirebaseAuth mAuth;
+
     private static int SPLASH_TIME_OUT = 1000;
+
     @BindView(R.id.pbSplashScreen)
     ProgressBar pbSplashScreen;
     Unbinder unbinder;
@@ -49,6 +54,7 @@ public class SplashFragment extends Fragment {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        mAuth= FirebaseAuth.getInstance();
         super.onCreate(savedInstanceState);
     }
 
@@ -70,7 +76,11 @@ public class SplashFragment extends Fragment {
             @Override
             public void run() {
             pbSplashScreen.setVisibility(View.GONE);
-                startActivity(new Intent(getActivity(), LoginActivity.class));
+                if(mAuth.getCurrentUser() != null){
+                    startActivity(new Intent(getActivity(), MainActivity.class));
+                }else {
+                    startActivity(new Intent(getActivity(), LoginActivity.class));
+                }
             }
         }, SPLASH_TIME_OUT);
     }

@@ -10,8 +10,6 @@ import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
-import android.text.TextUtils;
-import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,10 +32,7 @@ import com.akash.android.nitsilcharalumni.di.component.DaggerSignUpFragmentCompo
 import com.akash.android.nitsilcharalumni.di.component.SignUpFragmentComponent;
 import com.akash.android.nitsilcharalumni.di.module.SignUpFragmentModule;
 import com.akash.android.nitsilcharalumni.login.LoginActivity;
-import com.akash.android.nitsilcharalumni.utils.ActivityUtils;
-
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import com.akash.android.nitsilcharalumni.model.User;
 
 import javax.inject.Inject;
 
@@ -103,6 +98,8 @@ public class SignUpFragment extends Fragment implements SignUpContract.View, Ada
     private String mTypeOfUser;
 
     private SignUpContract.Presenter mPresenter;
+
+    private User mUser;
 
     @Inject
     DataManager mDataManager;
@@ -174,8 +171,15 @@ public class SignUpFragment extends Fragment implements SignUpContract.View, Ada
                         editTextPasswordCreate2.getText(), editTextPasswordCreate2,
                         mGender,
                         mTypeOfUser);
-                if(isValid)
-                    mPresenter.loadPlaceAutoCompleteFragment();
+                if(isValid) {
+                    mUser= new User(editTextUsernameCreate.getText().toString(),
+                            editTextEmailCreate.getText().toString(),
+                            mGender,
+                            mTypeOfUser
+                            );
+                    char[] password= editTextPasswordCreate1.getText().toString().toCharArray();
+                    mPresenter.loadPlaceAutoCompleteFragment(mUser, password);
+                }
                 else
                     Snackbar.make(getView(), "Please enter details correctly",
                             BaseTransientBottomBar.LENGTH_SHORT).show();
@@ -220,8 +224,8 @@ public class SignUpFragment extends Fragment implements SignUpContract.View, Ada
     }
 
     @Override
-    public void commitPlaceAutoCompleteFragment() {
-        ((SignUpActivity) getActivity()).showPlaceAutoCompleteFragment();
+    public void commitPlaceAutoCompleteFragment(User user, char[] password) {
+        ((SignUpActivity) getActivity()).showPlaceAutoCompleteFragment(user, password);
     }
 
     @Override

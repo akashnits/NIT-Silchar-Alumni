@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
 import com.akash.android.nitsilcharalumni.R;
+import com.akash.android.nitsilcharalumni.model.User;
 import com.akash.android.nitsilcharalumni.signup.alumniOrStudentSignUpFragment.AlumniOrStudentSignUpFragment;
 import com.akash.android.nitsilcharalumni.signup.placeAutoComplete.PlaceAutoCompleteFragment;
 import com.akash.android.nitsilcharalumni.utils.ActivityUtils;
@@ -32,16 +33,17 @@ public class SignUpActivity extends AppCompatActivity {
         mSignUpPresenter= new SignUpPresenter(signUpFragment);
     }
 
-    public void showPlaceAutoCompleteFragment(){
-        PlaceAutoCompleteFragment placeAutoCompleteFragment= PlaceAutoCompleteFragment.newInstance();
+    public void showPlaceAutoCompleteFragment(User user, char[] password){
+        PlaceAutoCompleteFragment placeAutoCompleteFragment= PlaceAutoCompleteFragment.newInstance(user, password);
         ActivityUtils.replaceFragmentOnActivity(getSupportFragmentManager(),
                 placeAutoCompleteFragment,
                 R.id.signUpContainer,
                 true);
     }
 
-    public void showAlumniOrStudentSignUpFragment(boolean isAlumnus){
-        AlumniOrStudentSignUpFragment alumniOrStudentSignUpFragment= AlumniOrStudentSignUpFragment.newInstance(isAlumnus);
+    public void showAlumniOrStudentSignUpFragment(User user, char[] password, boolean isAlumnus){
+        AlumniOrStudentSignUpFragment alumniOrStudentSignUpFragment= AlumniOrStudentSignUpFragment
+                .newInstance(user, password, isAlumnus);
         ActivityUtils.replaceFragmentOnActivity(getSupportFragmentManager(),
                 alumniOrStudentSignUpFragment,
                 R.id.signUpContainer,

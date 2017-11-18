@@ -1,7 +1,7 @@
 package com.akash.android.nitsilcharalumni.signup.alumniOrStudentSignUpFragment;
 
 
-import android.graphics.Color;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
@@ -15,11 +15,16 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.akash.android.nitsilcharalumni.R;
+import com.akash.android.nitsilcharalumni.mainActivity.MainActivity;
+import com.akash.android.nitsilcharalumni.model.User;
+import com.akash.android.nitsilcharalumni.signup.SignUpActivity;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import butterknife.Unbinder;
 
 /**
@@ -28,7 +33,7 @@ import butterknife.Unbinder;
  * create an instance of this fragment.
  */
 public class AlumniOrStudentSignUpFragment extends Fragment implements AlumniOrStudentSignUpContract.View,
-        AdapterView.OnItemSelectedListener{
+        AdapterView.OnItemSelectedListener {
 
 
     @BindView(R.id.tvClassof)
@@ -53,10 +58,12 @@ public class AlumniOrStudentSignUpFragment extends Fragment implements AlumniOrS
 
 
     // TODO: Rename and change types and number of parameters
-    public static AlumniOrStudentSignUpFragment newInstance(boolean isAlumnus) {
+    public static AlumniOrStudentSignUpFragment newInstance(User user, char[] password, boolean isAlumnus) {
         AlumniOrStudentSignUpFragment fragment = new AlumniOrStudentSignUpFragment();
         Bundle b = new Bundle();
         b.putBoolean("alumnus", isAlumnus);
+        b.putParcelable("user", user);
+        b.putCharArray("password", password);
         fragment.setArguments(b);
         return fragment;
     }
@@ -65,7 +72,7 @@ public class AlumniOrStudentSignUpFragment extends Fragment implements AlumniOrS
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
-        mPresenter= new AlumniOrStudentSignUpPresenter(this);
+        mPresenter = new AlumniOrStudentSignUpPresenter(this);
     }
 
     @Override
@@ -82,10 +89,10 @@ public class AlumniOrStudentSignUpFragment extends Fragment implements AlumniOrS
         super.onViewCreated(view, savedInstanceState);
         if (getArguments() != null) {
             boolean isAlumnus = getArguments().getBoolean("alumnus");
-            if(isAlumnus){
+            if (isAlumnus) {
                 textInputLayout2.setVisibility(View.VISIBLE);
                 tvOrganisation.setVisibility(View.VISIBLE);
-            }else{
+            } else {
                 textInputLayout2.setVisibility(View.GONE);
                 tvOrganisation.setVisibility(View.GONE);
             }
@@ -102,7 +109,7 @@ public class AlumniOrStudentSignUpFragment extends Fragment implements AlumniOrS
 
     @Override
     public void setPresenter(AlumniOrStudentSignUpContract.Presenter presenter) {
-        mPresenter= presenter;
+        mPresenter = presenter;
     }
 
     @Override
@@ -118,5 +125,27 @@ public class AlumniOrStudentSignUpFragment extends Fragment implements AlumniOrS
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
 
+    }
+
+    @OnClick(R.id.btCreateAccount)
+    public void onViewClicked() {
+        Bundle b= getArguments();
+        User user= b.getParcelable("user");
+        //TODO: insert classof and organisaton in user object
+
+        char[] password= b.getCharArray("password");
+        mPresenter.createAccountWithEmailAndPassword(getActivity(), user.getmEmail(), password);
+    }
+
+    @Override
+    public void showMainActivity() {
+        startActivity(new Intent(getActivity(), MainActivity.class));
+        ((SignUpActivity) getActivity()).finish();
+    }
+
+    @Override
+    public void showErrorMessage() {
+        Toast.makeText(getContext(), "Authentication failed.",
+                Toast.LENGTH_SHORT).show();
     }
 }
