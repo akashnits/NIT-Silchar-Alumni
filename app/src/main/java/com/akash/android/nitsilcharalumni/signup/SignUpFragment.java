@@ -206,6 +206,7 @@ public class SignUpFragment extends Fragment implements SignUpContract.View, Ada
     @Override
     public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
         mTypeOfUser = mPresenter.loadTextOnButton(adapterView, view, i);
+        mDataManager.saveTypeOfUser(mTypeOfUser);
     }
 
     @Override

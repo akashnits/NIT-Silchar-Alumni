@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.akash.android.nitsilcharalumni.NITSilcharAlumniApp;
 import com.akash.android.nitsilcharalumni.R;
@@ -47,16 +48,20 @@ public class PlaceAutoCompleteFragment extends Fragment implements PlaceAutoComp
 
     private PlaceAutoCompleteContract.Presenter mPresenter;
 
-    @BindView(R.id.etChoosePlace)
-    EditText etChoosePlace;
-    Unbinder unbinder;
-    @BindView(R.id.btSignUpOrNext)
-    Button btChooseLocation;
-    @BindView(R.id.chooseLocationLayout)
-    CardView chooseLocationLayout;
     private PlaceAutoCompleteFragmentComponent placeAutoCompleteFragmentComponent;
+
+
     @Inject
     DataManager mDatamanager;
+
+    @BindView(R.id.etChoosePlace)
+    EditText etChoosePlace;
+    @BindView(R.id.btSignUpOrNext)
+    Button btSignUpOrNext;
+    @BindView(R.id.chooseLocationLayout)
+    CardView chooseLocationLayout;
+    Unbinder unbinder;
+
 
     public PlaceAutoCompleteFragment() {
         // Required empty public constructor
@@ -71,7 +76,7 @@ public class PlaceAutoCompleteFragment extends Fragment implements PlaceAutoComp
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
         getPlaceAutoCompleteFragmentComponent().inject(this);
-        mPresenter= new PlaceAutoCompletePresenter(this);
+        mPresenter = new PlaceAutoCompletePresenter(this);
     }
 
     @Override
@@ -86,7 +91,10 @@ public class PlaceAutoCompleteFragment extends Fragment implements PlaceAutoComp
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
+        String typeOfUser = mDatamanager.getTypeOfUser();
+        if (typeOfUser.equals("Faculty")) {
+            btSignUpOrNext.setText("Sign up");
+        }
     }
 
 
@@ -115,7 +123,7 @@ public class PlaceAutoCompleteFragment extends Fragment implements PlaceAutoComp
     @OnClick({R.id.etChoosePlace, R.id.btSignUpOrNext})
     public void onViewClicked(View view) {
 
-        switch (view.getId()){
+        switch (view.getId()) {
             case R.id.etChoosePlace:
                 try {
                     Intent intent =
@@ -129,7 +137,10 @@ public class PlaceAutoCompleteFragment extends Fragment implements PlaceAutoComp
                 }
                 break;
             case R.id.btSignUpOrNext:
-                mPresenter.loadAlumniOrStudentSignUpFragment();
+                if(!mDatamanager.getTypeOfUser().equals("Faculty"))
+                    mPresenter.loadAlumniOrStudentSignUpFragment();
+                else
+                    Toast.makeText(getContext(), "Let faculty sign up", Toast.LENGTH_SHORT).show();
                 break;
         }
 
@@ -155,11 +166,12 @@ public class PlaceAutoCompleteFragment extends Fragment implements PlaceAutoComp
 
     @Override
     public void setPresenter(PlaceAutoCompleteContract.Presenter presenter) {
-        mPresenter= presenter;
+        mPresenter = presenter;
     }
 
     @Override
     public void commitAlumniOrStudentSignUpFragment() {
-        ((SignUpActivity) getActivity()).showAlumniOrStudentSignUpFragment(true);
+        boolean isAlumnus= mDatamanager.getTypeOfUser().equals("Alumni");
+        ((SignUpActivity) getActivity()).showAlumniOrStudentSignUpFragment(isAlumnus);
     }
 }

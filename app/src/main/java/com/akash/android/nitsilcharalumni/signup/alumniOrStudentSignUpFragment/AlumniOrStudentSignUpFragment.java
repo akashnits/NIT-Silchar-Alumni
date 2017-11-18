@@ -1,4 +1,4 @@
-package com.akash.android.nitsilcharalumni.signup;
+package com.akash.android.nitsilcharalumni.signup.alumniOrStudentSignUpFragment;
 
 
 import android.graphics.Color;
@@ -27,7 +27,8 @@ import butterknife.Unbinder;
  * Use the {@link AlumniOrStudentSignUpFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class AlumniOrStudentSignUpFragment extends Fragment {
+public class AlumniOrStudentSignUpFragment extends Fragment implements AlumniOrStudentSignUpContract.View,
+        AdapterView.OnItemSelectedListener{
 
 
     @BindView(R.id.tvClassof)
@@ -43,6 +44,8 @@ public class AlumniOrStudentSignUpFragment extends Fragment {
     @BindView(R.id.btCreateAccount)
     Button btCreateAccount;
     Unbinder unbinder;
+
+    private AlumniOrStudentSignUpContract.Presenter mPresenter;
 
     public AlumniOrStudentSignUpFragment() {
         // Required empty public constructor
@@ -62,6 +65,7 @@ public class AlumniOrStudentSignUpFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
+        mPresenter= new AlumniOrStudentSignUpPresenter(this);
     }
 
     @Override
@@ -86,29 +90,33 @@ public class AlumniOrStudentSignUpFragment extends Fragment {
                 tvOrganisation.setVisibility(View.GONE);
             }
         }
-        final ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(),
-                R.array.classOf, android.R.layout.simple_spinner_item);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinnerClassOf.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                if (adapterView != null && adapterView.getChildCount() != 0) {
-                    ((TextView) adapterView.getChildAt(0)).setTextColor(Color.WHITE);
-                    ((TextView) adapterView.getChildAt(0)).setTextSize(20);
-                }
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-
-            }
-        });
-        spinnerClassOf.setAdapter(adapter);
+        mPresenter.loadClassOfSpinner(getContext());
+        spinnerClassOf.setOnItemSelectedListener(this);
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         unbinder.unbind();
+    }
+
+    @Override
+    public void setPresenter(AlumniOrStudentSignUpContract.Presenter presenter) {
+        mPresenter= presenter;
+    }
+
+    @Override
+    public void showClassOfSpinner(ArrayAdapter<CharSequence> adapter) {
+        spinnerClassOf.setAdapter(adapter);
+    }
+
+    @Override
+    public void onItemSelected(AdapterView<?> adapterView, View view, int position, long id) {
+        mPresenter.loadYearOnClassOfDropDown(adapterView, view, position);
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {
+
     }
 }
