@@ -4,6 +4,7 @@ package com.akash.android.nitsilcharalumni.signup.alumniOrStudentSignUpFragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -129,6 +130,11 @@ public class AlumniOrStudentSignUpFragment extends Fragment implements AlumniOrS
 
     @OnClick(R.id.btCreateAccount)
     public void onViewClicked() {
+
+        if(mPresenter.validateSpinnerItemSelected(spinnerClassOf)) {
+            Snackbar.make(getView(), "Please choose class of ", Snackbar.LENGTH_SHORT).show();
+            return;
+        }
         Bundle b= getArguments();
         User user= b.getParcelable("user");
         //TODO: insert classof and organisaton in user object
@@ -145,7 +151,7 @@ public class AlumniOrStudentSignUpFragment extends Fragment implements AlumniOrS
 
     @Override
     public void showErrorMessage() {
-        Toast.makeText(getContext(), "Authentication failed.",
+        Toast.makeText(getContext(), "Authentication failed: You're probably signed up already",
                 Toast.LENGTH_SHORT).show();
     }
 }

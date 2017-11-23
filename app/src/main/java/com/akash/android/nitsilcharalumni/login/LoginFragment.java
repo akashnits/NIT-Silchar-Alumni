@@ -4,6 +4,8 @@ package com.akash.android.nitsilcharalumni.login;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.BaseTransientBottomBar;
+import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -15,6 +17,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.akash.android.nitsilcharalumni.R;
+import com.akash.android.nitsilcharalumni.mainActivity.MainActivity;
 import com.akash.android.nitsilcharalumni.signup.SignUpActivity;
 import com.facebook.login.widget.LoginButton;
 import com.google.android.gms.common.SignInButton;
@@ -25,7 +28,7 @@ import butterknife.OnClick;
 import butterknife.Unbinder;
 
 
-public class LoginFragment extends Fragment {
+public class LoginFragment extends Fragment implements LoginContract.View {
 
 
     @BindView(R.id.tvLoginTitle)
@@ -52,6 +55,8 @@ public class LoginFragment extends Fragment {
     TextView tvSignUp;
     Unbinder unbinder;
 
+    private LoginContract.Presenter mLoginContractPresenter;
+
     public LoginFragment() {
         // Required empty public constructor
     }
@@ -60,6 +65,7 @@ public class LoginFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mLoginContractPresenter= new LoginPresenter(this);
     }
 
     @Override
@@ -85,8 +91,42 @@ public class LoginFragment extends Fragment {
     }
 
 
-    @OnClick(R.id.tvSignUp)
-    public void onViewClicked() {
-        startActivity(new Intent(getActivity(), SignUpActivity.class));
+    @Override
+    public void setPresenter(LoginContract.Presenter presenter) {
+        mLoginContractPresenter = presenter;
+    }
+
+    @OnClick({R.id.sign_in_button, R.id.login_button, R.id.btSignIn, R.id.tvSignUp})
+    public void onViewClicked(View view) {
+        int id = view.getId();
+        switch (id) {
+            case R.id.sign_in_button:
+                break;
+            case R.id.login_button:
+                break;
+            case R.id.btSignIn:
+                boolean valid= mLoginContractPresenter.validateLoginForm(getActivity(),
+                        username.getText(), username,
+                        password.getText(), password);
+                if(!valid) {
+                    Snackbar.make(getView(), "Please enter details correctly",
+                            BaseTransientBottomBar.LENGTH_SHORT).show();
+                }
+                break;
+            case R.id.tvSignUp:
+                startActivity(new Intent(getActivity(), SignUpActivity.class));
+                break;
+        }
+    }
+
+    @Override
+    public void showErrorMessage() {
+        Toast.makeText(getContext(), "Authentication failed.",
+                Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void showMainActivity() {
+        startActivity(new Intent(getActivity(), MainActivity.class));
     }
 }
