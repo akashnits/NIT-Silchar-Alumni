@@ -27,6 +27,8 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
 
+import static com.facebook.FacebookSdk.getApplicationContext;
+
 
 public class LoginFragment extends Fragment implements LoginContract.View {
 
@@ -101,8 +103,10 @@ public class LoginFragment extends Fragment implements LoginContract.View {
         int id = view.getId();
         switch (id) {
             case R.id.sign_in_button:
+                mLoginContractPresenter.signInUsingGoogle((LoginActivity) getActivity());
                 break;
             case R.id.login_button:
+                mLoginContractPresenter.signInUsingFacebook(loginButton, (LoginActivity) getActivity() );
                 break;
             case R.id.btSignIn:
                 boolean valid= mLoginContractPresenter.validateLoginForm(getActivity(),
@@ -128,5 +132,22 @@ public class LoginFragment extends Fragment implements LoginContract.View {
     @Override
     public void showMainActivity() {
         startActivity(new Intent(getActivity(), MainActivity.class));
+    }
+
+    @Override
+    public void showGoogleSignInErrorMessage() {
+        Toast.makeText(getContext(), "Google sign in failed ", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void showFacebookSignInErrorMessage() {
+        Toast.makeText(getContext(), "Facebook sign in failed ", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        mLoginContractPresenter.onActivityResultCallbackReceived(requestCode, resultCode, data,
+                (LoginActivity) getActivity());
     }
 }

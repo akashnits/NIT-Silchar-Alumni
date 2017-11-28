@@ -14,7 +14,7 @@
         android:theme="@style/AppTheme">
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyBLHm6tgkOzrWRU30AOKA7yWaBfIlZf8NE" />
+            android:value="AIzaSyAHbE6Ov2B1Xi54OaM-5BZx3AnLGVbaPDY" />
 
         <activity
             android:name=".splash.SplashScreenActivity"
@@ -56,7 +56,9 @@
             android:windowSoftInputMode="stateHidden" />
         <activity
             android:name=".mainActivity.MainActivity"
-            android:label="@string/title_activity_main"></activity>
+            android:label="@string/title_activity_main"
+            android:theme="@style/ActivityTheme"
+            ></activity>
     </application>
 
 </manifest>

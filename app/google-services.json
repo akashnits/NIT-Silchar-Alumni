@@ -15,13 +15,21 @@
       },
       "oauth_client": [
         {
-          "client_id": "1081552565030-o1vmn1nr7hepcncgl0v1a3ocd48r554h.apps.googleusercontent.com",
+          "client_id": "1081552565030-6n2h6en5tersom99kv63eirl414j51cr.apps.googleusercontent.com",
           "client_type": 3
+        },
+        {
+          "client_id": "1081552565030-vbt8fctkmeps6bhq74l68vrgh9c39eug.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.akash.android.nitsilcharalumni",
+            "certificate_hash": "8f5062d5f71719fd1643dd9208e995ca718f02b3"
+          }
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyCQflgBWk-tf7ene11rRByQuKFPN_N6_Gc"
+          "current_key": "AIzaSyAoOV1JBfMVATIq-PEdYjjWtOWVByvRB38"
         }
       ],
       "services": {
@@ -29,8 +37,13 @@
           "status": 1
         },
         "appinvite_service": {
-          "status": 1,
-          "other_platform_oauth_client": []
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1081552565030-6n2h6en5tersom99kv63eirl414j51cr.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         },
         "ads_service": {
           "status": 2
