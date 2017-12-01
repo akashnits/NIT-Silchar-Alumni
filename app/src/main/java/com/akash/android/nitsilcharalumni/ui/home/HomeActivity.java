@@ -7,15 +7,17 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.widget.TextView;
 
 import com.akash.android.nitsilcharalumni.R;
+import com.akash.android.nitsilcharalumni.ui.alumni.AlumniFragment;
+import com.akash.android.nitsilcharalumni.ui.bookmark.BookmarkFragment;
+import com.akash.android.nitsilcharalumni.ui.job.JobFragment;
+import com.akash.android.nitsilcharalumni.utils.ActivityUtils;
 import com.akash.android.nitsilcharalumni.utils.BottomNavigationViewHelper;
 import com.google.firebase.auth.FirebaseAuth;
 
 public class HomeActivity extends AppCompatActivity {
 
-    private TextView mTextMessage;
 
 
 
@@ -26,16 +28,40 @@ public class HomeActivity extends AppCompatActivity {
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             switch (item.getItemId()) {
                 case R.id.navigation_home:
-                    mTextMessage.setText(R.string.title_home);
+                    ActivityUtils.replaceFragmentOnActivity(
+                            getSupportFragmentManager(),
+                            HomeFragment.newInstance(),
+                            R.id.content,
+                            false,
+                            "Home"
+                    );
                     return true;
                 case R.id.navigation_alumni:
-                    mTextMessage.setText(R.string.alumni);
+                    ActivityUtils.replaceFragmentOnActivity(
+                            getSupportFragmentManager(),
+                            AlumniFragment.newInstance(),
+                            R.id.content,
+                            false,
+                            "Alumni"
+                    );
                     return true;
                 case R.id.navigation_jobs:
-                    mTextMessage.setText(R.string.title_notifications);
+                    ActivityUtils.replaceFragmentOnActivity(
+                            getSupportFragmentManager(),
+                            JobFragment.newInstance(),
+                            R.id.content,
+                            false,
+                            "Job"
+                    );
                     return true;
                 case R.id.navigation_bookmark:
-                    mTextMessage.setText(R.string.jobs);
+                    ActivityUtils.replaceFragmentOnActivity(
+                            getSupportFragmentManager(),
+                            BookmarkFragment.newInstance(),
+                            R.id.content,
+                            false,
+                            "Bookmark"
+                    );
                     return true;
             }
             return false;
@@ -46,12 +72,18 @@ public class HomeActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_home);
 
-        mTextMessage = (TextView) findViewById(R.id.message);
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         BottomNavigationViewHelper.disableShiftMode(navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+        if(savedInstanceState == null) {
+            ActivityUtils.replaceFragmentOnActivity(getSupportFragmentManager(),
+                    HomeFragment.newInstance(),
+                    R.id.content,
+                    false,
+                    "Home");
+        }
     }
 
     @Override

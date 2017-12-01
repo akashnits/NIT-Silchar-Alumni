@@ -18,10 +18,10 @@ public class ActivityUtils {
 
     public static void replaceFragmentOnActivity(@NonNull FragmentManager fragmentManager,
                                                  @NonNull Fragment fragment,
-                                                 int frameId, boolean addToBackstack){
+                                                 int frameId, boolean addToBackstack, String tag){
         if(addToBackstack) {
             fragmentManager.beginTransaction()
-                    .replace(frameId, fragment)
+                    .replace(frameId, fragment, tag)
                     .addToBackStack(null)
                     .commit();
         }else {

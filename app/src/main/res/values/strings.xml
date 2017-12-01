@@ -71,4 +71,8 @@
     <string name="sign_out">Sign out</string>
     <string name="alumni">Alumni</string>
     <string name="jobs">Jobs</string>
+    <string name="bookmark">Bookmark</string>
+    <string name="signupFragment">SignupFragment</string>
+    <string name="alumniOrStudentSignupFrag">AlumniOrStudentSignUpFragment</string>
+    <string name="placeAutoCompleteFragment">PlaceAutoCompleteFragment</string>
 </resources>

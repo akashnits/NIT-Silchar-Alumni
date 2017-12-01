@@ -28,7 +28,7 @@ public class SignUpActivity extends AppCompatActivity {
             ActivityUtils.replaceFragmentOnActivity(getSupportFragmentManager(),
                     signUpFragment,
                     R.id.signUpContainer,
-                    false);
+                    false, getString(R.string.signupFragment));
         }
         mSignUpPresenter= new SignUpPresenter(signUpFragment);
     }
@@ -38,7 +38,7 @@ public class SignUpActivity extends AppCompatActivity {
         ActivityUtils.replaceFragmentOnActivity(getSupportFragmentManager(),
                 placeAutoCompleteFragment,
                 R.id.signUpContainer,
-                true);
+                true, getString(R.string.placeAutoCompleteFragment));
     }
 
     public void showAlumniOrStudentSignUpFragment(User user, char[] password, boolean isAlumnus){
@@ -47,7 +47,7 @@ public class SignUpActivity extends AppCompatActivity {
         ActivityUtils.replaceFragmentOnActivity(getSupportFragmentManager(),
                 alumniOrStudentSignUpFragment,
                 R.id.signUpContainer,
-                true);
+                true, getString(R.string.alumniOrStudentSignupFrag));
     }
 
 }
