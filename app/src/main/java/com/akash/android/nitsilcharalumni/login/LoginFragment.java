@@ -17,7 +17,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.akash.android.nitsilcharalumni.R;
-import com.akash.android.nitsilcharalumni.mainActivity.MainActivity;
+import com.akash.android.nitsilcharalumni.ui.home.HomeActivity;
 import com.akash.android.nitsilcharalumni.signup.SignUpActivity;
 import com.facebook.login.widget.LoginButton;
 import com.google.android.gms.common.SignInButton;
@@ -26,8 +26,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
-
-import static com.facebook.FacebookSdk.getApplicationContext;
 
 
 public class LoginFragment extends Fragment implements LoginContract.View {
@@ -131,7 +129,7 @@ public class LoginFragment extends Fragment implements LoginContract.View {
 
     @Override
     public void showMainActivity() {
-        startActivity(new Intent(getActivity(), MainActivity.class));
+        startActivity(new Intent(getActivity(), HomeActivity.class));
     }
 
     @Override

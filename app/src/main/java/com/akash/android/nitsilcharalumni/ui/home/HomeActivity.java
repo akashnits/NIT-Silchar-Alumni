@@ -1,4 +1,4 @@
-package com.akash.android.nitsilcharalumni.mainActivity;
+package com.akash.android.nitsilcharalumni.ui.home;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -10,10 +10,10 @@ import android.view.MenuItem;
 import android.widget.TextView;
 
 import com.akash.android.nitsilcharalumni.R;
+import com.akash.android.nitsilcharalumni.utils.BottomNavigationViewHelper;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 
-public class MainActivity extends AppCompatActivity {
+public class HomeActivity extends AppCompatActivity {
 
     private TextView mTextMessage;
 
@@ -28,11 +28,14 @@ public class MainActivity extends AppCompatActivity {
                 case R.id.navigation_home:
                     mTextMessage.setText(R.string.title_home);
                     return true;
-                case R.id.navigation_dashboard:
-                    mTextMessage.setText(R.string.title_dashboard);
+                case R.id.navigation_alumni:
+                    mTextMessage.setText(R.string.alumni);
                     return true;
-                case R.id.navigation_notifications:
+                case R.id.navigation_jobs:
                     mTextMessage.setText(R.string.title_notifications);
+                    return true;
+                case R.id.navigation_bookmark:
+                    mTextMessage.setText(R.string.jobs);
                     return true;
             }
             return false;
@@ -47,6 +50,7 @@ public class MainActivity extends AppCompatActivity {
 
         mTextMessage = (TextView) findViewById(R.id.message);
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
+        BottomNavigationViewHelper.disableShiftMode(navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
     }
 

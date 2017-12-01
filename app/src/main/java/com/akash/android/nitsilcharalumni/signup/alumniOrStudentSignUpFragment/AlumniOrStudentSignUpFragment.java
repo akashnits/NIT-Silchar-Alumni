@@ -19,7 +19,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.akash.android.nitsilcharalumni.R;
-import com.akash.android.nitsilcharalumni.mainActivity.MainActivity;
+import com.akash.android.nitsilcharalumni.ui.home.HomeActivity;
 import com.akash.android.nitsilcharalumni.model.User;
 import com.akash.android.nitsilcharalumni.signup.SignUpActivity;
 
@@ -145,7 +145,7 @@ public class AlumniOrStudentSignUpFragment extends Fragment implements AlumniOrS
 
     @Override
     public void showMainActivity() {
-        startActivity(new Intent(getActivity(), MainActivity.class));
+        startActivity(new Intent(getActivity(), HomeActivity.class));
         ((SignUpActivity) getActivity()).finish();
     }
 
