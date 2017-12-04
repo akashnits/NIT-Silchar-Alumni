@@ -13,7 +13,7 @@ import android.widget.ProgressBar;
 
 import com.akash.android.nitsilcharalumni.R;
 import com.akash.android.nitsilcharalumni.login.LoginActivity;
-import com.akash.android.nitsilcharalumni.ui.home.HomeActivity;
+import com.akash.android.nitsilcharalumni.ui.feed.FeedActivity;
 import com.google.firebase.auth.FirebaseAuth;
 
 import butterknife.BindView;
@@ -77,7 +77,7 @@ public class SplashFragment extends Fragment {
             public void run() {
             pbSplashScreen.setVisibility(View.GONE);
                 if(mAuth.getCurrentUser() != null){
-                    startActivity(new Intent(getActivity(), HomeActivity.class));
+                    startActivity(new Intent(getActivity(), FeedActivity.class));
                 }else {
                     startActivity(new Intent(getActivity(), LoginActivity.class));
                 }

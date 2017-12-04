@@ -1,4 +1,4 @@
-package com.akash.android.nitsilcharalumni.ui.home;
+package com.akash.android.nitsilcharalumni.ui.feed;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -16,7 +16,7 @@ import com.akash.android.nitsilcharalumni.utils.ActivityUtils;
 import com.akash.android.nitsilcharalumni.utils.BottomNavigationViewHelper;
 import com.google.firebase.auth.FirebaseAuth;
 
-public class HomeActivity extends AppCompatActivity {
+public class FeedActivity extends AppCompatActivity {
 
 
 
@@ -30,7 +30,7 @@ public class HomeActivity extends AppCompatActivity {
                 case R.id.navigation_home:
                     ActivityUtils.replaceFragmentOnActivity(
                             getSupportFragmentManager(),
-                            HomeFragment.newInstance(),
+                            FeedFragment.newInstance(),
                             R.id.content,
                             false,
                             "Home"
@@ -79,7 +79,7 @@ public class HomeActivity extends AppCompatActivity {
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
         if(savedInstanceState == null) {
             ActivityUtils.replaceFragmentOnActivity(getSupportFragmentManager(),
-                    HomeFragment.newInstance(),
+                    FeedFragment.newInstance(),
                     R.id.content,
                     false,
                     "Home");

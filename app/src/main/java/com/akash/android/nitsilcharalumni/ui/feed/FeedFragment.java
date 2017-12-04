@@ -1,9 +1,10 @@
-package com.akash.android.nitsilcharalumni.ui.home;
+package com.akash.android.nitsilcharalumni.ui.feed;
 
 
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
@@ -16,17 +17,19 @@ import android.widget.Toast;
 
 import com.akash.android.nitsilcharalumni.FeedAdapter;
 import com.akash.android.nitsilcharalumni.R;
+import com.akash.android.nitsilcharalumni.utils.ActivityUtils;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import butterknife.Unbinder;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link HomeFragment#newInstance} factory method to
+ * Use the {@link FeedFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
+public class FeedFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
 
     @BindView(R.id.homeFragment)
     FrameLayout homeFragment;
@@ -35,16 +38,18 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     Unbinder unbinder;
     @BindView(R.id.rvFeed)
     RecyclerView rvFeed;
+    @BindView(R.id.postFab)
+    FloatingActionButton postFab;
 
     private FeedAdapter mFeedAdapter;
     private Context mContext;
 
-    public HomeFragment() {
+    public FeedFragment() {
         // Required empty public constructor
     }
 
-    public static HomeFragment newInstance() {
-        HomeFragment fragment = new HomeFragment();
+    public static FeedFragment newInstance() {
+        FeedFragment fragment = new FeedFragment();
         Bundle args = new Bundle();
         fragment.setArguments(args);
         return fragment;
@@ -60,7 +65,7 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_home, container, false);
+        View view = inflater.inflate(R.layout.fragment_feed, container, false);
         unbinder = ButterKnife.bind(this, view);
         return view;
     }
@@ -70,7 +75,7 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         super.onViewCreated(view, savedInstanceState);
         swipeRefreshLayout.setOnRefreshListener(this);
 
-        LinearLayoutManager lm = new LinearLayoutManager(mContext,LinearLayoutManager.VERTICAL, false);
+        LinearLayoutManager lm = new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false);
         rvFeed.setLayoutManager(lm);
         rvFeed.hasFixedSize();
         mFeedAdapter = new FeedAdapter(mContext);
@@ -93,5 +98,14 @@ public class HomeFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     public void onDestroyView() {
         super.onDestroyView();
         unbinder.unbind();
+    }
+
+    @OnClick(R.id.postFab)
+    public void onViewClicked() {
+        ActivityUtils.replaceFragmentOnActivity(getFragmentManager(),
+                CreateFeedFragment.newInstance(),
+                R.id.content,
+                true,
+                "CreateFeedFragment");
     }
 }
