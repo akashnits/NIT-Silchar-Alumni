@@ -7,7 +7,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
     <!-- place your view here -->
-    <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/homeFragment"
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
@@ -19,7 +19,7 @@
          android:layout_width="match_parent"
          android:layout_height="match_parent"/>
 
-    </FrameLayout>
+    </android.support.v4.widget.NestedScrollView>
 
     <android.support.design.widget.FloatingActionButton xmlns:app="http://schemas.android.com/apk/res-auto"
         android:id="@+id/postFab"
