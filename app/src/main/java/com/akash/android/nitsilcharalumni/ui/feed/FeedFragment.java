@@ -15,7 +15,7 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
-import com.akash.android.nitsilcharalumni.FeedAdapter;
+import com.akash.android.nitsilcharalumni.adapter.FeedAdapter;
 import com.akash.android.nitsilcharalumni.R;
 import com.akash.android.nitsilcharalumni.utils.ActivityUtils;
 

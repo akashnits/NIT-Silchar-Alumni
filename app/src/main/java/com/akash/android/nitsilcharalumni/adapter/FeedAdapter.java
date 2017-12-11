@@ -1,4 +1,4 @@
-package com.akash.android.nitsilcharalumni;
+package com.akash.android.nitsilcharalumni.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.akash.android.nitsilcharalumni.R;
 import com.squareup.picasso.Picasso;
 
 import butterknife.BindView;
