@@ -10,6 +10,8 @@ public class SharedPrefsHelper {
 
     public static String PREF_KEY_LOCATION = "location";
 
+    public static String PREF_KEY_USERTYPE = "typeOfUser";
+
     private SharedPreferences mSharedPreferences;
 
     @Inject

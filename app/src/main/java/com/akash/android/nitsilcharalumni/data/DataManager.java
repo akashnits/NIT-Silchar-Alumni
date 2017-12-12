@@ -26,4 +26,12 @@ public class DataManager {
     public String getCurrentLocation(){
         return mSharedPrefsHelper.get(SharedPrefsHelper.PREF_KEY_LOCATION, null);
     }
+
+    public void saveTypeOfUser(String typeOfUser){
+        mSharedPrefsHelper.put(SharedPrefsHelper.PREF_KEY_USERTYPE, typeOfUser);
+    }
+
+    public String getTypeOfUser(){
+        return mSharedPrefsHelper.get(SharedPrefsHelper.PREF_KEY_USERTYPE, null);
+    }
 }

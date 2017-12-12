@@ -6,8 +6,6 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
-
-
     </style>
 
     <style name="CircularProgress" parent="Theme.AppCompat.Light">
@@ -29,7 +27,7 @@
         <item name="android:clickable">true</item>
     </style>
 
-    <style name="TextLabel" parent="TextAppearance.AppCompat">
+    <style name="TextLabel" parent="Theme.AppCompat.Light.NoActionBar">
 
         <!-- Hint color and label color in FALSE state -->
         <item name="android:textColorHint">@android:color/darker_gray</item>
@@ -38,6 +36,13 @@
         <item name="colorAccent">@android:color/white</item>
         <item name="colorControlNormal">@android:color/white</item>
         <item name="colorControlActivated">@android:color/white</item>
+    </style>
+
+    <style name="FAB">
+        <item name="android:layout_margin">0dp</item>
+        <item name="fabSize">normal</item>
+        <item name="rippleColor">@android:color/white</item>
+        <item name="backgroundTint">@color/colorAccent</item>
     </style>
 
 </resources>

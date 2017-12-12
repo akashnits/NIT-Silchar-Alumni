@@ -2,9 +2,7 @@ package com.akash.android.nitsilcharalumni.di.component;
 
 import com.akash.android.nitsilcharalumni.di.PerFragment;
 import com.akash.android.nitsilcharalumni.di.module.SignUpFragmentModule;
-import com.akash.android.nitsilcharalumni.ui.fragments.SignUpFragment;
-
-import javax.inject.Singleton;
+import com.akash.android.nitsilcharalumni.signup.SignUpFragment;
 
 import dagger.Component;
 
