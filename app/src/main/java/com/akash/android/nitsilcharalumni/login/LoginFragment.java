@@ -17,7 +17,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.akash.android.nitsilcharalumni.R;
-import com.akash.android.nitsilcharalumni.ui.feed.FeedActivity;
+import com.akash.android.nitsilcharalumni.ui.MainActivity;
 import com.akash.android.nitsilcharalumni.signup.SignUpActivity;
 import com.facebook.login.widget.LoginButton;
 import com.google.android.gms.common.SignInButton;
@@ -129,7 +129,7 @@ public class LoginFragment extends Fragment implements LoginContract.View {
 
     @Override
     public void showMainActivity() {
-        startActivity(new Intent(getActivity(), FeedActivity.class));
+        startActivity(new Intent(getActivity(), MainActivity.class));
     }
 
     @Override

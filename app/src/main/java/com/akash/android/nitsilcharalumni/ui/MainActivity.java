@@ -1,4 +1,4 @@
-package com.akash.android.nitsilcharalumni.ui.feed;
+package com.akash.android.nitsilcharalumni.ui;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -9,14 +9,16 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 
 import com.akash.android.nitsilcharalumni.R;
+import com.akash.android.nitsilcharalumni.ui.alumni.AlumniDetailsFragment;
 import com.akash.android.nitsilcharalumni.ui.alumni.AlumniFragment;
 import com.akash.android.nitsilcharalumni.ui.bookmark.BookmarkFragment;
+import com.akash.android.nitsilcharalumni.ui.feed.FeedFragment;
 import com.akash.android.nitsilcharalumni.ui.job.JobFragment;
 import com.akash.android.nitsilcharalumni.utils.ActivityUtils;
 import com.akash.android.nitsilcharalumni.utils.BottomNavigationViewHelper;
 import com.google.firebase.auth.FirebaseAuth;
 
-public class FeedActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity {
 
 
 
@@ -68,6 +70,16 @@ public class FeedActivity extends AppCompatActivity {
         }
 
     };
+
+    public void commitAlumniDetailsFragment(){
+        ActivityUtils.replaceFragmentOnActivity(
+                getSupportFragmentManager(),
+                AlumniDetailsFragment.newInstance(),
+                R.id.content,
+                true,
+                "AlumniDetails"
+        );
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

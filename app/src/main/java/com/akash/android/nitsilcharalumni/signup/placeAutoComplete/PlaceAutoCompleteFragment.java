@@ -20,7 +20,7 @@ import com.akash.android.nitsilcharalumni.data.DataManager;
 import com.akash.android.nitsilcharalumni.di.component.DaggerPlaceAutoCompleteFragmentComponent;
 import com.akash.android.nitsilcharalumni.di.component.PlaceAutoCompleteFragmentComponent;
 import com.akash.android.nitsilcharalumni.di.module.PlaceAutoCompleteFragmentModule;
-import com.akash.android.nitsilcharalumni.ui.feed.FeedActivity;
+import com.akash.android.nitsilcharalumni.ui.MainActivity;
 import com.akash.android.nitsilcharalumni.model.User;
 import com.akash.android.nitsilcharalumni.signup.SignUpActivity;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
@@ -202,7 +202,7 @@ public class PlaceAutoCompleteFragment extends Fragment implements PlaceAutoComp
 
     @Override
     public void showMainActivity() {
-        startActivity(new Intent(getActivity(), FeedActivity.class));
+        startActivity(new Intent(getActivity(), MainActivity.class));
         ((SignUpActivity) getActivity()).finish();
     }
 }

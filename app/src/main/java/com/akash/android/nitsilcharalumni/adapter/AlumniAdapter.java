@@ -9,6 +9,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.akash.android.nitsilcharalumni.R;
+import com.akash.android.nitsilcharalumni.ui.alumni.AlumniFragment;
+import com.akash.android.nitsilcharalumni.utils.ActivityUtils;
 import com.squareup.picasso.Picasso;
 
 import butterknife.BindView;
@@ -18,9 +20,15 @@ import butterknife.ButterKnife;
 public class AlumniAdapter extends RecyclerView.Adapter<AlumniAdapter.AlumniViewHolder> {
 
     private Context mContext;
+    private OnAlumniClickHandler mHandler;
 
-    public AlumniAdapter(Context mContext) {
+    public interface OnAlumniClickHandler{
+        void onAlumniClicked(int position, View view);
+    }
+
+    public AlumniAdapter(Context mContext, OnAlumniClickHandler mHandler) {
         this.mContext = mContext;
+        this.mHandler = mHandler;
     }
 
     @Override
@@ -63,6 +71,12 @@ public class AlumniAdapter extends RecyclerView.Adapter<AlumniAdapter.AlumniView
         public AlumniViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    mHandler.onAlumniClicked(getAdapterPosition(), view);
+                }
+            });
         }
     }
 }

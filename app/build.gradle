@@ -41,6 +41,7 @@ dependencies {
     compile 'com.google.dagger:dagger:2.10'
     compile 'com.github.jorgecastilloprz:fabprogresscircle:1.01@aar'
     compile 'javax.inject:javax.inject:1'
+    compile 'de.hdodenhof:circleimageview:2.2.0'
     testCompile 'junit:junit:4.12'
     annotationProcessor 'com.google.dagger:dagger-compiler:2.10'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.7.0'

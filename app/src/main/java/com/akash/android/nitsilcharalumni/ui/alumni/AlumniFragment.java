@@ -15,6 +15,7 @@ import android.widget.ScrollView;
 
 import com.akash.android.nitsilcharalumni.R;
 import com.akash.android.nitsilcharalumni.adapter.AlumniAdapter;
+import com.akash.android.nitsilcharalumni.ui.MainActivity;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -25,12 +26,12 @@ import butterknife.Unbinder;
  * Use the {@link AlumniFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class AlumniFragment extends Fragment {
+public class AlumniFragment extends Fragment implements AlumniAdapter.OnAlumniClickHandler {
 
     @BindView(R.id.rvFeed)
     RecyclerView rvFeed;
     @BindView(R.id.alumniFragment)
-    ScrollView alumniFragmen;
+    ScrollView alumniFragment;
     Unbinder unbinder;
 
     private Context mContext;
@@ -66,7 +67,7 @@ public class AlumniFragment extends Fragment {
         LinearLayoutManager lm = new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false);
         rvFeed.setLayoutManager(lm);
         rvFeed.hasFixedSize();
-        AlumniAdapter alumniAdapter = new AlumniAdapter(mContext);
+        AlumniAdapter alumniAdapter = new AlumniAdapter(mContext, this);
         rvFeed.setAdapter(alumniAdapter);
     }
 
@@ -80,5 +81,9 @@ public class AlumniFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         unbinder.unbind();
+    }
+
+    public void onAlumniClicked(int position, View view) {
+        ((MainActivity) getActivity()).commitAlumniDetailsFragment();
     }
 }
