@@ -11,6 +11,7 @@ import android.view.MenuItem;
 import com.akash.android.nitsilcharalumni.R;
 import com.akash.android.nitsilcharalumni.ui.alumni.AlumniDetailsFragment;
 import com.akash.android.nitsilcharalumni.ui.alumni.AlumniFragment;
+import com.akash.android.nitsilcharalumni.ui.alumni.FilterAlumniFragment;
 import com.akash.android.nitsilcharalumni.ui.bookmark.BookmarkFragment;
 import com.akash.android.nitsilcharalumni.ui.feed.FeedFragment;
 import com.akash.android.nitsilcharalumni.ui.job.JobFragment;
@@ -81,6 +82,16 @@ public class MainActivity extends AppCompatActivity {
         );
     }
 
+    public void commitFilterAlumniFragment(){
+        ActivityUtils.replaceFragmentOnActivity(
+                getSupportFragmentManager(),
+                FilterAlumniFragment.newInstance(),
+                R.id.content,
+                true,
+                "FilterAlumni"
+        );
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -98,7 +109,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    @Override
+ /*   @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater= getMenuInflater();
         inflater.inflate(R.menu.optionmenu, menu);
@@ -114,5 +125,5 @@ public class MainActivity extends AppCompatActivity {
                 finish();
         }
         return super.onOptionsItemSelected(item);
-    }
+    }*/
 }
