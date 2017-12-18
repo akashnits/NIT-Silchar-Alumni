@@ -33,7 +33,7 @@ public class FeedFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
     @BindView(R.id.homeFragment)
     FrameLayout homeFragment;
-    @BindView(R.id.swipe_refresh_layout)
+    @BindView(R.id.swipe_refresh_layout_home)
     SwipeRefreshLayout swipeRefreshLayout;
     Unbinder unbinder;
     @BindView(R.id.rvFeed)
