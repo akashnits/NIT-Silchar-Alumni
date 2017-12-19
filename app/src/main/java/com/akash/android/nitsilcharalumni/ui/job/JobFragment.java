@@ -8,15 +8,22 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.akash.android.nitsilcharalumni.R;
 import com.akash.android.nitsilcharalumni.adapter.JobAdapter;
+import com.akash.android.nitsilcharalumni.ui.MainActivity;
+import com.akash.android.nitsilcharalumni.utils.ActivityUtils;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -35,6 +42,8 @@ public class JobFragment extends Fragment implements SwipeRefreshLayout.OnRefres
     @BindView(R.id.swipe_refresh_layout_job)
     SwipeRefreshLayout swipeRefreshLayoutJob;
     Unbinder unbinder;
+    @BindView(R.id.toolbarJob)
+    Toolbar toolbarJob;
 
     private Context mContext;
     private JobAdapter mJobAdapter;
@@ -59,6 +68,7 @@ public class JobFragment extends Fragment implements SwipeRefreshLayout.OnRefres
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_job, container, false);
+        setHasOptionsMenu(true);
         unbinder = ButterKnife.bind(this, view);
         return view;
     }
@@ -66,6 +76,7 @@ public class JobFragment extends Fragment implements SwipeRefreshLayout.OnRefres
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        ((AppCompatActivity) getActivity()).setSupportActionBar(toolbarJob);
         swipeRefreshLayoutJob.setOnRefreshListener(this);
 
         LinearLayoutManager lm = new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false);
@@ -102,9 +113,33 @@ public class JobFragment extends Fragment implements SwipeRefreshLayout.OnRefres
             case R.id.jobFragment:
                 break;
             case R.id.jobFab:
+                ActivityUtils.replaceFragmentOnActivity(getFragmentManager(),
+                        CreateJobFragment.newInstance(),
+                        R.id.content,
+                        true,
+                        "CreateJobFragment");
                 break;
             case R.id.swipe_refresh_layout_job:
                 break;
         }
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.jobmenu, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        switch (id) {
+            case R.id.jobFilter:
+                ((MainActivity) getActivity()).commitFilterJobFragment();
+                break;
+            default:
+                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

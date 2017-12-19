@@ -14,6 +14,7 @@ import com.akash.android.nitsilcharalumni.ui.alumni.AlumniFragment;
 import com.akash.android.nitsilcharalumni.ui.alumni.FilterAlumniFragment;
 import com.akash.android.nitsilcharalumni.ui.bookmark.BookmarkFragment;
 import com.akash.android.nitsilcharalumni.ui.feed.FeedFragment;
+import com.akash.android.nitsilcharalumni.ui.job.FilterJobFragment;
 import com.akash.android.nitsilcharalumni.ui.job.JobFragment;
 import com.akash.android.nitsilcharalumni.utils.ActivityUtils;
 import com.akash.android.nitsilcharalumni.utils.BottomNavigationViewHelper;
@@ -89,6 +90,16 @@ public class MainActivity extends AppCompatActivity {
                 R.id.content,
                 true,
                 "FilterAlumni"
+        );
+    }
+
+    public void commitFilterJobFragment(){
+        ActivityUtils.replaceFragmentOnActivity(
+                getSupportFragmentManager(),
+                FilterJobFragment.newInstance(),
+                R.id.content,
+                true,
+                "FilterJob"
         );
     }
 
