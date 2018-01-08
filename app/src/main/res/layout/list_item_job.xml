@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+
+    <ImageView
+        android:id="@+id/ivProfileIconJob"
+        android:layout_width="0dp"
+        android:layout_height="80dp"
+        android:layout_marginEnd="280dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="280dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+    <TextView
+        android:id="@+id/tvNameJob"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="24dp"
+        app:layout_constraintLeft_toRightOf="@+id/ivProfileIconJob"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="Akash Raj" />
+
+    <TextView
+        android:id="@+id/tvClassOfJob"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintLeft_toRightOf="@+id/ivProfileIconJob"
+        app:layout_constraintTop_toBottomOf="@+id/tvNameJob"
+        tools:text="Class of 2013, " />
+
+    <TextView
+        android:id="@+id/tvOrganisationNameJob"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
+        android:layout_marginStart="8dp"
+        app:layout_constraintLeft_toRightOf="@+id/tvClassOfJob"
+        app:layout_constraintTop_toTopOf="@+id/tvClassOfJob"
+        tools:text="L n T Technology Services" />
+
+    <TextView
+        android:id="@+id/tvJobTtitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        tools:text="Android Engineer"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvJobId" />
+
+    <TextView
+        android:id="@+id/tvJobLocation"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        tools:text=", Bangalore"
+        app:layout_constraintLeft_toRightOf="@+id/tvJobTtitle"
+        app:layout_constraintTop_toBottomOf="@+id/tvJobId" />
+
+
+    <TextView
+        android:id="@+id/tvJobOrganisationName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="7dp"
+        tools:text="Google Inc."
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvJobLocation" />
+
+    <TextView
+        android:id="@+id/tvJobDescription"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="7dp"
+        tools:text="Hiring for 2 years experienced Android developer who is passionate about learning new technologies "
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvJobOrganisationName" />
+
+    <TextView
+        android:id="@+id/tvJobSearchHashtag"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        tools:text="#android #java"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ivJobDescription" />
+
+    <TextView
+        android:id="@+id/tvJobId"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:text="Job Description"
+        android:textStyle="italic"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ivProfileIconJob" />
+
+    <ImageView
+        android:id="@+id/ivJobDescription"
+        android:layout_width="368dp"
+        android:layout_height="160dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvJobDescription" />
+
+
+</android.support.constraint.ConstraintLayout>

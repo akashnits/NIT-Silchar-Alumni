@@ -116,7 +116,9 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/fabLayout"
             android:background="@color/colorPrimary"
-            android:layout_marginTop="50dp"
+            android:layout_marginTop="110dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
             android:text="Post"
             android:textColor="@android:color/white" />
     </RelativeLayout>

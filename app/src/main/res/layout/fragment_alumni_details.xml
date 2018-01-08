@@ -68,7 +68,7 @@
 
     <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:scrollbars="none"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         >
@@ -81,21 +81,146 @@
             app:contentPadding="4dp"
             >
 
-            <TextView
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:lineSpacingExtra="8dp"
-                android:text="Lorem ipsum dolor sit amet, ad vix munere animal sapientem, vis latine vivendum intellegat ea. Ad dolorem fierent mnesarchum vim, vis debet integre moderatius at, ea antiopam tincidunt assueverit eos. Illum nulla labore has ex. At pri nulla timeam argumentum. At dolorum volutpat argumentum has, sea in porro sadipscing accommodare. Nullam sensibus te duo. Deserunt explicari percipitur per cu, ex qui simul vocibus.
+                android:layout_height="wrap_content">
 
-Quis malis tollit mea ea, vim te meis corrumpit dignissim, alia nullam definiebas ne ius. Eu aliquip impedit ius. Omnis debitis nominavi an pri, ea mazim repudiare mea. Latine molestiae nec eu. Vim ne nostro quaestio euripidis, ius virtute platonem cu, appetere platonem aliquando te vel.
+                <TextView
+                    android:id="@+id/tvAboutYou"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="4dp"
+                    android:text="About you" />
 
-Augue dolor meliore no vel. Ut sale quas usu. Ei sale quodsi ius. No vel alii dissentias, gubergren quaerendum ex usu. Eam an simul molestie consequat.
+                <TextView
+                    android:id="@+id/tvAboutYouText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_marginLeft="200dp"
+                    android:padding="4dp"
+                    android:text="Virat Kohli was born on 5 November 1988 in Delhi into a Punjabi family.[13] His father, Prem Kohli, worked as a criminal lawyer and his mother, Saroj Kohli, is a housewife.[14] He has an elder brother, Vikash, and an elder sister, Bhavna." />
 
-Ne usu quem utroque maiorum. Graeco semper adipisci ea pro, est tale suas populo cu, ea quo putant utamur consequat. His at meliore scaevola. Dicta tamquam sea cu, aperiri corrumpit voluptaria ius ut, legere alienum mei ad. Minimum eloquentiam sit cu.
+                <TextView
+                    android:id="@+id/tvClassOf"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/tvAboutYouText"
+                    android:padding="4dp"
+                    android:text="Class of" />
 
-Diam feugiat sea ut. Case ludus eu vel, an hinc graece doming quo. Est ridens aliquam ne, cum an malorum voluptatibus. Id nam tacimates incorrupte, cum simul putant eu. Viderer invidunt mea eu."
-                android:textSize="18sp"
-                />
+                <TextView
+                    android:id="@+id/tvClassofText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/tvAboutYouText"
+                    android:layout_marginLeft="200dp"
+                    android:padding="4dp"
+                    android:text="2013" />
+
+                <TextView
+                    android:id="@+id/tvLocation"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/tvClassofText"
+                    android:padding="4dp"
+                    android:text="Location" />
+
+                <TextView
+                    android:id="@+id/tvLocationText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/tvClassofText"
+                    android:layout_marginLeft="200dp"
+                    android:padding="4dp"
+                    android:text="Bangalore" />
+
+                <TextView
+                    android:id="@+id/tvContact"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/tvLocationText"
+                    android:padding="4dp"
+                    android:text="Contact" />
+
+                <TextView
+                    android:id="@+id/tvContactText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/tvLocationText"
+                    android:layout_marginLeft="200dp"
+                    android:padding="4dp"
+                    android:text="9644548961" />
+
+                <TextView
+                    android:id="@+id/tvEmail"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/tvContactText"
+                    android:padding="4dp"
+                    android:text="Email" />
+
+                <TextView
+                    android:id="@+id/tvEmailText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/tvContactText"
+                    android:layout_marginLeft="200dp"
+                    android:padding="4dp"
+                    android:text="akash@gmail.com" />
+
+                <TextView
+                    android:id="@+id/tvOrganisation"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/tvEmailText"
+                    android:padding="4dp"
+                    android:text="Organisation" />
+
+                <TextView
+                    android:id="@+id/tvOrganisationText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/tvEmailText"
+                    android:layout_marginLeft="200dp"
+                    android:padding="4dp"
+                    android:text="Google Inc." />
+
+                <TextView
+                    android:id="@+id/tvDesignation"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/tvOrganisationText"
+                    android:padding="4dp"
+                    android:text="Designation" />
+
+                <TextView
+                    android:id="@+id/tvDesignationText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/tvOrganisationText"
+                    android:layout_marginLeft="200dp"
+                    android:padding="4dp"
+                    android:text="Senior Engineer" />
+
+                <TextView
+                    android:id="@+id/tvSkills"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/tvDesignationText"
+                    android:padding="4dp"
+                    android:text="Skills" />
+
+                <TextView
+                    android:id="@+id/tvSkillsText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/tvDesignationText"
+                    android:layout_marginLeft="200dp"
+                    android:padding="4dp"
+                    android:text="Android development, SEO, Java, PHP" />
+            </RelativeLayout>
+
         </android.support.v7.widget.CardView>
 
 

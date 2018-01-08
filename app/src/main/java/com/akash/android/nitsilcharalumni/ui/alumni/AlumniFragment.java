@@ -6,9 +6,14 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ScrollView;
@@ -33,6 +38,8 @@ public class AlumniFragment extends Fragment implements AlumniAdapter.OnAlumniCl
     @BindView(R.id.alumniFragment)
     ScrollView alumniFragment;
     Unbinder unbinder;
+    @BindView(R.id.toolbarHome)
+    Toolbar toolbarAlumni;
 
     private Context mContext;
 
@@ -57,12 +64,15 @@ public class AlumniFragment extends Fragment implements AlumniAdapter.OnAlumniCl
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_alumni, container, false);
         unbinder = ButterKnife.bind(this, view);
+        setHasOptionsMenu(true);
         return view;
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        ((AppCompatActivity) getActivity()).setSupportActionBar(toolbarAlumni);
 
         LinearLayoutManager lm = new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false);
         rvFeed.setLayoutManager(lm);
@@ -85,5 +95,23 @@ public class AlumniFragment extends Fragment implements AlumniAdapter.OnAlumniCl
 
     public void onAlumniClicked(int position, View view) {
         ((MainActivity) getActivity()).commitAlumniDetailsFragment();
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.alumnimenu, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id= item.getItemId();
+        switch (id){
+            case R.id.filter:
+                ((MainActivity) getActivity()).commitFilterAlumniFragment();
+                break;
+            default:break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

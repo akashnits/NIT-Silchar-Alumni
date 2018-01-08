@@ -1,0 +1,226 @@
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="match_parent">
+<RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.akash.android.nitsilcharalumni.ui.job.CreateJobFragment">
+
+
+    <TextView
+        android:id="@+id/tvPostJobTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="10dp"
+        android:text="Job title"
+        android:textSize="18sp" />
+
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/til_post_job_title"
+        android:layout_width="250dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="80dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginTop="4dp"
+        android:layout_toEndOf="@+id/tvPostJobTitle"
+        android:padding="1dp"
+        app:hintTextAppearance="@style/HintText">
+
+        <EditText
+            android:id="@+id/edit_text_post_job_title"
+            android:layout_width="255dp"
+            android:layout_height="30dp"
+            android:background="@drawable/sharp_cornors"
+            android:gravity="center_vertical"
+            android:hint="Enter job title"
+            android:inputType="text" />
+    </android.support.design.widget.TextInputLayout>
+
+
+    <TextView
+        android:id="@+id/tvPostJobOrganisation"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tvPostJobTitle"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="14dp"
+        android:text="Organisation"
+        android:textSize="18sp" />
+
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/til_post_job_organisation"
+        android:layout_width="250dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/til_post_job_title"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="80dp"
+        android:layout_marginTop="4dp"
+        android:layout_toEndOf="@+id/tvPostJobTitle"
+        android:padding="1dp"
+        app:hintTextAppearance="@style/HintText">
+
+        <EditText
+            android:id="@+id/edit_text_post_job_organiation"
+            android:layout_width="255dp"
+            android:layout_height="30dp"
+            android:background="@drawable/sharp_cornors"
+            android:gravity="center_vertical"
+            android:hint="Enter organisation name"
+            android:inputType="text" />
+    </android.support.design.widget.TextInputLayout>
+
+    <TextView
+        android:id="@+id/tvPostJobLocation"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Location"
+        android:layout_below="@+id/tvPostJobOrganisation"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="14dp"
+        android:textSize="18sp"
+        />
+
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/til_post_job_location"
+        android:layout_width="250dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/til_post_job_organisation"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="80dp"
+        android:layout_marginTop="4dp"
+        android:layout_toEndOf="@+id/tvPostJobTitle"
+        android:padding="1dp"
+        app:hintTextAppearance="@style/HintText">
+
+        <EditText
+            android:id="@+id/edit_text_post_job_location"
+            android:layout_width="255dp"
+            android:layout_height="30dp"
+            android:background="@drawable/sharp_cornors"
+            android:gravity="center_vertical"
+            android:hint="Enter job location"
+            android:inputType="text" />
+    </android.support.design.widget.TextInputLayout>
+
+
+
+    <TextView
+        android:id="@+id/tvPostJobDescription"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Description"
+        android:layout_below="@+id/tvPostJobLocation"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="14dp"
+        android:textSize="18sp" />
+
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/til_post_job_description"
+        android:layout_width="250dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/til_post_job_location"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="80dp"
+        android:layout_marginTop="4dp"
+        android:layout_toEndOf="@+id/tvPostJobTitle"
+        android:padding="1dp"
+        app:hintTextAppearance="@style/HintText">
+
+        <EditText
+            android:id="@+id/edit_text_post_job_description"
+            android:layout_width="255dp"
+            android:layout_height="160dp"
+            android:background="@drawable/sharp_cornors"
+            android:gravity="start"
+            android:hint="Tell a bit about this job "
+            android:inputType="text" />
+    </android.support.design.widget.TextInputLayout>
+
+    <TextView
+        android:id="@+id/tvPostJobKeywords"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Keywords"
+        android:layout_below="@+id/til_post_job_description"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="10dp"
+        android:textSize="18sp" />
+
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/til_post_job_keywords"
+        android:layout_width="250dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/til_post_job_description"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="80dp"
+        android:layout_marginTop="4dp"
+        android:layout_toEndOf="@+id/tvPostJobTitle"
+        android:padding="1dp"
+        app:hintTextAppearance="@style/HintText">
+
+        <EditText
+            android:id="@+id/edit_text_post_job_keywords"
+            android:layout_width="255dp"
+            android:layout_height="30dp"
+            android:background="@drawable/sharp_cornors"
+            android:gravity="center_vertical"
+            android:hint="Enter keywords "
+            android:inputType="text" />
+    </android.support.design.widget.TextInputLayout>
+
+    <Button
+        android:id="@+id/btPostJobSelectImage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/til_post_job_keywords"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="8dp"
+        android:background="@color/colorPrimary"
+        android:padding="4dp"
+        android:text="Select Image"
+        android:textColor="@android:color/white" />
+
+    <RelativeLayout
+        android:id="@+id/postJobfabLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/til_post_job_keywords">
+
+        <com.github.jorgecastilloprz.FABProgressCircle
+            android:id="@+id/postJobFabProgressCircle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_marginRight="8dp"
+            android:layout_marginTop="8dp">
+
+            <!--Google FAB-->
+            <android.support.design.widget.FloatingActionButton
+                android:id="@+id/postJobUploadFab"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_backup_white_24dp"
+                app:borderWidth="0dp"
+                app:elevation="6dp" />
+
+        </com.github.jorgecastilloprz.FABProgressCircle>
+    </RelativeLayout>
+
+    <Button
+        android:id="@+id/btPostJob"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/postJobfabLayout"
+        android:background="@color/colorPrimary"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginTop="130dp"
+        android:text="Post"
+        android:textColor="@android:color/white" />
+</RelativeLayout>
+</ScrollView>

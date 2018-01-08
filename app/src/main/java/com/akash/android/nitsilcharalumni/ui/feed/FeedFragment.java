@@ -7,16 +7,18 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
-import com.akash.android.nitsilcharalumni.adapter.FeedAdapter;
 import com.akash.android.nitsilcharalumni.R;
+import com.akash.android.nitsilcharalumni.adapter.FeedAdapter;
 import com.akash.android.nitsilcharalumni.utils.ActivityUtils;
 
 import butterknife.BindView;
@@ -33,13 +35,15 @@ public class FeedFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
     @BindView(R.id.homeFragment)
     FrameLayout homeFragment;
-    @BindView(R.id.swipe_refresh_layout)
+    @BindView(R.id.swipe_refresh_layout_home)
     SwipeRefreshLayout swipeRefreshLayout;
     Unbinder unbinder;
     @BindView(R.id.rvFeed)
     RecyclerView rvFeed;
     @BindView(R.id.postFab)
     FloatingActionButton postFab;
+    @BindView(R.id.toolbarHome)
+    Toolbar toolbarHome;
 
     private FeedAdapter mFeedAdapter;
     private Context mContext;
@@ -74,6 +78,7 @@ public class FeedFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         swipeRefreshLayout.setOnRefreshListener(this);
+        ((AppCompatActivity) getActivity()).setSupportActionBar(toolbarHome);
 
         LinearLayoutManager lm = new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false);
         rvFeed.setLayoutManager(lm);
