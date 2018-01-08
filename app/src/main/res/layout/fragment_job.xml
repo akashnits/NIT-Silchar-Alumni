@@ -15,12 +15,17 @@
             android:layout_height="match_parent"
             tools:context="com.akash.android.nitsilcharalumni.ui.job.JobFragment">
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
             <android.support.v7.widget.Toolbar
                 android:id="@+id/toolbarJob"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 android:background="@color/colorPrimary"
-                app:title="@string/alumni"
+                app:title="@string/jobs"
                 app:titleTextColor="@android:color/white"
                 />
 
@@ -28,6 +33,7 @@
                 android:id="@+id/rvJob"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"/>
+            </LinearLayout>
 
         </android.support.v4.widget.NestedScrollView>
 

@@ -38,7 +38,7 @@ public class AlumniFragment extends Fragment implements AlumniAdapter.OnAlumniCl
     @BindView(R.id.alumniFragment)
     ScrollView alumniFragment;
     Unbinder unbinder;
-    @BindView(R.id.toolbarAlumni)
+    @BindView(R.id.toolbarHome)
     Toolbar toolbarAlumni;
 
     private Context mContext;
