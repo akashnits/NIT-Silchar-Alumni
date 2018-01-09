@@ -1,13 +1,22 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context="com.akash.android.nitsilcharalumni.ui.bookmark.BookmarkFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbarBookmark"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="Bookmark fragment" />
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/colorPrimary"
+        app:title="@string/bookmark"
+        app:titleTextColor="@android:color/white" />
 
-</FrameLayout>
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rvBookmark"
+            android:layout_below="@+id/toolbarBookmark"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+</RelativeLayout>
