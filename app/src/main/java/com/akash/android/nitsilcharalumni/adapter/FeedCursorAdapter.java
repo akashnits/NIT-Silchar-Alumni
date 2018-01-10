@@ -3,10 +3,10 @@ package com.akash.android.nitsilcharalumni.adapter;
 import android.content.Context;
 import android.database.Cursor;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -21,6 +21,7 @@ import butterknife.ButterKnife;
 public class FeedCursorAdapter extends RecyclerView.Adapter<FeedCursorAdapter.BookmarkedFeedViewHolder> {
 
     public static final String TAG = FeedCursorAdapter.class.getSimpleName();
+
 
     private Context context;
     private Cursor mCursor;
@@ -47,9 +48,9 @@ public class FeedCursorAdapter extends RecyclerView.Adapter<FeedCursorAdapter.Bo
             holder.tvSearchHashtag.setText(mCursor.getString(BookmarkFragment.INDEX_FEED_HASHTAG));
 
             String profileImageUrl = mCursor.getString(BookmarkFragment.INDEX_PROFILE_IMAGE_URL);
-            Picasso.with(context).load(profileImageUrl).into(holder.ivProfileIcon);
+            Picasso.with(context).load(profileImageUrl).fit().centerCrop().into(holder.ivProfileIcon);
             String feedImageUrl = mCursor.getString(BookmarkFragment.INDEX_FEED_IMAGE_URL);
-            Picasso.with(context).load(feedImageUrl).into(holder.ivFeedImage);
+            Picasso.with(context).load(feedImageUrl).fit().centerCrop().into(holder.ivFeedImage);
             holder.itemView.setTag(mCursor.getInt(BookmarkFragment.INDEX_FEED_ID));
         }
     }
@@ -75,10 +76,13 @@ public class FeedCursorAdapter extends RecyclerView.Adapter<FeedCursorAdapter.Bo
         TextView tvFeedDescription;
         @BindView(R.id.tvSearchHashtag)
         TextView tvSearchHashtag;
+        @BindView(R.id.cbBookmark)
+        CheckBox cbBookmark;
 
         public BookmarkedFeedViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
+            cbBookmark.setVisibility(View.GONE);
         }
     }
 

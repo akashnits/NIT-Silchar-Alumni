@@ -26,7 +26,7 @@ public class FeedDbHelper extends SQLiteOpenHelper{
                         FeedContract.FeedEntry.COLUMN_PROFILE_IMAGE_URL + " VARCHAR(200), " +
                         FeedContract.FeedEntry.COLUMN_PROFILE_NAME + " VARCHAR(20), " +
                         FeedContract.FeedEntry.COLUMN_FEED_DESCRIPTION + " VARCHAR(900), " +
-                        FeedContract.FeedEntry.COLUMN_FEED_TIMESTAMP + " VARCHAR(20) " +
+                        FeedContract.FeedEntry.COLUMN_FEED_TIMESTAMP + " VARCHAR(20), " +
                         FeedContract.FeedEntry.COLUMN_FEED_HASHTAG + " VARCHAR(200) " +
                         ");";
 
