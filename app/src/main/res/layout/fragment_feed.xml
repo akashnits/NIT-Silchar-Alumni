@@ -1,10 +1,18 @@
 <android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/swipe_refresh_layout_home"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    tools:context="com.akash.android.nitsilcharalumni.ui.feed.FeedFragment">
 
     <RelativeLayout
+        android:id="@+id/homeFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    <LinearLayout
+        android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
         <!-- place your view here -->
@@ -16,20 +24,11 @@
             app:title="@string/title_home"
             app:titleTextColor="@android:color/white" />
 
-        <android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-            xmlns:tools="http://schemas.android.com/tools"
-            android:id="@+id/homeFragment"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_below="@+id/toolbarHome"
-            tools:context="com.akash.android.nitsilcharalumni.ui.feed.FeedFragment">
-
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/rvFeed"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
-
-        </android.support.v4.widget.NestedScrollView>
+    </LinearLayout>
 
         <android.support.design.widget.FloatingActionButton xmlns:app="http://schemas.android.com/apk/res-auto"
             android:id="@+id/postFab"
@@ -46,5 +45,6 @@
             app:elevation="6dp"
             app:pressedTranslationZ="12dp" />
     </RelativeLayout>
+
 
 </android.support.v4.widget.SwipeRefreshLayout>

@@ -55,7 +55,7 @@ public class AlumniAdapter extends RecyclerView.Adapter<AlumniAdapter.AlumniView
 
     @Override
     public int getItemCount() {
-        return 1;
+        return 10;
     }
 
     class AlumniViewHolder extends RecyclerView.ViewHolder {

@@ -75,4 +75,7 @@
     <string name="signupFragment">SignupFragment</string>
     <string name="alumniOrStudentSignupFrag">AlumniOrStudentSignUpFragment</string>
     <string name="placeAutoCompleteFragment">PlaceAutoCompleteFragment</string>
+    <string name="search_feed">Search Feed</string>
+    <string name="search_alumni">Search Alumni</string>
+    <string name="search_job">Search Job</string>
 </resources>

@@ -61,7 +61,7 @@ public class JobAdapter extends RecyclerView.Adapter<JobAdapter.JobViewHolder> {
 
     @Override
     public int getItemCount() {
-        return 1;
+        return 5;
     }
 
     class JobViewHolder extends RecyclerView.ViewHolder {

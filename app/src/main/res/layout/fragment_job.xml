@@ -1,41 +1,36 @@
 <android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/swipe_refresh_layout_job"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    tools:context="com.akash.android.nitsilcharalumni.ui.job.JobFragment">
 
     <RelativeLayout
+        android:id="@+id/jobFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-        <!-- place your view here -->
-        <android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-            android:id="@+id/jobFragment"
-            xmlns:tools="http://schemas.android.com/tools"
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            tools:context="com.akash.android.nitsilcharalumni.ui.job.JobFragment">
+            android:orientation="vertical">
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical">
-
-            <android.support.v7.widget.Toolbar
-                android:id="@+id/toolbarJob"
-                android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                android:background="@color/colorPrimary"
-                app:title="@string/jobs"
-                app:titleTextColor="@android:color/white"
-                />
-
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbarJob"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/colorPrimary"
+            app:title="@string/jobs"
+            app:titleTextColor="@android:color/white"
+            />
+        <!-- place your view here -->
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/rvJob"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"/>
-            </LinearLayout>
 
-        </android.support.v4.widget.NestedScrollView>
+        </LinearLayout>
 
         <android.support.design.widget.FloatingActionButton xmlns:app="http://schemas.android.com/apk/res-auto"
             android:id="@+id/jobFab"

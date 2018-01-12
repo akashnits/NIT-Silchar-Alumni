@@ -1,16 +1,19 @@
 package com.akash.android.nitsilcharalumni.ui.job;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -18,6 +21,8 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.akash.android.nitsilcharalumni.R;
@@ -36,7 +41,7 @@ public class JobFragment extends Fragment implements SwipeRefreshLayout.OnRefres
     @BindView(R.id.rvJob)
     RecyclerView rvJob;
     @BindView(R.id.jobFragment)
-    NestedScrollView jobFragment;
+    RelativeLayout jobFragment;
     @BindView(R.id.jobFab)
     FloatingActionButton jobFab;
     @BindView(R.id.swipe_refresh_layout_job)
@@ -125,8 +130,48 @@ public class JobFragment extends Fragment implements SwipeRefreshLayout.OnRefres
     }
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+    public void onCreateOptionsMenu(final Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.jobmenu, menu);
+        final MenuItem searchItem = menu.findItem(R.id.searchJob);
+        final SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
+        searchView.setQueryHint("Search...");
+
+        EditText etSearch= (EditText) searchView.findViewById(android.support.v7.appcompat.R.id.search_src_text);
+        etSearch.setHintTextColor(Color.DKGRAY);
+        etSearch.setTextColor(Color.WHITE);
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+
+                //TODO: Search for the newText in the list of job and update the list
+                //TODO: set the new list on adapter and notify
+
+                return true;
+            }
+        });
+
+        searchItem.setOnActionExpandListener( new MenuItem.OnActionExpandListener() {
+
+            @Override
+            public boolean onMenuItemActionExpand(MenuItem item) {
+                setItemsVisibility(menu, searchItem, false);
+                return true;
+            }
+
+            @Override
+            public boolean onMenuItemActionCollapse(MenuItem item) {
+                setItemsVisibility(menu, searchItem, true);
+                //TODO: set the whole list (without any filter) on adapter and notify
+                return true;
+
+            }
+        });
         super.onCreateOptionsMenu(menu, inflater);
     }
 
@@ -141,5 +186,12 @@ public class JobFragment extends Fragment implements SwipeRefreshLayout.OnRefres
                 break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void setItemsVisibility(Menu menu, MenuItem exception, boolean visible) {
+        for (int i = 0; i < menu.size(); ++i) {
+            MenuItem item = menu.getItem(i);
+            if (item != exception) item.setVisible(visible);
+        }
     }
 }

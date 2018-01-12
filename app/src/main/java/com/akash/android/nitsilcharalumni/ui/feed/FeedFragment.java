@@ -5,21 +5,28 @@ import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
+import android.widget.EditText;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.akash.android.nitsilcharalumni.R;
@@ -39,10 +46,8 @@ import butterknife.Unbinder;
  */
 public class FeedFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener, FeedAdapter.OnBookmarkClickedHandler {
 
-    public static final String TAG= FeedFragment.class.getSimpleName();
+    public static final String TAG = FeedFragment.class.getSimpleName();
 
-    @BindView(R.id.homeFragment)
-    FrameLayout homeFragment;
     @BindView(R.id.swipe_refresh_layout_home)
     SwipeRefreshLayout swipeRefreshLayout;
     Unbinder unbinder;
@@ -52,6 +57,8 @@ public class FeedFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     FloatingActionButton postFab;
     @BindView(R.id.toolbarHome)
     Toolbar toolbarHome;
+    @BindView(R.id.homeFragment)
+    RelativeLayout homeFragment;
 
     private FeedAdapter mFeedAdapter;
     private Context mContext;
@@ -80,6 +87,7 @@ public class FeedFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_feed, container, false);
         unbinder = ButterKnife.bind(this, view);
+        setHasOptionsMenu(true);
         return view;
     }
 
@@ -129,7 +137,7 @@ public class FeedFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         ContentResolver resolver = mContext.getContentResolver();
         Uri uri = FeedContract.FeedEntry.CONTENT_URI;
 
-        isBookmarked= getBookmarkStatus(uri, resolver, position);
+        isBookmarked = getBookmarkStatus(uri, resolver, position);
 
         if (!isBookmarked) {
             ContentValues cv = new ContentValues();
@@ -152,7 +160,7 @@ public class FeedFragment extends Fragment implements SwipeRefreshLayout.OnRefre
             int numberOfRows = resolver.delete(uri, FeedContract.FeedEntry.COLUMN_FEED_ID + "=?",
                     new String[]{String.valueOf(position)});
             Log.v(TAG, "Rows deleted " + numberOfRows);
-            isBookmarked= false;
+            isBookmarked = false;
         }
 
     }
@@ -164,5 +172,53 @@ public class FeedFragment extends Fragment implements SwipeRefreshLayout.OnRefre
             return true;
         else
             return false;
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.optionmenu, menu);
+
+        final MenuItem searchItem = menu.findItem(R.id.searchFeed);
+        final SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
+        searchView.setQueryHint("Search...");
+
+        EditText etSearch = (EditText) searchView.findViewById(android.support.v7.appcompat.R.id.search_src_text);
+        etSearch.setHintTextColor(Color.DKGRAY);
+        etSearch.setTextColor(Color.WHITE);
+
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+
+                //TODO: Search for the newText in the list of feeds and update the list
+                //TODO: set the new list on adapter and notify
+
+                return true;
+            }
+        });
+
+        searchItem.setOnActionExpandListener(new MenuItem.OnActionExpandListener() {
+
+            @Override
+            public boolean onMenuItemActionExpand(MenuItem item) {
+
+                return true;
+            }
+
+            @Override
+            public boolean onMenuItemActionCollapse(MenuItem item) {
+
+                //TODO: set the whole list (without any filter) on adapter and notify
+                return true;
+
+            }
+        });
+        super.onCreateOptionsMenu(menu, inflater);
     }
 }
