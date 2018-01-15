@@ -1,8 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item android:id="@+id/searchJob"
+        android:title="@string/search_job"
+        app:actionViewClass="android.support.v7.widget.SearchView"
+        android:icon="@android:drawable/ic_menu_search"
+        app:showAsAction="always|collapseActionView"/>
+
     <item android:id="@+id/jobFilter"
         android:icon="@drawable/ic_filter_list_white"
         android:title="jobFilter"
-        app:showAsAction="ifRoom"/>
+        app:showAsAction="always"/>
 </menu>

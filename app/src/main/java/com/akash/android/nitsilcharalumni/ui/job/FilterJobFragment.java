@@ -82,6 +82,7 @@ public class FilterJobFragment extends Fragment {
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.ivJobClose:
+                getFragmentManager().popBackStackImmediate();
                 break;
             case R.id.btJobFilterLocation:
                 break;

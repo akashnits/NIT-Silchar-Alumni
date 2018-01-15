@@ -57,6 +57,11 @@
         <activity
             android:name=".ui.MainActivity"
             />
+
+        <provider
+            android:name=".data.FeedProvider"
+            android:authorities="com.akash.android.nitsilcharalumni"
+            android:exported="false" />
     </application>
 
 </manifest>

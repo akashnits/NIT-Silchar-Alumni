@@ -119,22 +119,4 @@ public class MainActivity extends AppCompatActivity {
                     "Home");
         }
     }
-
- /*   @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater= getMenuInflater();
-        inflater.inflate(R.menu.optionmenu, menu);
-        return super.onCreateOptionsMenu(menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id= item.getItemId();
-        switch (id){
-            case R.id.signOut:
-                FirebaseAuth.getInstance().signOut();
-                finish();
-        }
-        return super.onOptionsItemSelected(item);
-    }*/
 }

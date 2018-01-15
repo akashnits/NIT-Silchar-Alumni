@@ -80,10 +80,12 @@ public class FilterAlumniFragment extends Fragment {
         unbinder.unbind();
     }
 
-    @OnClick({R.id.ivClose, R.id.btFilterName, R.id.btFilterClassOf, R.id.btFilterLocation, R.id.btFilterOrganisation, R.id.btFilterApply})
+    @OnClick({R.id.ivClose, R.id.btFilterName, R.id.btFilterClassOf, R.id.btFilterLocation,
+            R.id.btFilterOrganisation, R.id.btFilterApply})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.ivClose:
+                getFragmentManager().popBackStackImmediate();
                 break;
             case R.id.btFilterName:
                 break;
@@ -97,4 +99,6 @@ public class FilterAlumniFragment extends Fragment {
                 break;
         }
     }
+
+
 }
