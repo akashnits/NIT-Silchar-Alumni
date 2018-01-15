@@ -1,50 +1,77 @@
-<android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/swipe_refresh_layout_home"
+<com.akash.android.nitsilcharalumni.utils.MyDrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/drawerLayoutHome"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context="com.akash.android.nitsilcharalumni.ui.feed.FeedFragment">
+    android:layout_height="match_parent">
 
-    <RelativeLayout
-        android:id="@+id/homeFragment"
+    <android.support.v4.widget.SwipeRefreshLayout
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/swipe_refresh_layout_home"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content"
+        tools:context="com.akash.android.nitsilcharalumni.ui.feed.FeedFragment">
 
-    <LinearLayout
-        android:orientation="vertical"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-        <!-- place your view here -->
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/toolbarHome"
+        <RelativeLayout
+            android:id="@+id/homeFragment"
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="@color/colorPrimary"
-            app:title="@string/title_home"
-            app:titleTextColor="@android:color/white" />
+            android:layout_height="wrap_content">
 
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/rvFeed"
+            <LinearLayout
+                android:orientation="vertical"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
-    </LinearLayout>
+                android:layout_height="wrap_content">
+                <!-- place your view here -->
+                <android.support.v7.widget.Toolbar
+                    android:id="@+id/toolbarHome"
+                    android:layout_width="match_parent"
+                    android:layout_height="?attr/actionBarSize"
+                    android:background="@color/colorPrimary">
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/white"
+                        android:gravity="left|center"
+                        android:layout_gravity="center"
+                        android:textSize="18sp"
+                        android:text="@string/title_home"/>
+                    </android.support.v7.widget.Toolbar>
 
-        <android.support.design.widget.FloatingActionButton xmlns:app="http://schemas.android.com/apk/res-auto"
-            android:id="@+id/postFab"
-            style="@style/FAB"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentEnd="true"
-            android:layout_margin="15dp"
-            android:layout_marginBottom="14dp"
-            android:layout_marginEnd="13dp"
-            android:src="@drawable/icon_add"
-            app:borderWidth="0dp"
-            app:elevation="6dp"
-            app:pressedTranslationZ="12dp" />
-    </RelativeLayout>
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/rvFeed"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+
+            <android.support.design.widget.FloatingActionButton xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/postFab"
+                style="@style/FAB"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/icon_add"
+                app:borderWidth="0dp"
+                app:elevation="6dp"
+                android:layout_margin="15dp"
+                app:pressedTranslationZ="12dp"
+                android:layout_marginEnd="13dp"
+                android:layout_marginBottom="14dp"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentEnd="true" />
+        </RelativeLayout>
 
 
-</android.support.v4.widget.SwipeRefreshLayout>
+    </android.support.v4.widget.SwipeRefreshLayout>
+
+    <FrameLayout
+        android:layout_width="250dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="left"
+        android:background="@android:color/white">
+        <com.mindorks.placeholderview.PlaceHolderView
+            android:id="@+id/drawerViewHome"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scrollbars="vertical"/>
+    </FrameLayout>
+
+</com.akash.android.nitsilcharalumni.utils.MyDrawerLayout>
+

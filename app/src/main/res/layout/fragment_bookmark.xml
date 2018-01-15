@@ -1,22 +1,47 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<com.akash.android.nitsilcharalumni.utils.MyDrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/drawerLayoutBookmark"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context="com.akash.android.nitsilcharalumni.ui.bookmark.BookmarkFragment">
+    android:layout_height="match_parent">
 
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/toolbarBookmark"
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="@color/colorPrimary"
-        app:title="@string/bookmark"
-        app:titleTextColor="@android:color/white" />
+        android:layout_height="match_parent"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        tools:context="com.akash.android.nitsilcharalumni.ui.bookmark.BookmarkFragment">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbarBookmark"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/colorPrimary">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/white"
+                android:gravity="left|center"
+                android:layout_gravity="center"
+                android:textSize="18sp"
+                android:text="@string/bookmark"/>
+        </android.support.v7.widget.Toolbar>
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/rvBookmark"
             android:layout_below="@+id/toolbarBookmark"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
+    </RelativeLayout>
 
-</RelativeLayout>
+    <FrameLayout
+        android:layout_width="250dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="left"
+        android:background="@android:color/white">
+        <com.mindorks.placeholderview.PlaceHolderView
+            android:id="@+id/drawerViewBookmark"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scrollbars="vertical"/>
+    </FrameLayout>
+    </com.akash.android.nitsilcharalumni.utils.MyDrawerLayout>
+

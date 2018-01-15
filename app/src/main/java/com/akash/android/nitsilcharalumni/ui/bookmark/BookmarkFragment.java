@@ -1,6 +1,7 @@
 package com.akash.android.nitsilcharalumni.ui.bookmark;
 
 
+import android.content.Context;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -9,6 +10,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -20,6 +22,11 @@ import android.view.ViewGroup;
 import com.akash.android.nitsilcharalumni.R;
 import com.akash.android.nitsilcharalumni.adapter.FeedCursorAdapter;
 import com.akash.android.nitsilcharalumni.data.FeedContract;
+import com.akash.android.nitsilcharalumni.ui.MainActivity;
+import com.akash.android.nitsilcharalumni.ui.drawer.DrawerHeader;
+import com.akash.android.nitsilcharalumni.ui.drawer.DrawerMenuItem;
+import com.akash.android.nitsilcharalumni.utils.MyDrawerLayout;
+import com.mindorks.placeholderview.PlaceHolderView;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -50,14 +57,21 @@ public class BookmarkFragment extends Fragment implements LoaderManager.LoaderCa
     public static final int INDEX_FEED_TIMESTAMP = 5;
     public static final int INDEX_FEED_HASHTAG = 6;
 
-    public static final int LOADER_BOOKMARKED_FEED_ID= 183;
+    public static final int LOADER_BOOKMARKED_FEED_ID = 183;
+
 
     private FeedCursorAdapter mFeedCursorAdapter;
+
+    private Context mContext;
 
     @BindView(R.id.toolbarBookmark)
     Toolbar toolbarBookmark;
     @BindView(R.id.rvBookmark)
     RecyclerView rvBookmark;
+    @BindView(R.id.drawerViewBookmark)
+    PlaceHolderView drawerViewBookmark;
+    @BindView(R.id.drawerLayoutBookmark)
+    MyDrawerLayout drawerLayoutBookmark;
     Unbinder unbinder;
 
     public BookmarkFragment() {
@@ -89,20 +103,26 @@ public class BookmarkFragment extends Fragment implements LoaderManager.LoaderCa
         super.onViewCreated(view, savedInstanceState);
         ((AppCompatActivity) getActivity()).setSupportActionBar(toolbarBookmark);
 
+        setupDrawer();
 
-        mFeedCursorAdapter= new FeedCursorAdapter(getContext());
-        LinearLayoutManager linearLayoutManager= new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
+        mFeedCursorAdapter = new FeedCursorAdapter(getContext());
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         rvBookmark.setLayoutManager(linearLayoutManager);
         rvBookmark.setAdapter(mFeedCursorAdapter);
         rvBookmark.hasFixedSize();
 
-        LoaderManager loaderManager= getLoaderManager();
+        LoaderManager loaderManager = getLoaderManager();
         loaderManager.initLoader(LOADER_BOOKMARKED_FEED_ID, null, this);
     }
 
     @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+    }
+
+    @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        switch(id){
+        switch (id) {
             case LOADER_BOOKMARKED_FEED_ID:
                 return new CursorLoader(getContext(),
                         FeedContract.FeedEntry.CONTENT_URI,
@@ -110,7 +130,8 @@ public class BookmarkFragment extends Fragment implements LoaderManager.LoaderCa
                         null,
                         null,
                         FeedContract.FeedEntry._ID + " ASC");
-            default: throw new RuntimeException("Loader not implemented: " + LOADER_BOOKMARKED_FEED_ID);
+            default:
+                throw new RuntimeException("Loader not implemented: " + LOADER_BOOKMARKED_FEED_ID);
         }
     }
 
@@ -128,5 +149,32 @@ public class BookmarkFragment extends Fragment implements LoaderManager.LoaderCa
     public void onDestroyView() {
         super.onDestroyView();
         unbinder.unbind();
+    }
+
+    private void setupDrawer() {
+        drawerViewBookmark
+                .addView(new DrawerHeader())
+                .addView(new DrawerMenuItem(mContext, DrawerMenuItem.DRAWER_MENU_ITEM_PROFILE))
+                .addView(new DrawerMenuItem(mContext, DrawerMenuItem.DRAWER_MENU_ITEM_RATE_US))
+                .addView(new DrawerMenuItem(mContext, DrawerMenuItem.DRAWER_MENU_ITEM_CONTACT_US))
+                .addView(new DrawerMenuItem(mContext, DrawerMenuItem.DRAWER_MENU_ITEM_LOGOUT))
+                .addView(new DrawerMenuItem(mContext, DrawerMenuItem.DRAWER_MENU_ITEM_DEVELOPED_BY));
+
+        ActionBarDrawerToggle drawerToggle = new ActionBarDrawerToggle((MainActivity) getActivity(),
+                drawerLayoutBookmark, toolbarBookmark,
+                R.string.open_drawer, R.string.close_drawer) {
+            @Override
+            public void onDrawerOpened(View drawerView) {
+                super.onDrawerOpened(drawerView);
+            }
+
+            @Override
+            public void onDrawerClosed(View drawerView) {
+                super.onDrawerClosed(drawerView);
+            }
+        };
+
+        drawerLayoutBookmark.addDrawerListener(drawerToggle);
+        drawerToggle.syncState();
     }
 }

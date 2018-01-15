@@ -8,8 +8,8 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.MenuItemCompat;
-import android.support.v4.widget.NestedScrollView;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -28,7 +28,11 @@ import android.widget.Toast;
 import com.akash.android.nitsilcharalumni.R;
 import com.akash.android.nitsilcharalumni.adapter.JobAdapter;
 import com.akash.android.nitsilcharalumni.ui.MainActivity;
+import com.akash.android.nitsilcharalumni.ui.drawer.DrawerHeader;
+import com.akash.android.nitsilcharalumni.ui.drawer.DrawerMenuItem;
 import com.akash.android.nitsilcharalumni.utils.ActivityUtils;
+import com.akash.android.nitsilcharalumni.utils.MyDrawerLayout;
+import com.mindorks.placeholderview.PlaceHolderView;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -49,6 +53,10 @@ public class JobFragment extends Fragment implements SwipeRefreshLayout.OnRefres
     Unbinder unbinder;
     @BindView(R.id.toolbarJob)
     Toolbar toolbarJob;
+    @BindView(R.id.drawerViewJob)
+    PlaceHolderView drawerViewJob;
+    @BindView(R.id.drawerLayoutJob)
+    MyDrawerLayout drawerLayoutJob;
 
     private Context mContext;
     private JobAdapter mJobAdapter;
@@ -82,6 +90,8 @@ public class JobFragment extends Fragment implements SwipeRefreshLayout.OnRefres
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         ((AppCompatActivity) getActivity()).setSupportActionBar(toolbarJob);
+
+        setupDrawer();
         swipeRefreshLayoutJob.setOnRefreshListener(this);
 
         LinearLayoutManager lm = new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false);
@@ -136,7 +146,7 @@ public class JobFragment extends Fragment implements SwipeRefreshLayout.OnRefres
         final SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
         searchView.setQueryHint("Search...");
 
-        EditText etSearch= (EditText) searchView.findViewById(android.support.v7.appcompat.R.id.search_src_text);
+        EditText etSearch = (EditText) searchView.findViewById(android.support.v7.appcompat.R.id.search_src_text);
         etSearch.setHintTextColor(Color.DKGRAY);
         etSearch.setTextColor(Color.WHITE);
 
@@ -156,7 +166,7 @@ public class JobFragment extends Fragment implements SwipeRefreshLayout.OnRefres
             }
         });
 
-        searchItem.setOnActionExpandListener( new MenuItem.OnActionExpandListener() {
+        searchItem.setOnActionExpandListener(new MenuItem.OnActionExpandListener() {
 
             @Override
             public boolean onMenuItemActionExpand(MenuItem item) {
@@ -193,5 +203,32 @@ public class JobFragment extends Fragment implements SwipeRefreshLayout.OnRefres
             MenuItem item = menu.getItem(i);
             if (item != exception) item.setVisible(visible);
         }
+    }
+
+    private void setupDrawer() {
+        drawerViewJob
+                .addView(new DrawerHeader())
+                .addView(new DrawerMenuItem(mContext, DrawerMenuItem.DRAWER_MENU_ITEM_PROFILE))
+                .addView(new DrawerMenuItem(mContext, DrawerMenuItem.DRAWER_MENU_ITEM_RATE_US))
+                .addView(new DrawerMenuItem(mContext, DrawerMenuItem.DRAWER_MENU_ITEM_CONTACT_US))
+                .addView(new DrawerMenuItem(mContext, DrawerMenuItem.DRAWER_MENU_ITEM_LOGOUT))
+                .addView(new DrawerMenuItem(mContext, DrawerMenuItem.DRAWER_MENU_ITEM_DEVELOPED_BY));
+
+        ActionBarDrawerToggle drawerToggle = new ActionBarDrawerToggle((MainActivity) getActivity(),
+                drawerLayoutJob, toolbarJob,
+                R.string.open_drawer, R.string.close_drawer) {
+            @Override
+            public void onDrawerOpened(View drawerView) {
+                super.onDrawerOpened(drawerView);
+            }
+
+            @Override
+            public void onDrawerClosed(View drawerView) {
+                super.onDrawerClosed(drawerView);
+            }
+        };
+
+        drawerLayoutJob.addDrawerListener(drawerToggle);
+        drawerToggle.syncState();
     }
 }

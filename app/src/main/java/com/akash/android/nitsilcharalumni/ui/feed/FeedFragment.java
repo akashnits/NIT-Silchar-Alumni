@@ -12,7 +12,9 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.MenuItemCompat;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -32,7 +34,11 @@ import android.widget.Toast;
 import com.akash.android.nitsilcharalumni.R;
 import com.akash.android.nitsilcharalumni.adapter.FeedAdapter;
 import com.akash.android.nitsilcharalumni.data.FeedContract;
+import com.akash.android.nitsilcharalumni.ui.MainActivity;
+import com.akash.android.nitsilcharalumni.ui.drawer.DrawerHeader;
+import com.akash.android.nitsilcharalumni.ui.drawer.DrawerMenuItem;
 import com.akash.android.nitsilcharalumni.utils.ActivityUtils;
+import com.mindorks.placeholderview.PlaceHolderView;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -59,6 +65,10 @@ public class FeedFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     Toolbar toolbarHome;
     @BindView(R.id.homeFragment)
     RelativeLayout homeFragment;
+    @BindView(R.id.drawerViewHome)
+    PlaceHolderView drawerView;
+    @BindView(R.id.drawerLayoutHome)
+    DrawerLayout drawerLayout;
 
     private FeedAdapter mFeedAdapter;
     private Context mContext;
@@ -96,6 +106,7 @@ public class FeedFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         super.onViewCreated(view, savedInstanceState);
         swipeRefreshLayout.setOnRefreshListener(this);
         ((AppCompatActivity) getActivity()).setSupportActionBar(toolbarHome);
+        setupDrawer();
 
 
         LinearLayoutManager lm = new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false);
@@ -220,5 +231,30 @@ public class FeedFragment extends Fragment implements SwipeRefreshLayout.OnRefre
             }
         });
         super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    private void setupDrawer() {
+        drawerView
+                .addView(new DrawerHeader())
+                .addView(new DrawerMenuItem(mContext, DrawerMenuItem.DRAWER_MENU_ITEM_PROFILE))
+                .addView(new DrawerMenuItem(mContext, DrawerMenuItem.DRAWER_MENU_ITEM_RATE_US))
+                .addView(new DrawerMenuItem(mContext, DrawerMenuItem.DRAWER_MENU_ITEM_CONTACT_US))
+                .addView(new DrawerMenuItem(mContext, DrawerMenuItem.DRAWER_MENU_ITEM_LOGOUT))
+                .addView(new DrawerMenuItem(mContext, DrawerMenuItem.DRAWER_MENU_ITEM_DEVELOPED_BY));
+
+        ActionBarDrawerToggle drawerToggle = new ActionBarDrawerToggle((MainActivity) getActivity(), drawerLayout, toolbarHome,
+                R.string.open_drawer, R.string.close_drawer){
+            @Override
+            public void onDrawerOpened(View drawerView) {
+                super.onDrawerOpened(drawerView);
+            }
+            @Override
+            public void onDrawerClosed(View drawerView) {
+                super.onDrawerClosed(drawerView);
+            }
+        };
+
+        drawerLayout.addDrawerListener(drawerToggle);
+        drawerToggle.syncState();
     }
 }

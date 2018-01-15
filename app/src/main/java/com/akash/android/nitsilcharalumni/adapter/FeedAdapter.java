@@ -1,5 +1,6 @@
 package com.akash.android.nitsilcharalumni.adapter;
 
+import android.content.ContentResolver;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -23,10 +24,13 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.FeedViewHolder
 
     private Context mContext;
     private OnBookmarkClickedHandler mBookmarkClickedHandler;
+    private ContentResolver mContentResolver;
+
 
     public FeedAdapter(Context mContext, OnBookmarkClickedHandler bookmarkClickedHandler) {
         this.mContext = mContext;
         this.mBookmarkClickedHandler= bookmarkClickedHandler;
+        this.mContentResolver= mContext.getContentResolver();
     }
 
     public interface OnBookmarkClickedHandler{
@@ -46,9 +50,8 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.FeedViewHolder
         holder.tvTimeStamp.setText("July 6, 2017");
         holder.tvSearchHashtag.setText("#android #learning #event");
 
-        boolean isBookmarked= FeedFragment.getBookmarkStatus(FeedContract.FeedEntry.CONTENT_URI, mContext.getContentResolver(),
-                position);
-        if(isBookmarked)
+        if(FeedFragment.getBookmarkStatus(FeedContract.FeedEntry.CONTENT_URI, mContentResolver,
+                position))
             holder.cbBookmark.setChecked(true);
         else
             holder.cbBookmark.setChecked(false);
@@ -73,7 +76,7 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.FeedViewHolder
 
     @Override
     public int getItemCount() {
-        return 5;
+        return 3;
     }
 
 

@@ -1,51 +1,77 @@
-<android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/swipe_refresh_layout_job"
+<com.akash.android.nitsilcharalumni.utils.MyDrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/drawerLayoutJob"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context="com.akash.android.nitsilcharalumni.ui.job.JobFragment">
+    android:layout_height="match_parent">
 
-    <RelativeLayout
-        android:id="@+id/jobFragment"
+    <android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/swipe_refresh_layout_job"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content"
+        tools:context="com.akash.android.nitsilcharalumni.ui.job.JobFragment">
 
-        <LinearLayout
+        <RelativeLayout
+            android:id="@+id/jobFragment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <android.support.v7.widget.Toolbar
+                    android:id="@+id/toolbarJob"
+                    android:layout_width="match_parent"
+                    android:layout_height="?attr/actionBarSize"
+                    android:background="@color/colorPrimary">
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/white"
+                        android:gravity="left|center"
+                        android:layout_gravity="center"
+                        android:textSize="18sp"
+                        android:text="@string/jobs"/>
+                </android.support.v7.widget.Toolbar>
+                <!-- place your view here -->
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/rvJob"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+
+            </LinearLayout>
+
+            <android.support.design.widget.FloatingActionButton xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/jobFab"
+                style="@style/FAB"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/icon_add"
+                app:borderWidth="0dp"
+                app:elevation="6dp"
+                android:layout_margin="15dp"
+                app:pressedTranslationZ="12dp"
+                android:layout_marginEnd="13dp"
+                android:layout_marginBottom="14dp"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentEnd="true" />
+        </RelativeLayout>
+
+    </android.support.v4.widget.SwipeRefreshLayout>
+
+    <FrameLayout
+        android:layout_width="250dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="left"
+        android:background="@android:color/white">
+        <com.mindorks.placeholderview.PlaceHolderView
+            android:id="@+id/drawerViewJob"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:scrollbars="vertical"/>
+    </FrameLayout>
+    </com.akash.android.nitsilcharalumni.utils.MyDrawerLayout>
 
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/toolbarJob"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="@color/colorPrimary"
-            app:title="@string/jobs"
-            app:titleTextColor="@android:color/white"
-            />
-        <!-- place your view here -->
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/rvJob"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"/>
 
-        </LinearLayout>
-
-        <android.support.design.widget.FloatingActionButton xmlns:app="http://schemas.android.com/apk/res-auto"
-            android:id="@+id/jobFab"
-            style="@style/FAB"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/icon_add"
-            app:borderWidth="0dp"
-            app:elevation="6dp"
-            android:layout_margin="15dp"
-            app:pressedTranslationZ="12dp"
-            android:layout_marginEnd="13dp"
-            android:layout_marginBottom="14dp"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentEnd="true" />
-    </RelativeLayout>
-
-</android.support.v4.widget.SwipeRefreshLayout>

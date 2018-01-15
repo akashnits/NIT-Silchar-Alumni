@@ -8,6 +8,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.MenuItemCompat;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -25,6 +26,10 @@ import android.widget.ScrollView;
 import com.akash.android.nitsilcharalumni.R;
 import com.akash.android.nitsilcharalumni.adapter.AlumniAdapter;
 import com.akash.android.nitsilcharalumni.ui.MainActivity;
+import com.akash.android.nitsilcharalumni.ui.drawer.DrawerHeader;
+import com.akash.android.nitsilcharalumni.ui.drawer.DrawerMenuItem;
+import com.akash.android.nitsilcharalumni.utils.MyDrawerLayout;
+import com.mindorks.placeholderview.PlaceHolderView;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -42,8 +47,13 @@ public class AlumniFragment extends Fragment implements AlumniAdapter.OnAlumniCl
     @BindView(R.id.alumniFragment)
     ScrollView alumniFragment;
     Unbinder unbinder;
-    @BindView(R.id.toolbarHome)
+    @BindView(R.id.toolbarAlumni)
     Toolbar toolbarAlumni;
+    @BindView(R.id.drawerViewAlumni)
+    PlaceHolderView drawerViewAlumni;
+    @BindView(R.id.drawerLayoutAlumni)
+    MyDrawerLayout drawerLayoutAlumni;
+
 
     private Context mContext;
 
@@ -77,6 +87,7 @@ public class AlumniFragment extends Fragment implements AlumniAdapter.OnAlumniCl
         super.onViewCreated(view, savedInstanceState);
 
         ((AppCompatActivity) getActivity()).setSupportActionBar(toolbarAlumni);
+        setupDrawer();
 
         LinearLayoutManager lm = new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false);
         rvFeed.setLayoutManager(lm);
@@ -108,7 +119,7 @@ public class AlumniFragment extends Fragment implements AlumniAdapter.OnAlumniCl
         final SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
         searchView.setQueryHint("Search...");
 
-        EditText etSearch= (EditText) searchView.findViewById(android.support.v7.appcompat.R.id.search_src_text);
+        EditText etSearch = (EditText) searchView.findViewById(android.support.v7.appcompat.R.id.search_src_text);
         etSearch.setHintTextColor(Color.DKGRAY);
         etSearch.setTextColor(Color.WHITE);
 
@@ -128,7 +139,7 @@ public class AlumniFragment extends Fragment implements AlumniAdapter.OnAlumniCl
             }
         });
 
-        searchItem.setOnActionExpandListener( new MenuItem.OnActionExpandListener() {
+        searchItem.setOnActionExpandListener(new MenuItem.OnActionExpandListener() {
 
             @Override
             public boolean onMenuItemActionExpand(MenuItem item) {
@@ -149,12 +160,13 @@ public class AlumniFragment extends Fragment implements AlumniAdapter.OnAlumniCl
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        int id= item.getItemId();
-        switch (id){
+        int id = item.getItemId();
+        switch (id) {
             case R.id.filter:
                 ((MainActivity) getActivity()).commitFilterAlumniFragment();
                 break;
-            default:break;
+            default:
+                break;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -164,5 +176,32 @@ public class AlumniFragment extends Fragment implements AlumniAdapter.OnAlumniCl
             MenuItem item = menu.getItem(i);
             if (item != exception) item.setVisible(visible);
         }
+    }
+
+    private void setupDrawer() {
+        drawerViewAlumni
+                .addView(new DrawerHeader())
+                .addView(new DrawerMenuItem(mContext, DrawerMenuItem.DRAWER_MENU_ITEM_PROFILE))
+                .addView(new DrawerMenuItem(mContext, DrawerMenuItem.DRAWER_MENU_ITEM_RATE_US))
+                .addView(new DrawerMenuItem(mContext, DrawerMenuItem.DRAWER_MENU_ITEM_CONTACT_US))
+                .addView(new DrawerMenuItem(mContext, DrawerMenuItem.DRAWER_MENU_ITEM_LOGOUT))
+                .addView(new DrawerMenuItem(mContext, DrawerMenuItem.DRAWER_MENU_ITEM_DEVELOPED_BY));
+
+        ActionBarDrawerToggle drawerToggle = new ActionBarDrawerToggle((MainActivity) getActivity(),
+                drawerLayoutAlumni, toolbarAlumni,
+                R.string.open_drawer, R.string.close_drawer) {
+            @Override
+            public void onDrawerOpened(View drawerView) {
+                super.onDrawerOpened(drawerView);
+            }
+
+            @Override
+            public void onDrawerClosed(View drawerView) {
+                super.onDrawerClosed(drawerView);
+            }
+        };
+
+        drawerLayoutAlumni.addDrawerListener(drawerToggle);
+        drawerToggle.syncState();
     }
 }

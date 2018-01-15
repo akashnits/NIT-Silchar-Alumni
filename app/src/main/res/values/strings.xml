@@ -78,4 +78,6 @@
     <string name="search_feed">Search Feed</string>
     <string name="search_alumni">Search Alumni</string>
     <string name="search_job">Search Job</string>
+    <string name="open_drawer">Open</string>
+    <string name="close_drawer">close</string>
 </resources>
