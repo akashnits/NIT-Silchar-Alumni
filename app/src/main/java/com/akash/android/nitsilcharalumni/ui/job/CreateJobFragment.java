@@ -1,6 +1,7 @@
 package com.akash.android.nitsilcharalumni.ui.job;
 
 
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -9,6 +10,8 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -75,6 +78,8 @@ public class CreateJobFragment extends Fragment implements FABProgressListener {
     Unbinder unbinder;
     @BindView(R.id.postJobFabProgressCircle)
     FABProgressCircle postJobFabProgressCircle;
+    @BindView(R.id.toolbarCreateJob)
+    Toolbar toolbarCreateJob;
 
     public CreateJobFragment() {
         // Required empty public constructor
@@ -103,6 +108,10 @@ public class CreateJobFragment extends Fragment implements FABProgressListener {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         postJobFabProgressCircle.attachListener(this);
+        toolbarCreateJob.setTitle(getResources().getString(R.string.create_job_post));
+        toolbarCreateJob.setTitleTextColor(Color.WHITE);
+        ((AppCompatActivity) getActivity()).setSupportActionBar(toolbarCreateJob);
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         super.onViewCreated(view, savedInstanceState);
     }
 
@@ -115,29 +124,29 @@ public class CreateJobFragment extends Fragment implements FABProgressListener {
 
     @OnClick(R.id.postJobUploadFab)
     public void onViewClicked() {
-            new AsyncTask<Void, Void, Void>(){
-                @Override
-                protected void onPreExecute() {
-                    super.onPreExecute();
-                    postJobFabProgressCircle.show();
-                }
+        new AsyncTask<Void, Void, Void>() {
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+                postJobFabProgressCircle.show();
+            }
 
-                @Override
-                protected Void doInBackground(Void... params) {
-                    try{
-                        Thread.sleep(5000);}
-                    catch (Exception e){
-                        e.printStackTrace();
-                    }
-                    return null;
+            @Override
+            protected Void doInBackground(Void... params) {
+                try {
+                    Thread.sleep(5000);
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
+                return null;
+            }
 
-                @Override
-                protected void onPostExecute(Void aVoid) {
-                    super.onPostExecute(aVoid);
-                    postJobFabProgressCircle.beginFinalAnimation();
-                }
-            }.execute();
+            @Override
+            protected void onPostExecute(Void aVoid) {
+                super.onPostExecute(aVoid);
+                postJobFabProgressCircle.beginFinalAnimation();
+            }
+        }.execute();
     }
 
     @Override

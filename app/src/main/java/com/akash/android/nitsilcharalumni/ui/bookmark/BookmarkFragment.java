@@ -117,6 +117,7 @@ public class BookmarkFragment extends Fragment implements LoaderManager.LoaderCa
 
     @Override
     public void onAttach(Context context) {
+        mContext= context;
         super.onAttach(context);
     }
 

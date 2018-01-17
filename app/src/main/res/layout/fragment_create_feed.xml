@@ -1,18 +1,26 @@
-<ScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="match_parent">
+
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         tools:context="com.akash.android.nitsilcharalumni.ui.feed.CreateFeedFragment">
 
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbarCreateFeed"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/colorPrimary"
+            android:theme="@style/myToolbarTheme"></android.support.v7.widget.Toolbar>
+
         <TextView
             android:id="@+id/tvFeedDescription"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_below="@+id/toolbarCreateFeed"
             android:layout_marginLeft="8dp"
             android:layout_marginTop="8dp"
             android:padding="4dp"
@@ -115,10 +123,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/fabLayout"
-            android:background="@color/colorPrimary"
-            android:layout_marginTop="110dp"
             android:layout_marginLeft="8dp"
             android:layout_marginRight="8dp"
+            android:layout_marginTop="60dp"
+            android:background="@color/colorPrimary"
             android:text="Post"
             android:textColor="@android:color/white" />
     </RelativeLayout>
