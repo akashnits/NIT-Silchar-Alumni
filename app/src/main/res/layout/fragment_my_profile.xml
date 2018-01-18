@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/coordinatorLayoutMyProfile"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/appBarLayoutMyProfile"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        >
+
+        <android.support.design.widget.CollapsingToolbarLayout
+            android:id="@+id/collapsingToolbarLayoutMyProfile"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:contentScrim="?attr/colorPrimary"
+            app:layout_scrollFlags="scroll|exitUntilCollapsed"
+            app:expandedTitleTextAppearance="@style/TextAppearance.AppCompat.Title">
+
+            <ImageView
+                android:id="@+id/backdropProfileImage"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
+                android:src="@drawable/akash"
+                android:visibility="visible"
+                app:layout_collapseMode="parallax" />
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/cardimagegradient"/>
+
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbarMyProfile"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                app:layout_collapseMode="pin"
+                />
+        </android.support.design.widget.CollapsingToolbarLayout>
+    </android.support.design.widget.AppBarLayout>
+
+    <android.support.v4.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+    <android.support.v7.widget.CardView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="4dp"
+        app:cardElevation="8dp"
+        app:contentPadding="4dp"
+        >
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/tvAboutYouMyProfile"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="4dp"
+                android:text="About you" />
+
+            <TextView
+                android:id="@+id/tvAboutYouTextMyProfile"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_marginLeft="200dp"
+                android:padding="4dp"
+                android:text="Virat Kohli was born on 5 November 1988 in Delhi into a Punjabi family.[13] His father, Prem Kohli, worked as a criminal lawyer and his mother, Saroj Kohli, is a housewife.[14] He has an elder brother, Vikash, and an elder sister, Bhavna." />
+
+            <TextView
+                android:id="@+id/tvClassOfMyProfile"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/tvAboutYouTextMyProfile"
+                android:padding="4dp"
+                android:text="Class of" />
+
+            <TextView
+                android:id="@+id/tvClassofTextMyProfile"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/tvAboutYouTextMyProfile"
+                android:layout_marginLeft="200dp"
+                android:padding="4dp"
+                android:text="2013" />
+
+            <TextView
+                android:id="@+id/tvLocationMyProfile"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/tvClassofTextMyProfile"
+                android:padding="4dp"
+                android:text="Location" />
+
+            <TextView
+                android:id="@+id/tvLocationTextMyProfile"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/tvClassofTextMyProfile"
+                android:layout_marginLeft="200dp"
+                android:padding="4dp"
+                android:text="Bangalore" />
+
+            <TextView
+                android:id="@+id/tvContactMyProfile"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/tvLocationTextMyProfile"
+                android:padding="4dp"
+                android:text="Contact" />
+
+            <TextView
+                android:id="@+id/tvContactTextMyProfile"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/tvLocationTextMyProfile"
+                android:layout_marginLeft="200dp"
+                android:padding="4dp"
+                android:text="9644548961" />
+
+            <TextView
+                android:id="@+id/tvEmailMyProfile"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/tvContactTextMyProfile"
+                android:padding="4dp"
+                android:text="Email" />
+
+            <TextView
+                android:id="@+id/tvEmailTextMyProfile"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/tvContactTextMyProfile"
+                android:layout_marginLeft="200dp"
+                android:padding="4dp"
+                android:text="akash@gmail.com" />
+
+            <TextView
+                android:id="@+id/tvOrganisationMyProfile"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/tvEmailTextMyProfile"
+                android:padding="4dp"
+                android:text="Organisation" />
+
+            <TextView
+                android:id="@+id/tvOrganisationTextMyProfile"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/tvEmailTextMyProfile"
+                android:layout_marginLeft="200dp"
+                android:padding="4dp"
+                android:text="Google Inc." />
+
+            <TextView
+                android:id="@+id/tvDesignationMyProfile"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/tvOrganisationTextMyProfile"
+                android:padding="4dp"
+                android:text="Designation" />
+
+            <TextView
+                android:id="@+id/tvDesignationTextMyProfile"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/tvOrganisationTextMyProfile"
+                android:layout_marginLeft="200dp"
+                android:padding="4dp"
+                android:text="Senior Engineer" />
+
+            <TextView
+                android:id="@+id/tvSkillsMyProfile"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/tvDesignationTextMyProfile"
+                android:padding="4dp"
+                android:text="Skills" />
+
+            <TextView
+                android:id="@+id/tvSkillsTextMyProfile"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/tvDesignationTextMyProfile"
+                android:layout_marginLeft="200dp"
+                android:padding="4dp"
+                android:text="Android development, SEO, Java, PHP" />
+        </RelativeLayout>
+
+    </android.support.v7.widget.CardView>
+    </android.support.v4.widget.NestedScrollView>
+
+
+</android.support.design.widget.CoordinatorLayout>

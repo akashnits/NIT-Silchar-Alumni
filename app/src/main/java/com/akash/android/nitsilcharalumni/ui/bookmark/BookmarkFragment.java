@@ -37,7 +37,8 @@ import butterknife.Unbinder;
  * Use the {@link BookmarkFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class BookmarkFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
+public class BookmarkFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>,
+        DrawerMenuItem.OnClickMenuItemHandler {
 
     public static final String[] FEED_PROJECTION = {
             FeedContract.FeedEntry.COLUMN_FEED_ID,
@@ -153,13 +154,14 @@ public class BookmarkFragment extends Fragment implements LoaderManager.LoaderCa
     }
 
     private void setupDrawer() {
+        MainActivity mainActivity= (MainActivity) getActivity();
         drawerViewBookmark
                 .addView(new DrawerHeader())
-                .addView(new DrawerMenuItem(mContext, DrawerMenuItem.DRAWER_MENU_ITEM_PROFILE))
-                .addView(new DrawerMenuItem(mContext, DrawerMenuItem.DRAWER_MENU_ITEM_RATE_US))
-                .addView(new DrawerMenuItem(mContext, DrawerMenuItem.DRAWER_MENU_ITEM_CONTACT_US))
-                .addView(new DrawerMenuItem(mContext, DrawerMenuItem.DRAWER_MENU_ITEM_LOGOUT))
-                .addView(new DrawerMenuItem(mContext, DrawerMenuItem.DRAWER_MENU_ITEM_DEVELOPED_BY));
+                .addView(new DrawerMenuItem(mContext, DrawerMenuItem.DRAWER_MENU_ITEM_PROFILE, mainActivity, this))
+                .addView(new DrawerMenuItem(mContext, DrawerMenuItem.DRAWER_MENU_ITEM_RATE_US, mainActivity, this))
+                .addView(new DrawerMenuItem(mContext, DrawerMenuItem.DRAWER_MENU_ITEM_CONTACT_US, mainActivity, this))
+                .addView(new DrawerMenuItem(mContext, DrawerMenuItem.DRAWER_MENU_ITEM_LOGOUT, mainActivity, this))
+                .addView(new DrawerMenuItem(mContext, DrawerMenuItem.DRAWER_MENU_ITEM_DEVELOPED_BY, mainActivity, this));
 
         ActionBarDrawerToggle drawerToggle = new ActionBarDrawerToggle((MainActivity) getActivity(),
                 drawerLayoutBookmark, toolbarBookmark,
@@ -177,5 +179,10 @@ public class BookmarkFragment extends Fragment implements LoaderManager.LoaderCa
 
         drawerLayoutBookmark.addDrawerListener(drawerToggle);
         drawerToggle.syncState();
+    }
+
+    @Override
+    public void onClickMenuItemListener() {
+        drawerLayoutBookmark.closeDrawers();
     }
 }

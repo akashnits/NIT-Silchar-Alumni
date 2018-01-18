@@ -4,8 +4,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AppCompatActivity;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 
 import com.akash.android.nitsilcharalumni.R;
@@ -13,14 +11,15 @@ import com.akash.android.nitsilcharalumni.ui.alumni.AlumniDetailsFragment;
 import com.akash.android.nitsilcharalumni.ui.alumni.AlumniFragment;
 import com.akash.android.nitsilcharalumni.ui.alumni.FilterAlumniFragment;
 import com.akash.android.nitsilcharalumni.ui.bookmark.BookmarkFragment;
+import com.akash.android.nitsilcharalumni.ui.drawer.DrawerMenuItem;
+import com.akash.android.nitsilcharalumni.ui.drawer.profile.MyProfileFragment;
 import com.akash.android.nitsilcharalumni.ui.feed.FeedFragment;
 import com.akash.android.nitsilcharalumni.ui.job.FilterJobFragment;
 import com.akash.android.nitsilcharalumni.ui.job.JobFragment;
 import com.akash.android.nitsilcharalumni.utils.ActivityUtils;
 import com.akash.android.nitsilcharalumni.utils.BottomNavigationViewHelper;
-import com.google.firebase.auth.FirebaseAuth;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements DrawerMenuItem.DrawerCallBack {
 
 
 
@@ -37,8 +36,9 @@ public class MainActivity extends AppCompatActivity {
                             FeedFragment.newInstance(),
                             R.id.content,
                             false,
-                            "Home"
-                    );
+                            "Home",
+                            R.anim.enter_from_right,
+                            R.anim.exit_to_left );
                     return true;
                 case R.id.navigation_alumni:
                     ActivityUtils.replaceFragmentOnActivity(
@@ -46,8 +46,9 @@ public class MainActivity extends AppCompatActivity {
                             AlumniFragment.newInstance(),
                             R.id.content,
                             false,
-                            "Alumni"
-                    );
+                            "Alumni",
+                            R.anim.enter_from_right,
+                            R.anim.exit_to_left );
                     return true;
                 case R.id.navigation_jobs:
                     ActivityUtils.replaceFragmentOnActivity(
@@ -55,8 +56,9 @@ public class MainActivity extends AppCompatActivity {
                             JobFragment.newInstance(),
                             R.id.content,
                             false,
-                            "Job"
-                    );
+                            "Job",
+                            R.anim.enter_from_right,
+                            R.anim.exit_to_left );
                     return true;
                 case R.id.navigation_bookmark:
                     ActivityUtils.replaceFragmentOnActivity(
@@ -64,8 +66,9 @@ public class MainActivity extends AppCompatActivity {
                             BookmarkFragment.newInstance(),
                             R.id.content,
                             false,
-                            "Bookmark"
-                    );
+                            "Bookmark",
+                            R.anim.enter_from_right,
+                            R.anim.exit_to_left );
                     return true;
             }
             return false;
@@ -79,8 +82,9 @@ public class MainActivity extends AppCompatActivity {
                 AlumniDetailsFragment.newInstance(),
                 R.id.content,
                 true,
-                "AlumniDetails"
-        );
+                "AlumniDetails",
+                R.anim.enter_from_right,
+                R.anim.exit_to_left );
     }
 
     public void commitFilterAlumniFragment(){
@@ -89,8 +93,9 @@ public class MainActivity extends AppCompatActivity {
                 FilterAlumniFragment.newInstance(),
                 R.id.content,
                 true,
-                "FilterAlumni"
-        );
+                "FilterAlumni",
+                R.anim.enter_from_right,
+                R.anim.exit_to_left );
     }
 
     public void commitFilterJobFragment(){
@@ -99,8 +104,20 @@ public class MainActivity extends AppCompatActivity {
                 FilterJobFragment.newInstance(),
                 R.id.content,
                 true,
-                "FilterJob"
-        );
+                "FilterJob",
+                R.anim.enter_from_right,
+                R.anim.exit_to_left);
+    }
+
+    private void commitMyProfileFragment(){
+        ActivityUtils.replaceFragmentOnActivity(
+                getSupportFragmentManager(),
+                MyProfileFragment.newInstance(),
+                R.id.content,
+                true,
+                "MyProfileFragment",
+                R.anim.enter_from_right,
+                R.anim.exit_to_left);
     }
 
     @Override
@@ -116,7 +133,33 @@ public class MainActivity extends AppCompatActivity {
                     FeedFragment.newInstance(),
                     R.id.content,
                     false,
-                    "Home");
+                    "Home",R.anim.enter_from_right,
+                    R.anim.exit_to_left );
         }
+    }
+
+    @Override
+    public void onProfileMenuSelected() {
+        commitMyProfileFragment();
+    }
+
+    @Override
+    public void onRateUsMenuSelected() {
+        //TODO: Navigate to Play store
+    }
+
+    @Override
+    public void onContactUsMenuSelected() {
+        //TODO: Define a UI to contact
+    }
+
+    @Override
+    public void onLogoutMenuSelected() {
+        //TODO: Logout current user
+    }
+
+    @Override
+    public void onDeveloperMenuSelected() {
+        //Do nothing
     }
 }
