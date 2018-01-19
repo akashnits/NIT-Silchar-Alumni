@@ -12,6 +12,7 @@ import com.akash.android.nitsilcharalumni.ui.alumni.AlumniFragment;
 import com.akash.android.nitsilcharalumni.ui.alumni.FilterAlumniFragment;
 import com.akash.android.nitsilcharalumni.ui.bookmark.BookmarkFragment;
 import com.akash.android.nitsilcharalumni.ui.drawer.DrawerMenuItem;
+import com.akash.android.nitsilcharalumni.ui.drawer.profile.EditMyProfileFragment;
 import com.akash.android.nitsilcharalumni.ui.drawer.profile.MyProfileFragment;
 import com.akash.android.nitsilcharalumni.ui.feed.FeedFragment;
 import com.akash.android.nitsilcharalumni.ui.job.FilterJobFragment;
@@ -118,6 +119,18 @@ public class MainActivity extends AppCompatActivity implements DrawerMenuItem.Dr
                 "MyProfileFragment",
                 R.anim.enter_from_right,
                 R.anim.exit_to_left);
+    }
+
+    public void commitEditMyProfileFragment() {
+        ActivityUtils.replaceFragmentOnActivity(
+                getSupportFragmentManager(),
+                EditMyProfileFragment.newInstance(),
+                R.id.content,
+                true,
+                "EditMyProfileFragment",
+                R.anim.enter_from_right,
+                R.anim.exit_to_left
+        );
     }
 
     @Override

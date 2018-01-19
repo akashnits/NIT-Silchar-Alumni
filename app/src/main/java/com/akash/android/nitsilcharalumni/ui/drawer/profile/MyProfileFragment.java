@@ -12,12 +12,16 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.akash.android.nitsilcharalumni.R;
+import com.akash.android.nitsilcharalumni.ui.MainActivity;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -99,6 +103,7 @@ public class MyProfileFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_my_profile, container, false);
         unbinder = ButterKnife.bind(this, view);
+        setHasOptionsMenu(true);
         return view;
     }
 
@@ -113,6 +118,21 @@ public class MyProfileFragment extends Fragment {
         collapsingToolbarLayoutMyProfile.setExpandedTitleColor(Color.WHITE);
         collapsingToolbarLayoutMyProfile.setCollapsedTitleTextColor(Color.WHITE);
 
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.myprofile, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        if (item.getItemId() == R.id.editProfile)
+            ((MainActivity) getActivity()).commitEditMyProfileFragment();
+
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
