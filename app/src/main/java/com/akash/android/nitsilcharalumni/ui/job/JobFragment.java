@@ -40,7 +40,8 @@ import butterknife.OnClick;
 import butterknife.Unbinder;
 
 
-public class JobFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
+public class JobFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener,
+        DrawerMenuItem.OnClickMenuItemHandler {
 
     @BindView(R.id.rvJob)
     RecyclerView rvJob;
@@ -132,7 +133,8 @@ public class JobFragment extends Fragment implements SwipeRefreshLayout.OnRefres
                         CreateJobFragment.newInstance(),
                         R.id.content,
                         true,
-                        "CreateJobFragment");
+                        "CreateJobFragment", R.anim.enter_from_right,
+                        R.anim.exit_to_left );
                 break;
             case R.id.swipe_refresh_layout_job:
                 break;
@@ -206,13 +208,15 @@ public class JobFragment extends Fragment implements SwipeRefreshLayout.OnRefres
     }
 
     private void setupDrawer() {
+        MainActivity mainActivity= (MainActivity) getActivity();
+
         drawerViewJob
                 .addView(new DrawerHeader())
-                .addView(new DrawerMenuItem(mContext, DrawerMenuItem.DRAWER_MENU_ITEM_PROFILE))
-                .addView(new DrawerMenuItem(mContext, DrawerMenuItem.DRAWER_MENU_ITEM_RATE_US))
-                .addView(new DrawerMenuItem(mContext, DrawerMenuItem.DRAWER_MENU_ITEM_CONTACT_US))
-                .addView(new DrawerMenuItem(mContext, DrawerMenuItem.DRAWER_MENU_ITEM_LOGOUT))
-                .addView(new DrawerMenuItem(mContext, DrawerMenuItem.DRAWER_MENU_ITEM_DEVELOPED_BY));
+                .addView(new DrawerMenuItem(mContext, DrawerMenuItem.DRAWER_MENU_ITEM_PROFILE, mainActivity, this))
+                .addView(new DrawerMenuItem(mContext, DrawerMenuItem.DRAWER_MENU_ITEM_RATE_US, mainActivity, this))
+                .addView(new DrawerMenuItem(mContext, DrawerMenuItem.DRAWER_MENU_ITEM_CONTACT_US, mainActivity, this))
+                .addView(new DrawerMenuItem(mContext, DrawerMenuItem.DRAWER_MENU_ITEM_LOGOUT, mainActivity, this))
+                .addView(new DrawerMenuItem(mContext, DrawerMenuItem.DRAWER_MENU_ITEM_DEVELOPED_BY, mainActivity, this));
 
         ActionBarDrawerToggle drawerToggle = new ActionBarDrawerToggle((MainActivity) getActivity(),
                 drawerLayoutJob, toolbarJob,
@@ -230,5 +234,10 @@ public class JobFragment extends Fragment implements SwipeRefreshLayout.OnRefres
 
         drawerLayoutJob.addDrawerListener(drawerToggle);
         drawerToggle.syncState();
+    }
+
+    @Override
+    public void onClickMenuItemListener() {
+        drawerLayoutJob.closeDrawers();
     }
 }

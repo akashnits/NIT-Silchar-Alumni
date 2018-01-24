@@ -21,7 +21,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.ScrollView;
+import android.widget.RelativeLayout;
 
 import com.akash.android.nitsilcharalumni.R;
 import com.akash.android.nitsilcharalumni.adapter.AlumniAdapter;
@@ -40,19 +40,21 @@ import butterknife.Unbinder;
  * Use the {@link AlumniFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class AlumniFragment extends Fragment implements AlumniAdapter.OnAlumniClickHandler {
+public class AlumniFragment extends Fragment implements AlumniAdapter.OnAlumniClickHandler,
+        DrawerMenuItem.OnClickMenuItemHandler {
 
-    @BindView(R.id.rvFeed)
-    RecyclerView rvFeed;
-    @BindView(R.id.alumniFragment)
-    ScrollView alumniFragment;
-    Unbinder unbinder;
+
     @BindView(R.id.toolbarAlumni)
     Toolbar toolbarAlumni;
     @BindView(R.id.drawerViewAlumni)
     PlaceHolderView drawerViewAlumni;
     @BindView(R.id.drawerLayoutAlumni)
     MyDrawerLayout drawerLayoutAlumni;
+    @BindView(R.id.rvAlumni)
+    RecyclerView rvAlumni;
+    @BindView(R.id.alumniFragment)
+    RelativeLayout alumniFragment;
+    Unbinder unbinder;
 
 
     private Context mContext;
@@ -90,10 +92,10 @@ public class AlumniFragment extends Fragment implements AlumniAdapter.OnAlumniCl
         setupDrawer();
 
         LinearLayoutManager lm = new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false);
-        rvFeed.setLayoutManager(lm);
-        rvFeed.hasFixedSize();
+        rvAlumni.setLayoutManager(lm);
+        rvAlumni.hasFixedSize();
         AlumniAdapter alumniAdapter = new AlumniAdapter(mContext, this);
-        rvFeed.setAdapter(alumniAdapter);
+        rvAlumni.setAdapter(alumniAdapter);
     }
 
     @Override
@@ -179,13 +181,14 @@ public class AlumniFragment extends Fragment implements AlumniAdapter.OnAlumniCl
     }
 
     private void setupDrawer() {
+        MainActivity mainActivity = (MainActivity) getActivity();
         drawerViewAlumni
                 .addView(new DrawerHeader())
-                .addView(new DrawerMenuItem(mContext, DrawerMenuItem.DRAWER_MENU_ITEM_PROFILE))
-                .addView(new DrawerMenuItem(mContext, DrawerMenuItem.DRAWER_MENU_ITEM_RATE_US))
-                .addView(new DrawerMenuItem(mContext, DrawerMenuItem.DRAWER_MENU_ITEM_CONTACT_US))
-                .addView(new DrawerMenuItem(mContext, DrawerMenuItem.DRAWER_MENU_ITEM_LOGOUT))
-                .addView(new DrawerMenuItem(mContext, DrawerMenuItem.DRAWER_MENU_ITEM_DEVELOPED_BY));
+                .addView(new DrawerMenuItem(mContext, DrawerMenuItem.DRAWER_MENU_ITEM_PROFILE, mainActivity, this))
+                .addView(new DrawerMenuItem(mContext, DrawerMenuItem.DRAWER_MENU_ITEM_RATE_US, mainActivity, this))
+                .addView(new DrawerMenuItem(mContext, DrawerMenuItem.DRAWER_MENU_ITEM_CONTACT_US, mainActivity, this))
+                .addView(new DrawerMenuItem(mContext, DrawerMenuItem.DRAWER_MENU_ITEM_LOGOUT, mainActivity, this))
+                .addView(new DrawerMenuItem(mContext, DrawerMenuItem.DRAWER_MENU_ITEM_DEVELOPED_BY, mainActivity, this));
 
         ActionBarDrawerToggle drawerToggle = new ActionBarDrawerToggle((MainActivity) getActivity(),
                 drawerLayoutAlumni, toolbarAlumni,
@@ -203,5 +206,10 @@ public class AlumniFragment extends Fragment implements AlumniAdapter.OnAlumniCl
 
         drawerLayoutAlumni.addDrawerListener(drawerToggle);
         drawerToggle.syncState();
+    }
+
+    @Override
+    public void onClickMenuItemListener() {
+        drawerLayoutAlumni.closeDrawers();
     }
 }

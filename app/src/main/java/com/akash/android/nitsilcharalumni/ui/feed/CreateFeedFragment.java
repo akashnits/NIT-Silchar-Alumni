@@ -1,6 +1,7 @@
 package com.akash.android.nitsilcharalumni.ui.feed;
 
 
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -8,11 +9,14 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.akash.android.nitsilcharalumni.R;
@@ -53,6 +57,10 @@ public class CreateFeedFragment extends Fragment implements FABProgressListener 
     @BindView(R.id.til_feed_description)
     TextInputLayout tilFeedDescription;
     Unbinder unbinder;
+    @BindView(R.id.toolbarCreateFeed)
+    Toolbar toolbarCreateFeed;
+    @BindView(R.id.fabLayout)
+    RelativeLayout fabLayout;
 
     public CreateFeedFragment() {
         // Required empty public constructor
@@ -82,6 +90,10 @@ public class CreateFeedFragment extends Fragment implements FABProgressListener 
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         fabProgressCircle.attachListener(this);
+        toolbarCreateFeed.setTitle(getResources().getString(R.string.create_feed));
+        toolbarCreateFeed.setTitleTextColor(Color.WHITE);
+        ((AppCompatActivity) getActivity()).setSupportActionBar(toolbarCreateFeed);
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     @Override
@@ -92,7 +104,7 @@ public class CreateFeedFragment extends Fragment implements FABProgressListener 
 
     @OnClick(R.id.uploadFab)
     public void onViewClicked() {
-        new AsyncTask<Void, Void, Void>(){
+        new AsyncTask<Void, Void, Void>() {
             @Override
             protected void onPreExecute() {
                 super.onPreExecute();
@@ -101,9 +113,9 @@ public class CreateFeedFragment extends Fragment implements FABProgressListener 
 
             @Override
             protected Void doInBackground(Void... params) {
-                try{
-                Thread.sleep(5000);}
-                catch (Exception e){
+                try {
+                    Thread.sleep(5000);
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
                 return null;

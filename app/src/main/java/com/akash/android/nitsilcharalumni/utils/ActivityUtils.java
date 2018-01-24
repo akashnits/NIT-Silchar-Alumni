@@ -18,14 +18,16 @@ public class ActivityUtils {
 
     public static void replaceFragmentOnActivity(@NonNull FragmentManager fragmentManager,
                                                  @NonNull Fragment fragment,
-                                                 int frameId, boolean addToBackstack, String tag){
+                                                 int frameId, boolean addToBackstack, String tag, int enter, int exit){
         if(addToBackstack) {
             fragmentManager.beginTransaction()
+                    .setCustomAnimations(enter, exit)
                     .replace(frameId, fragment, tag)
                     .addToBackStack(null)
                     .commit();
         }else {
             fragmentManager.beginTransaction()
+                    .setCustomAnimations(enter, exit)
                     .replace(frameId, fragment)
                     .commit();
         }

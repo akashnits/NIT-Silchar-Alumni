@@ -8,6 +8,7 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -32,7 +33,6 @@ import butterknife.Unbinder;
 public class AlumniDetailsFragment extends Fragment implements AppBarLayout.OnOffsetChangedListener {
 
 
-
     @BindView(R.id.backdrop)
     ImageView backdrop;
     @BindView(R.id.alumniDetailsLinearlayout)
@@ -45,10 +45,43 @@ public class AlumniDetailsFragment extends Fragment implements AppBarLayout.OnOf
     AppBarLayout appBarLayout;
     @BindView(R.id.tvTitle)
     TextView tvTitle;
-    @BindView(R.id.toolbar)
-    Toolbar toolbar;
+
 
     Unbinder unbinder;
+    @BindView(R.id.tvAboutYou)
+    TextView tvAboutYou;
+    @BindView(R.id.tvAboutYouText)
+    TextView tvAboutYouText;
+    @BindView(R.id.tvClassOf)
+    TextView tvClassOf;
+    @BindView(R.id.tvClassofText)
+    TextView tvClassofText;
+    @BindView(R.id.tvLocation)
+    TextView tvLocation;
+    @BindView(R.id.tvLocationText)
+    TextView tvLocationText;
+    @BindView(R.id.tvContact)
+    TextView tvContact;
+    @BindView(R.id.tvContactText)
+    TextView tvContactText;
+    @BindView(R.id.tvEmail)
+    TextView tvEmail;
+    @BindView(R.id.tvEmailText)
+    TextView tvEmailText;
+    @BindView(R.id.tvOrganisation)
+    TextView tvOrganisation;
+    @BindView(R.id.tvOrganisationText)
+    TextView tvOrganisationText;
+    @BindView(R.id.tvDesignation)
+    TextView tvDesignation;
+    @BindView(R.id.tvDesignationText)
+    TextView tvDesignationText;
+    @BindView(R.id.tvSkills)
+    TextView tvSkills;
+    @BindView(R.id.tvSkillsText)
+    TextView tvSkillsText;
+    @BindView(R.id.toolbarAlumniDetails)
+    Toolbar toolbarAlumniDetails;
 
 
     private Context mContext;

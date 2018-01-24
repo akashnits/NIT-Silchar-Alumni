@@ -9,11 +9,19 @@
     android:layout_height="match_parent"
     tools:context="com.akash.android.nitsilcharalumni.ui.job.CreateJobFragment">
 
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbarCreateJob"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:theme="@style/myToolbarTheme"
+        android:background="@color/colorPrimary">
+    </android.support.v7.widget.Toolbar>
 
     <TextView
         android:id="@+id/tvPostJobTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/toolbarCreateJob"
         android:layout_marginStart="8dp"
         android:layout_marginTop="10dp"
         android:text="Job title"
@@ -23,6 +31,7 @@
         android:id="@+id/til_post_job_title"
         android:layout_width="250dp"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/toolbarCreateJob"
         android:layout_marginStart="80dp"
         android:layout_marginEnd="8dp"
         android:layout_marginTop="4dp"
@@ -219,7 +228,7 @@
         android:background="@color/colorPrimary"
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
-        android:layout_marginTop="130dp"
+        android:layout_marginTop="80dp"
         android:text="Post"
         android:textColor="@android:color/white" />
 </RelativeLayout>

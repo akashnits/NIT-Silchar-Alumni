@@ -54,4 +54,9 @@
         <item name="backgroundTint">@color/colorAccent</item>
     </style>
 
+    <style name="myToolbarTheme"  parent="ThemeOverlay.AppCompat.Dark.ActionBar">
+        ....
+        <item name="colorControlNormal">@android:color/white</item>
+    </style>
+
 </resources>

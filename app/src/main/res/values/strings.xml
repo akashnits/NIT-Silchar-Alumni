@@ -80,4 +80,8 @@
     <string name="search_job">Search Job</string>
     <string name="open_drawer">Open</string>
     <string name="close_drawer">close</string>
+    <string name="create_feed">Create Feed</string>
+    <string name="create_job_post">Create Job Post</string>
+    <string name="edit_done">Edit done</string>
+    <string name="edit">Edit</string>
 </resources>

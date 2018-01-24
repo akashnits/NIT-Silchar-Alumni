@@ -50,7 +50,8 @@ import butterknife.Unbinder;
  * Use the {@link FeedFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class FeedFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener, FeedAdapter.OnBookmarkClickedHandler {
+public class FeedFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener,
+        FeedAdapter.OnBookmarkClickedHandler, DrawerMenuItem.OnClickMenuItemHandler {
 
     public static final String TAG = FeedFragment.class.getSimpleName();
 
@@ -140,7 +141,8 @@ public class FeedFragment extends Fragment implements SwipeRefreshLayout.OnRefre
                 CreateFeedFragment.newInstance(),
                 R.id.content,
                 true,
-                "CreateFeedFragment");
+                "CreateFeedFragment", R.anim.enter_from_right,
+                R.anim.exit_to_left );
     }
 
     @Override
@@ -234,20 +236,23 @@ public class FeedFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     }
 
     private void setupDrawer() {
+        MainActivity mainActivity= (MainActivity) getActivity();
         drawerView
                 .addView(new DrawerHeader())
-                .addView(new DrawerMenuItem(mContext, DrawerMenuItem.DRAWER_MENU_ITEM_PROFILE))
-                .addView(new DrawerMenuItem(mContext, DrawerMenuItem.DRAWER_MENU_ITEM_RATE_US))
-                .addView(new DrawerMenuItem(mContext, DrawerMenuItem.DRAWER_MENU_ITEM_CONTACT_US))
-                .addView(new DrawerMenuItem(mContext, DrawerMenuItem.DRAWER_MENU_ITEM_LOGOUT))
-                .addView(new DrawerMenuItem(mContext, DrawerMenuItem.DRAWER_MENU_ITEM_DEVELOPED_BY));
+                .addView(new DrawerMenuItem(mContext, DrawerMenuItem.DRAWER_MENU_ITEM_PROFILE, mainActivity, this))
+                .addView(new DrawerMenuItem(mContext, DrawerMenuItem.DRAWER_MENU_ITEM_RATE_US, mainActivity, this))
+                .addView(new DrawerMenuItem(mContext, DrawerMenuItem.DRAWER_MENU_ITEM_CONTACT_US, mainActivity, this))
+                .addView(new DrawerMenuItem(mContext, DrawerMenuItem.DRAWER_MENU_ITEM_LOGOUT, mainActivity, this))
+                .addView(new DrawerMenuItem(mContext, DrawerMenuItem.DRAWER_MENU_ITEM_DEVELOPED_BY, mainActivity, this));
 
-        ActionBarDrawerToggle drawerToggle = new ActionBarDrawerToggle((MainActivity) getActivity(), drawerLayout, toolbarHome,
-                R.string.open_drawer, R.string.close_drawer){
+        ActionBarDrawerToggle drawerToggle = new ActionBarDrawerToggle((MainActivity) getActivity(),
+                drawerLayout, toolbarHome,
+                R.string.open_drawer, R.string.close_drawer) {
             @Override
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
             }
+
             @Override
             public void onDrawerClosed(View drawerView) {
                 super.onDrawerClosed(drawerView);
@@ -256,5 +261,10 @@ public class FeedFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
         drawerLayout.addDrawerListener(drawerToggle);
         drawerToggle.syncState();
+    }
+
+    @Override
+    public void onClickMenuItemListener() {
+        drawerLayout.closeDrawers();
     }
 }
