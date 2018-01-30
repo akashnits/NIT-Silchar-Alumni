@@ -155,7 +155,7 @@ public class PlaceAutoCompleteFragment extends Fragment implements PlaceAutoComp
                     if (!mDatamanager.getTypeOfUser().equals("Faculty"))
                         mPresenter.loadAlumniOrStudentSignUpFragment(user, password);
                     else{
-                        mPresenter.createAccountWithEmailAndPassword(getActivity(), user.getmEmail(), password);
+                        mPresenter.createAccountWithEmailAndPassword((SignUpActivity) getActivity(), user, password);
                     }
                 }else {
                     Snackbar.make(getView(), "Please select location", Snackbar.LENGTH_SHORT).show();
