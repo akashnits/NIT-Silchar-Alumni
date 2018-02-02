@@ -1,8 +1,11 @@
 package com.akash.android.nitsilcharalumni.ui.drawer.profile;
 
 
+import android.app.ProgressDialog;
 import android.graphics.Color;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
@@ -11,6 +14,7 @@ import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -22,10 +26,20 @@ import android.widget.TextView;
 
 import com.akash.android.nitsilcharalumni.R;
 import com.akash.android.nitsilcharalumni.ui.MainActivity;
+import com.akash.android.nitsilcharalumni.utils.Constants;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+
+import static com.akash.android.nitsilcharalumni.R.id.postJobFabProgressCircle;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -79,12 +93,17 @@ public class MyProfileFragment extends Fragment {
     @BindView(R.id.toolbarMyProfile)
     Toolbar toolbarMyProfile;
 
+    private static final String TAG = MyProfileFragment.class.getSimpleName();
+
+    private FirebaseFirestore mFirestore;
+    private FirebaseAuth mAuth;
+    private Map<String, Object> mUserMap;
+
     public MyProfileFragment() {
         // Required empty public constructor
     }
 
 
-    // TODO: Rename and change types and number of parameters
     public static MyProfileFragment newInstance() {
         MyProfileFragment fragment = new MyProfileFragment();
 
@@ -95,6 +114,8 @@ public class MyProfileFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
+        mFirestore = FirebaseFirestore.getInstance();
+        mAuth = FirebaseAuth.getInstance();
     }
 
     @Override
@@ -110,14 +131,12 @@ public class MyProfileFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
+        downloadUserData();
         ((AppCompatActivity) getActivity()).setSupportActionBar(toolbarMyProfile);
         ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        collapsingToolbarLayoutMyProfile.setTitle("Akash Raj");
         collapsingToolbarLayoutMyProfile.setExpandedTitleColor(Color.WHITE);
         collapsingToolbarLayoutMyProfile.setCollapsedTitleTextColor(Color.WHITE);
-
     }
 
     @Override
@@ -140,4 +159,40 @@ public class MyProfileFragment extends Fragment {
         super.onDestroyView();
         unbinder.unbind();
     }
+
+    private void downloadUserData(){
+
+        final ProgressDialog progressDialog = new ProgressDialog((MainActivity)getActivity());
+        progressDialog.setMessage("Loading...");
+        progressDialog.setIndeterminate(true);
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        progressDialog.show();
+
+                mFirestore.collection(Constants.USER_COLLECTION)
+                        .document(mAuth.getCurrentUser().getEmail())
+                        .get()
+                        .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                if (task.isSuccessful()) {
+                                    DocumentSnapshot snapshot = task.getResult();
+                                    if (snapshot.exists()) {
+                                        mUserMap= snapshot.getData();
+                                        collapsingToolbarLayoutMyProfile.setTitle(mUserMap.get("mName").toString());
+                                        tvClassofTextMyProfile.setText(mUserMap.get("mClassOf").toString());
+                                        tvLocationTextMyProfile.setText(mUserMap.get("mLocation").toString());
+                                        tvEmailTextMyProfile.setText(mUserMap.get("mEmail").toString());
+                                        tvOrganisationTextMyProfile.setText(mUserMap.get("mOrganisation").toString());
+                                    } else {
+                                        Log.d(TAG, "No such document");
+                                    }
+                                } else {
+                                    Log.d(TAG, "get failed with ", task.getException());
+                                }
+                                progressDialog.dismiss();
+                            }
+                        });
+    }
+
+
 }

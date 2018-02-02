@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/coordinatorLayoutMyProfile"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -18,7 +19,8 @@
             android:layout_height="match_parent"
             app:contentScrim="?attr/colorPrimary"
             app:layout_scrollFlags="scroll|exitUntilCollapsed"
-            app:expandedTitleTextAppearance="@style/TextAppearance.AppCompat.Title">
+            app:expandedTitleTextAppearance="@style/TextAppearance.AppCompat.Title"
+            >
 
             <ImageView
                 android:id="@+id/backdropProfileImage"
@@ -75,7 +77,7 @@
                 android:layout_alignParentTop="true"
                 android:layout_marginLeft="200dp"
                 android:padding="4dp"
-                android:text="Virat Kohli was born on 5 November 1988 in Delhi into a Punjabi family.[13] His father, Prem Kohli, worked as a criminal lawyer and his mother, Saroj Kohli, is a housewife.[14] He has an elder brother, Vikash, and an elder sister, Bhavna." />
+                tools:text="Virat Kohli was born on 5 November 1988 in Delhi into a Punjabi family.[13] His father, Prem Kohli, worked as a criminal lawyer and his mother, Saroj Kohli, is a housewife.[14] He has an elder brother, Vikash, and an elder sister, Bhavna." />
 
             <TextView
                 android:id="@+id/tvClassOfMyProfile"
@@ -92,7 +94,7 @@
                 android:layout_below="@+id/tvAboutYouTextMyProfile"
                 android:layout_marginLeft="200dp"
                 android:padding="4dp"
-                android:text="2013" />
+                tools:text="2013" />
 
             <TextView
                 android:id="@+id/tvLocationMyProfile"
@@ -109,7 +111,7 @@
                 android:layout_below="@+id/tvClassofTextMyProfile"
                 android:layout_marginLeft="200dp"
                 android:padding="4dp"
-                android:text="Bangalore" />
+                tools:text="Bangalore" />
 
             <TextView
                 android:id="@+id/tvContactMyProfile"
@@ -126,7 +128,7 @@
                 android:layout_below="@+id/tvLocationTextMyProfile"
                 android:layout_marginLeft="200dp"
                 android:padding="4dp"
-                android:text="9644548961" />
+                tools:text="9644548961" />
 
             <TextView
                 android:id="@+id/tvEmailMyProfile"
@@ -143,7 +145,7 @@
                 android:layout_below="@+id/tvContactTextMyProfile"
                 android:layout_marginLeft="200dp"
                 android:padding="4dp"
-                android:text="akash@gmail.com" />
+                tools:text="akash@gmail.com" />
 
             <TextView
                 android:id="@+id/tvOrganisationMyProfile"
@@ -160,7 +162,7 @@
                 android:layout_below="@+id/tvEmailTextMyProfile"
                 android:layout_marginLeft="200dp"
                 android:padding="4dp"
-                android:text="Google Inc." />
+                tools:text="Google Inc." />
 
             <TextView
                 android:id="@+id/tvDesignationMyProfile"
@@ -177,7 +179,7 @@
                 android:layout_below="@+id/tvOrganisationTextMyProfile"
                 android:layout_marginLeft="200dp"
                 android:padding="4dp"
-                android:text="Senior Engineer" />
+                tools:text="Senior Engineer" />
 
             <TextView
                 android:id="@+id/tvSkillsMyProfile"
@@ -194,7 +196,7 @@
                 android:layout_below="@+id/tvDesignationTextMyProfile"
                 android:layout_marginLeft="200dp"
                 android:padding="4dp"
-                android:text="Android development, SEO, Java, PHP" />
+                tools:text="Android development, SEO, Java, PHP" />
         </RelativeLayout>
 
     </android.support.v7.widget.CardView>
