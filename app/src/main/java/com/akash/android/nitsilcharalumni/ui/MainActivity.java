@@ -121,10 +121,10 @@ public class MainActivity extends AppCompatActivity implements DrawerMenuItem.Dr
                 R.anim.exit_to_left);
     }
 
-    public void commitEditMyProfileFragment() {
+    public void commitEditMyProfileFragment(Bundle args) {
         ActivityUtils.replaceFragmentOnActivity(
                 getSupportFragmentManager(),
-                EditMyProfileFragment.newInstance(),
+                EditMyProfileFragment.newInstance(args),
                 R.id.content,
                 true,
                 "EditMyProfileFragment",

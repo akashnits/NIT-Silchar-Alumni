@@ -16,6 +16,10 @@ public class User implements Parcelable {
     private String mLocation;
     private int mClassOf;
     private String mOrganisation;
+    private String mAboutYou;
+    private String mContact;
+    private String mDesignation;
+    private String mSkills;
 
 
     public User(String mName, String mEmail, String mGender, String mTypeOfUser) {
@@ -23,7 +27,6 @@ public class User implements Parcelable {
         this.mEmail = mEmail;
         this.mGender = mGender;
         this.mTypeOfUser = mTypeOfUser;
-
     }
 
     public String getmName() {
@@ -82,6 +85,38 @@ public class User implements Parcelable {
         this.mOrganisation = mOrganisation;
     }
 
+    public String getmAboutYou() {
+        return mAboutYou;
+    }
+
+    public void setmAboutYou(String mAboutYou) {
+        this.mAboutYou = mAboutYou;
+    }
+
+    public String getmContact() {
+        return mContact;
+    }
+
+    public void setmContact(String mContact) {
+        this.mContact = mContact;
+    }
+
+    public String getmDesignation() {
+        return mDesignation;
+    }
+
+    public void setmDesignation(String mDesignation) {
+        this.mDesignation = mDesignation;
+    }
+
+    public String getmSkills() {
+        return mSkills;
+    }
+
+    public void setmSkills(String mSkills) {
+        this.mSkills = mSkills;
+    }
+
     public HashMap<String, Object> toMap()
     {
         HashMap<String, Object> userMap = new HashMap<>();
@@ -92,6 +127,10 @@ public class User implements Parcelable {
         userMap.put("location", mLocation);
         userMap.put("classOf", mClassOf);
         userMap.put("organisation", mOrganisation);
+        userMap.put("aboutYou", mAboutYou);
+        userMap.put("contact", mContact);
+        userMap.put("designation", mDesignation);
+        userMap.put("skills", mSkills);
         return userMap;
     }
 
@@ -103,6 +142,10 @@ public class User implements Parcelable {
         mLocation = in.readString();
         mClassOf = in.readInt();
         mOrganisation = in.readString();
+        mAboutYou= in.readString();
+        mContact= in.readString();
+        mDesignation= in.readString();
+        mSkills= in.readString();
     }
 
     @Override
@@ -119,6 +162,10 @@ public class User implements Parcelable {
         dest.writeString(mLocation);
         dest.writeInt(mClassOf);
         dest.writeString(mOrganisation);
+        dest.writeString(mAboutYou);
+        dest.writeString(mContact);
+        dest.writeString(mDesignation);
+        dest.writeString(mSkills);
     }
 
     @SuppressWarnings("unused")

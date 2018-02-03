@@ -24,6 +24,8 @@ import android.widget.TextView;
 
 import com.akash.android.nitsilcharalumni.R;
 
+import java.util.HashMap;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
@@ -104,8 +106,9 @@ public class EditMyProfileFragment extends Fragment {
 
 
     // TODO: Rename and change types and number of parameters
-    public static EditMyProfileFragment newInstance() {
+    public static EditMyProfileFragment newInstance(Bundle args) {
         EditMyProfileFragment fragment = new EditMyProfileFragment();
+        fragment.setArguments(args);
         return fragment;
     }
 
@@ -129,12 +132,29 @@ public class EditMyProfileFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        HashMap<String, Object> userHashMap = (HashMap<String, Object>) getArguments().get("userMap");
+
         ((AppCompatActivity) getActivity()).setSupportActionBar(toolbarEditMyProfile);
         ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         collapsingToolbarLayoutEditMyProfile.setTitle("Edit Mode");
         collapsingToolbarLayoutEditMyProfile.setExpandedTitleColor(Color.WHITE);
         collapsingToolbarLayoutEditMyProfile.setCollapsedTitleTextColor(Color.WHITE);
+
+        if(userHashMap.get("mAboutYou") != null)
+            etEditAboutYouMyProfile.setText(userHashMap.get("mAboutYou").toString());
+        if(userHashMap.get("mClassOf") != null)
+            etEditClassOfMyProfile.setText(userHashMap.get("mClassOf").toString());
+        etEditLocationMyProfile.setText(userHashMap.get("mLocation").toString());
+        if(userHashMap.get("mContact") != null)
+            etContactMyProfile.setText(userHashMap.get("mContact").toString());
+        etEmailMyProfile.setText(userHashMap.get("mEmail").toString());
+        if(userHashMap.get("mOrganisation") != null)
+            etOrganisationMyProfile.setText(userHashMap.get("mOrganisation").toString());
+        if(userHashMap.get("mDesignation") != null)
+            etDesignationMyProfile.setText(userHashMap.get("mDesignation").toString());
+        if(userHashMap.get("mSkills") != null)
+            etSkillsMyProfile.setText(userHashMap.get("mSkills").toString());
     }
 
     @Override
@@ -145,7 +165,7 @@ public class EditMyProfileFragment extends Fragment {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if(item.getItemId() == R.id.editDone){
+        if (item.getItemId() == R.id.editDone) {
             getFragmentManager().popBackStackImmediate();
         }
         return super.onOptionsItemSelected(item);
