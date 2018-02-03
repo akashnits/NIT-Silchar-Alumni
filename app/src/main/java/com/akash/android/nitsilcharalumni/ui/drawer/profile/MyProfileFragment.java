@@ -23,6 +23,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -188,6 +189,8 @@ public class MyProfileFragment extends Fragment implements LoaderManager.LoaderC
                 super.onStartLoading();
                 if (userMap == null) {
                     pbMyProfileFragment.setVisibility(View.VISIBLE);
+                    getActivity().getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
+                            WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
                     forceLoad();
                 } else {
                     deliverResult(userMap);
@@ -238,6 +241,7 @@ public class MyProfileFragment extends Fragment implements LoaderManager.LoaderC
             tvLocationTextMyProfile.setText(data.get("mLocation").toString());
             tvEmailTextMyProfile.setText(data.get("mEmail").toString());
             tvOrganisationTextMyProfile.setText(data.get("mOrganisation").toString());
+            getActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
             pbMyProfileFragment.setVisibility(View.INVISIBLE);
         }
     }
