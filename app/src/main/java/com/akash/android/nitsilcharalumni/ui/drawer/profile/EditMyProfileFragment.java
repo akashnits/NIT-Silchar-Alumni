@@ -26,7 +26,6 @@ import android.widget.TextView;
 
 import com.akash.android.nitsilcharalumni.R;
 import com.akash.android.nitsilcharalumni.utils.Constants;
-import com.akash.android.nitsilcharalumni.utils.Contants;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -187,7 +186,7 @@ public class EditMyProfileFragment extends Fragment {
             Map<String, Object> updatedMap = new HashMap<>();
             if (etEditAboutYouMyProfile.getText() != null)
                 updatedMap.put("mAboutYou", etEditAboutYouMyProfile.getText().toString());
-            if (etEditClassOfMyProfile.getText() != null && !TextUtils.isEmpty(etEditClassOfMyProfile.getText()))
+            if (etEditClassOfMyProfile.getText() != null)
                 updatedMap.put("mClassOf", etEditClassOfMyProfile.getText().toString());
             if(etEditLocationMyProfile.getText() != null)
                 updatedMap.put("mLocation", etEditLocationMyProfile.getText().toString());
@@ -195,7 +194,7 @@ public class EditMyProfileFragment extends Fragment {
                 updatedMap.put("mContact", etContactMyProfile.getText().toString());
             if(etEmailMyProfile.getText() != null)
                 updatedMap.put("mEmail", etEmailMyProfile.getText().toString());
-            if (etOrganisationMyProfile.getText() != null && !TextUtils.isEmpty(etOrganisationMyProfile.getText()))
+            if (etOrganisationMyProfile.getText() != null)
                 updatedMap.put("mOrganisation", etOrganisationMyProfile.getText().toString());
             if (etDesignationMyProfile.getText() != null)
                 updatedMap.put("mDesignation", etDesignationMyProfile.getText().toString());

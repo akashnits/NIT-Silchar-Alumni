@@ -19,11 +19,11 @@ import com.akash.android.nitsilcharalumni.ui.job.FilterJobFragment;
 import com.akash.android.nitsilcharalumni.ui.job.JobFragment;
 import com.akash.android.nitsilcharalumni.utils.ActivityUtils;
 import com.akash.android.nitsilcharalumni.utils.BottomNavigationViewHelper;
+import com.google.firebase.auth.FirebaseAuth;
 
 public class MainActivity extends AppCompatActivity implements DrawerMenuItem.DrawerCallBack {
 
-
-
+    private FirebaseAuth mAuth;
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -169,6 +169,10 @@ public class MainActivity extends AppCompatActivity implements DrawerMenuItem.Dr
     @Override
     public void onLogoutMenuSelected() {
         //TODO: Logout current user
+        mAuth= FirebaseAuth.getInstance();
+        if(mAuth != null)
+            mAuth.signOut();
+            finish();
     }
 
     @Override

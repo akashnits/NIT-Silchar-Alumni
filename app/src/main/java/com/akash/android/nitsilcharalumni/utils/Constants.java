@@ -7,5 +7,6 @@ package com.akash.android.nitsilcharalumni.utils;
 public  class  Constants {
 
     public static final String USER_COLLECTION= "users";
+    public static final String FIREBASE_URL= "https://nit-silchar-alumni.firebaseio.com/";
 
 }
