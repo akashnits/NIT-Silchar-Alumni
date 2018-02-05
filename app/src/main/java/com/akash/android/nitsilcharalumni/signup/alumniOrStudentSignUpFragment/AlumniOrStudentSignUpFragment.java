@@ -53,7 +53,7 @@ public class AlumniOrStudentSignUpFragment extends Fragment implements AlumniOrS
 
     private AlumniOrStudentSignUpContract.Presenter mPresenter;
 
-    private int mClassOf;
+    private String mClassOf;
 
     public AlumniOrStudentSignUpFragment() {
         // Required empty public constructor
@@ -168,7 +168,7 @@ public class AlumniOrStudentSignUpFragment extends Fragment implements AlumniOrS
     }
 
     @Override
-    public void updateClassof(int classOf) {
+    public void updateClassof(String classOf) {
         mClassOf= classOf;
     }
 }

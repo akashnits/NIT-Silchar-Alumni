@@ -48,8 +48,8 @@ public class AlumniOrStudentSignUpPresenter implements AlumniOrStudentSignUpCont
             ((TextView) adapterView.getChildAt(0)).setTextColor(Color.WHITE);
             ((TextView) adapterView.getChildAt(0)).setTextSize(20);
             if(position != 0)
-                mAlumniOrStudentSignUpView.updateClassof(Integer.valueOf
-                    (((TextView)adapterView.getChildAt(0)).getText().toString()));
+                mAlumniOrStudentSignUpView.updateClassof(
+                    ((TextView)adapterView.getChildAt(0)).getText().toString());
         }
     }
 

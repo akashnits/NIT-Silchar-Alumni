@@ -14,7 +14,7 @@ public class User implements Parcelable {
     private String mGender;
     private String mTypeOfUser;
     private String mLocation;
-    private int mClassOf;
+    private String mClassOf;
     private String mOrganisation;
     private String mAboutYou;
     private String mContact;
@@ -49,7 +49,7 @@ public class User implements Parcelable {
         return mLocation;
     }
 
-    public int getmClassOf() {
+    public String getmClassOf() {
         return mClassOf;
     }
 
@@ -77,7 +77,7 @@ public class User implements Parcelable {
         this.mLocation = mLocation;
     }
 
-    public void setmClassOf(int mClassOf) {
+    public void setmClassOf(String mClassOf) {
         this.mClassOf = mClassOf;
     }
 
@@ -140,7 +140,7 @@ public class User implements Parcelable {
         mGender = in.readString();
         mTypeOfUser = in.readString();
         mLocation = in.readString();
-        mClassOf = in.readInt();
+        mClassOf = in.readString();
         mOrganisation = in.readString();
         mAboutYou= in.readString();
         mContact= in.readString();
@@ -160,7 +160,7 @@ public class User implements Parcelable {
         dest.writeString(mGender);
         dest.writeString(mTypeOfUser);
         dest.writeString(mLocation);
-        dest.writeInt(mClassOf);
+        dest.writeString(mClassOf);
         dest.writeString(mOrganisation);
         dest.writeString(mAboutYou);
         dest.writeString(mContact);

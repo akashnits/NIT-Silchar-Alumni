@@ -23,7 +23,7 @@ public class AlumniOrStudentSignUpContract {
 
         void showErrorMessage();
 
-        void updateClassof(int classOf);
+        void updateClassof(String classOf);
     }
 
     public interface Presenter extends BasePresenter {

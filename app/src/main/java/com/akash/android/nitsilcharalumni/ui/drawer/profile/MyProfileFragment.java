@@ -102,7 +102,7 @@ public class MyProfileFragment extends Fragment implements LoaderManager.LoaderC
     private Context mContext;
     private FirebaseFirestore mFirestore;
     private FirebaseAuth mAuth;
-    private static final int USERMAP_LOADER_ID = 0;
+    public static final int USERMAP_LOADER_ID = 0;
     private HashMap<String, Object> mUserHashMap;
 
 
@@ -236,11 +236,36 @@ public class MyProfileFragment extends Fragment implements LoaderManager.LoaderC
     @Override
     public void onLoadFinished(Loader<Map<String, Object>> loader, Map<String, Object> data) {
         if(data != null) {
-            collapsingToolbarLayoutMyProfile.setTitle(data.get("mName").toString());
-            tvClassofTextMyProfile.setText(data.get("mClassOf").toString());
-            tvLocationTextMyProfile.setText(data.get("mLocation").toString());
-            tvEmailTextMyProfile.setText(data.get("mEmail").toString());
-            tvOrganisationTextMyProfile.setText(data.get("mOrganisation").toString());
+            //set the data on profile fields
+            Object name= null;
+            Object email= null;
+            Object location= null;
+            Object classOf= null;
+            Object organisation= null;
+            Object aboutYou= null;
+            Object contact= null;
+            Object designation= null;
+            Object skills= null;
+
+            if(( name= data.get("mName")) != null)
+                collapsingToolbarLayoutMyProfile.setTitle(name.toString());
+            if((classOf = data.get("mClassOf")) != null)
+                tvClassofTextMyProfile.setText(classOf.toString());
+            if((location = data.get("mLocation")) != null)
+                tvLocationTextMyProfile.setText(location.toString());
+            if((email = data.get("mEmail")) != null)
+                tvEmailTextMyProfile.setText(email.toString());
+            if((organisation = data.get("mOrganisation")) != null)
+                tvOrganisationTextMyProfile.setText(organisation.toString());
+            if((aboutYou = data.get("mAboutYou")) != null)
+                tvAboutYouTextMyProfile.setText(aboutYou.toString());
+            if((contact = data.get("mContact")) != null)
+                tvContactTextMyProfile.setText(contact.toString());
+            if((designation = data.get("mDesignation")) != null)
+                tvDesignationTextMyProfile.setText(designation.toString());
+            if((skills = data.get("mSkills")) != null)
+                tvSkillsTextMyProfile.setText(skills.toString());
+
             getActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
             pbMyProfileFragment.setVisibility(View.INVISIBLE);
         }
@@ -253,5 +278,9 @@ public class MyProfileFragment extends Fragment implements LoaderManager.LoaderC
 
     private HashMap<String, Object> toHashMap(Map<String, Object> userMap){
         return new HashMap<>(userMap);
+    }
+
+    public void restartLoarder(){
+        getLoaderManager().restartLoader(USERMAP_LOADER_ID, null, this);
     }
 }

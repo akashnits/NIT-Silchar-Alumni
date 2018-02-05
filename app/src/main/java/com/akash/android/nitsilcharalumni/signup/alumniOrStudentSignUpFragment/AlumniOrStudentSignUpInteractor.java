@@ -22,6 +22,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 public class AlumniOrStudentSignUpInteractor {
 
     public static final String TAG= AlumniOrStudentSignUpInteractor.class.getSimpleName();
+    private final FirebaseFirestore instance;
 
     private AlumniOrStudentSignUpPresenter mAlumniOrStudentSignUpPresenter;
 
@@ -34,7 +35,8 @@ public class AlumniOrStudentSignUpInteractor {
         this.mAlumniOrStudentSignUpPresenter = mAlumniOrStudentSignUpPresenter;
 
         mAuth= FirebaseAuth.getInstance();
-        mFirestoreDb= FirebaseFirestore.getInstance();
+        instance = FirebaseFirestore.getInstance();
+        mFirestoreDb= instance;
     }
 
     public void signUpWithEmailAndPassword(final Activity activity, final User user, char[] password) {
