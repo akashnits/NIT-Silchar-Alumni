@@ -21,6 +21,7 @@ public class User implements Parcelable {
     private String mDesignation;
     private String mSkills;
 
+    public User() {}
 
     public User(String mName, String mEmail, String mGender, String mTypeOfUser) {
         this.mName = mName;

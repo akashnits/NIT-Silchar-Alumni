@@ -12,6 +12,7 @@
         tools:context="com.akash.android.nitsilcharalumni.ui.alumni.AlumniFragment">
 
         <LinearLayout
+            android:id="@+id/llAlumniFragment"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
@@ -36,6 +37,15 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
         </LinearLayout>
+
+        <ProgressBar
+            android:id="@+id/pbAlumniFragment"
+            style="?android:attr/progressBarStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_centerHorizontal="true"
+            />
     </RelativeLayout>
 
     <FrameLayout

@@ -9,9 +9,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.akash.android.nitsilcharalumni.R;
-import com.akash.android.nitsilcharalumni.ui.alumni.AlumniFragment;
-import com.akash.android.nitsilcharalumni.utils.ActivityUtils;
+import com.akash.android.nitsilcharalumni.model.User;
 import com.squareup.picasso.Picasso;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -21,6 +23,7 @@ public class AlumniAdapter extends RecyclerView.Adapter<AlumniAdapter.AlumniView
 
     private Context mContext;
     private OnAlumniClickHandler mHandler;
+    private ArrayList<User> mAlumniList;
 
     public interface OnAlumniClickHandler{
         void onAlumniClicked(int position, View view);
@@ -29,6 +32,7 @@ public class AlumniAdapter extends RecyclerView.Adapter<AlumniAdapter.AlumniView
     public AlumniAdapter(Context mContext, OnAlumniClickHandler mHandler) {
         this.mContext = mContext;
         this.mHandler = mHandler;
+        mAlumniList = new ArrayList<>();
     }
 
     @Override
@@ -41,9 +45,13 @@ public class AlumniAdapter extends RecyclerView.Adapter<AlumniAdapter.AlumniView
     @Override
     public void onBindViewHolder(AlumniViewHolder holder, int position) {
         loadProfileImageWithPicasso("https://www2.mmu.ac.uk/research/research-study/student-profiles/james-xu/james-xu.jpg", holder);
-        holder.tvName.setText("Akash Gupta");
-        holder.tvClassOf.setText("Class of 2013, ");
-        holder.tvOrganisationName.setText("L & T Technology Services");
+
+        User alumni= mAlumniList.get(position);
+        if(alumni != null) {
+            holder.tvName.setText(alumni.getmName());
+            holder.tvOrganisationName.setText(alumni.getmOrganisation());
+            holder.tvClassOf.setText(alumni.getmClassOf());
+        }
     }
 
     private void loadProfileImageWithPicasso(String imageUrl, AlumniViewHolder holder){
@@ -55,7 +63,13 @@ public class AlumniAdapter extends RecyclerView.Adapter<AlumniAdapter.AlumniView
 
     @Override
     public int getItemCount() {
-        return 10;
+        return mAlumniList.size();
+    }
+
+    public void addAll(List<User> newAlumni) {
+        int initialSize = mAlumniList.size();
+        mAlumniList.addAll(newAlumni);
+        notifyItemRangeInserted(initialSize, newAlumni.size());
     }
 
     class AlumniViewHolder extends RecyclerView.ViewHolder {
