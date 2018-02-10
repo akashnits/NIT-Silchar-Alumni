@@ -93,4 +93,8 @@ public class AlumniAdapter extends RecyclerView.Adapter<AlumniAdapter.AlumniView
             });
         }
     }
+
+    public ArrayList<User> getmAlumniList() {
+        return mAlumniList;
+    }
 }

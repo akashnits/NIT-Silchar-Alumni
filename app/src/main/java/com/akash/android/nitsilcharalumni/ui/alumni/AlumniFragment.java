@@ -2,8 +2,10 @@ package com.akash.android.nitsilcharalumni.ui.alumni;
 
 
 import android.content.Context;
+import android.content.res.Configuration;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -57,7 +59,7 @@ import butterknife.Unbinder;
  * create an instance of this fragment.
  */
 public class AlumniFragment extends Fragment implements AlumniAdapter.OnAlumniClickHandler,
-        DrawerMenuItem.OnClickMenuItemHandler, LoaderManager.LoaderCallbacks<List<User>> {
+        DrawerMenuItem.OnClickMenuItemHandler {
 
 
     @BindView(R.id.toolbarAlumni)
@@ -81,8 +83,10 @@ public class AlumniFragment extends Fragment implements AlumniAdapter.OnAlumniCl
     public static final int ALUMNI_LOADER_ID = 1;
     private FirebaseFirestore mFirestore;
     private DocumentSnapshot mLastVisible = null;
-    private static final long LIMIT = 12;
+    private static final long LIMIT = 8;
     private AlumniAdapter mAlumniAdapter;
+    private boolean isLoading;
+    private int mLastDocumentSnapshotSize;
 
 
     public AlumniFragment() {
@@ -115,17 +119,49 @@ public class AlumniFragment extends Fragment implements AlumniAdapter.OnAlumniCl
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        LoaderManager loaderManager = getLoaderManager();
-        loaderManager.initLoader(ALUMNI_LOADER_ID, null, this);
-
         ((AppCompatActivity) getActivity()).setSupportActionBar(toolbarAlumni);
         setupDrawer();
 
+        //first time load
         LinearLayoutManager lm = new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false);
         rvAlumni.setLayoutManager(lm);
         rvAlumni.hasFixedSize();
         mAlumniAdapter = new AlumniAdapter(mContext, this);
         rvAlumni.setAdapter(mAlumniAdapter);
+
+        if(savedInstanceState == null){
+            pbAlumniFragment.setVisibility(View.VISIBLE);
+            isLoading= true;
+
+            final List<User> newAlumni= new ArrayList<>();
+            mFirestore.collection(Constants.USER_COLLECTION)
+                    .whereEqualTo("mTypeOfUser", "Alumni")
+                    .orderBy("mEmail")
+                    .limit(LIMIT)
+                    .get()
+                    .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                        @Override
+                        public void onSuccess(QuerySnapshot documentSnapshots) {
+                            mLastVisible = documentSnapshots.getDocuments()
+                                    .get(documentSnapshots.size() - 1);
+                            mLastDocumentSnapshotSize= documentSnapshots.size();
+                            for (DocumentSnapshot documentSnapshot : documentSnapshots)
+                                newAlumni.add(documentSnapshot.toObject(User.class));
+                            mAlumniAdapter.addAll(newAlumni);
+                            pbAlumniFragment.setVisibility(View.INVISIBLE);
+                            isLoading= false;
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Toast.makeText(mContext, "Failed to Load data", Toast.LENGTH_SHORT).show();
+                            pbAlumniFragment.setVisibility(View.INVISIBLE);
+                            isLoading= false;
+                        }
+                    });
+        }
+
         rvAlumni.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
@@ -139,9 +175,9 @@ public class AlumniFragment extends Fragment implements AlumniAdapter.OnAlumniCl
                     int totalItemCount = recyclerView.getLayoutManager().getItemCount();
                     int pastVisibleItem =((LinearLayoutManager) recyclerView.getLayoutManager())
                             .findFirstVisibleItemPosition();
-                    if ((LIMIT + pastVisibleItem) >= totalItemCount) {
-                        // restart the loader to fetch next page
-                        getLoaderManager().restartLoader(ALUMNI_LOADER_ID, null, AlumniFragment.this);
+                    if ((LIMIT + pastVisibleItem) >= totalItemCount && !isLoading && mLastDocumentSnapshotSize == LIMIT) {
+                        isLoading= true;
+                        loadMore();
                     }
                 }
             }
@@ -163,6 +199,66 @@ public class AlumniFragment extends Fragment implements AlumniAdapter.OnAlumniCl
     public void onAlumniClicked(int position, View view) {
         ((MainActivity) getActivity()).commitAlumniDetailsFragment();
     }
+
+    private void loadMore(){
+        pbAlumniFragment.setVisibility(View.VISIBLE);
+        isLoading= true;
+
+        final List<User> newAlumni= new ArrayList<>();
+        mFirestore.collection(Constants.USER_COLLECTION)
+                .whereEqualTo("mTypeOfUser", "Alumni")
+                .orderBy("mEmail")
+                .startAfter(mLastVisible)
+                .limit(LIMIT)
+                .get()
+                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    @Override
+                    public void onSuccess(QuerySnapshot documentSnapshots) {
+                        pbAlumniFragment.setVisibility(View.INVISIBLE);
+                        isLoading= false;
+                        if (!documentSnapshots.isEmpty()) {
+                            mLastDocumentSnapshotSize= documentSnapshots.size();
+                            mLastVisible = documentSnapshots.getDocuments()
+                                    .get(documentSnapshots.size() - 1);
+                            for (DocumentSnapshot documentSnapshot : documentSnapshots)
+                                newAlumni.add(documentSnapshot.toObject(User.class));
+                            mAlumniAdapter.addAll(newAlumni);
+                        }else {
+                            mLastDocumentSnapshotSize=0;
+                        }
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(mContext, "Failed to Load data", Toast.LENGTH_SHORT).show();
+                        pbAlumniFragment.setVisibility(View.INVISIBLE);
+                        isLoading= false;
+                    }
+                });
+    }
+
+    @Override
+    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
+        super.onViewStateRestored(savedInstanceState);
+        if(savedInstanceState != null)
+        {
+            List<User> alumniList= savedInstanceState.getParcelableArrayList("alumni");
+            mAlumniAdapter.addAll(alumniList);
+            Parcelable savedRecyclerLayoutState = savedInstanceState.getParcelable("position");
+            rvAlumni.getLayoutManager().onRestoreInstanceState(savedRecyclerLayoutState);
+        }
+    }
+
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelableArrayList("alumni", mAlumniAdapter.getmAlumniList());
+        outState.putParcelable("position", rvAlumni.getLayoutManager().onSaveInstanceState());
+    }
+
+
 
     @Override
     public void onCreateOptionsMenu(final Menu menu, MenuInflater inflater) {
@@ -261,101 +357,5 @@ public class AlumniFragment extends Fragment implements AlumniAdapter.OnAlumniCl
     @Override
     public void onClickMenuItemListener() {
         drawerLayoutAlumni.closeDrawers();
-    }
-
-    @Override
-    public Loader<List<User>> onCreateLoader(int id, Bundle args) {
-        return new AsyncTaskLoader<List<User>>(mContext) {
-            List<User> newAlumni = null;
-
-            @Override
-            protected void onStartLoading() {
-                super.onStartLoading();
-                if (newAlumni == null) {
-                    pbAlumniFragment.setVisibility(View.VISIBLE);
-                    forceLoad();
-                } else {
-                    deliverResult(newAlumni);
-                }
-            }
-
-            @Nullable
-            @Override
-            public List<User> loadInBackground() {
-                if (mLastVisible == null) {
-                    if(newAlumni == null)
-                        newAlumni= new ArrayList<User>();
-                    mFirestore.collection(Constants.USER_COLLECTION)
-                            .whereEqualTo("mTypeOfUser", "Alumni")
-                            .orderBy("mEmail")
-                            .limit(LIMIT)
-                            .get()
-                            .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                                @Override
-                                public void onSuccess(QuerySnapshot documentSnapshots) {
-                                    mLastVisible = documentSnapshots.getDocuments()
-                                            .get(documentSnapshots.size() - 1);
-                                    for (DocumentSnapshot documentSnapshot : documentSnapshots)
-                                        newAlumni.add(documentSnapshot.toObject(User.class));
-                                    deliverResult(newAlumni);
-                                }
-                            })
-                            .addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception e) {
-                                    Toast.makeText(mContext, "Failed to Load data", Toast.LENGTH_SHORT).show();
-                                    pbAlumniFragment.setVisibility(View.INVISIBLE);
-                                }
-                            });
-                } else {
-                    mFirestore.collection(Constants.USER_COLLECTION)
-                            .whereEqualTo("mTypeOfUser", "Alumni")
-                            .orderBy("mEmail")
-                            .startAfter(mLastVisible)
-                            .limit(LIMIT)
-                            .get()
-                            .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                                @Override
-                                public void onSuccess(QuerySnapshot documentSnapshots) {
-                                    mLastVisible = documentSnapshots.getDocuments()
-                                            .get(documentSnapshots.size() - 1);
-                                    for (DocumentSnapshot documentSnapshot : documentSnapshots)
-                                        newAlumni.add(documentSnapshot.toObject(User.class));
-                                    deliverResult(newAlumni);
-                                }
-                            })
-                            .addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception e) {
-                                    Toast.makeText(mContext, "Failed to Load data", Toast.LENGTH_SHORT).show();
-                                    pbAlumniFragment.setVisibility(View.INVISIBLE);
-                                }
-                            });
-                }
-
-                return null;
-            }
-
-            @Override
-            public void deliverResult(@Nullable List<User> data) {
-                if (data != null) {
-                    newAlumni = data;
-                }
-                super.deliverResult(data);
-            }
-        };
-    }
-
-    @Override
-    public void onLoadFinished(Loader<List<User>> loader, List<User> data) {
-        if(data != null){
-            mAlumniAdapter.addAll(data);
-            pbAlumniFragment.setVisibility(View.INVISIBLE);
-        }
-    }
-
-    @Override
-    public void onLoaderReset(Loader<List<User>> loader) {
-
     }
 }
