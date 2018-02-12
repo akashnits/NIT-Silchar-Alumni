@@ -17,6 +17,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -286,8 +287,8 @@ public class AlumniFragment extends Fragment implements AlumniAdapter.OnAlumniCl
                     if(newAlumni == null)
                         newAlumni= new ArrayList<User>();
                     mFirestore.collection(Constants.USER_COLLECTION)
-                            .whereEqualTo("mTypeOfUser", "Alumni")
                             .orderBy("mEmail")
+                            .whereEqualTo("mTypeOfUser", "Alumni")
                             .limit(LIMIT)
                             .get()
                             .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
@@ -303,14 +304,16 @@ public class AlumniFragment extends Fragment implements AlumniAdapter.OnAlumniCl
                             .addOnFailureListener(new OnFailureListener() {
                                 @Override
                                 public void onFailure(@NonNull Exception e) {
+                                    e.printStackTrace();
                                     Toast.makeText(mContext, "Failed to Load data", Toast.LENGTH_SHORT).show();
-                                    pbAlumniFragment.setVisibility(View.INVISIBLE);
+                                    if(pbAlumniFragment != null)
+                                        pbAlumniFragment.setVisibility(View.INVISIBLE);
                                 }
                             });
                 } else {
                     mFirestore.collection(Constants.USER_COLLECTION)
-                            .whereEqualTo("mTypeOfUser", "Alumni")
                             .orderBy("mEmail")
+                            .whereEqualTo("mTypeOfUser", "Alumni")
                             .startAfter(mLastVisible)
                             .limit(LIMIT)
                             .get()
@@ -327,8 +330,10 @@ public class AlumniFragment extends Fragment implements AlumniAdapter.OnAlumniCl
                             .addOnFailureListener(new OnFailureListener() {
                                 @Override
                                 public void onFailure(@NonNull Exception e) {
+                                    e.printStackTrace();
                                     Toast.makeText(mContext, "Failed to Load data", Toast.LENGTH_SHORT).show();
-                                    pbAlumniFragment.setVisibility(View.INVISIBLE);
+                                    if(pbAlumniFragment != null)
+                                        pbAlumniFragment.setVisibility(View.INVISIBLE);
                                 }
                             });
                 }
