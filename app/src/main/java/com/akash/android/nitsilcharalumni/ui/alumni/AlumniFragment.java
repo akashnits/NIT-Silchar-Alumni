@@ -148,7 +148,8 @@ public class AlumniFragment extends Fragment implements AlumniAdapter.OnAlumniCl
                             for (DocumentSnapshot documentSnapshot : documentSnapshots)
                                 newAlumni.add(documentSnapshot.toObject(User.class));
                             mAlumniAdapter.addAll(newAlumni);
-                            pbAlumniFragment.setVisibility(View.INVISIBLE);
+                            if(pbAlumniFragment != null)
+                                pbAlumniFragment.setVisibility(View.INVISIBLE);
                             isLoading= false;
                         }
                     })
@@ -156,7 +157,8 @@ public class AlumniFragment extends Fragment implements AlumniAdapter.OnAlumniCl
                         @Override
                         public void onFailure(@NonNull Exception e) {
                             Toast.makeText(mContext, "Failed to Load data", Toast.LENGTH_SHORT).show();
-                            pbAlumniFragment.setVisibility(View.INVISIBLE);
+                            if(pbAlumniFragment != null)
+                                pbAlumniFragment.setVisibility(View.INVISIBLE);
                             isLoading= false;
                         }
                     });

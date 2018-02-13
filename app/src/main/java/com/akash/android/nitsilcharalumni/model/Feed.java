@@ -3,17 +3,20 @@ package com.akash.android.nitsilcharalumni.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.Keep;
 
-import com.google.firebase.firestore.FieldValue;
+import com.google.firebase.firestore.ServerTimestamp;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Date;
 import java.util.List;
 
+@Keep
 public class Feed implements Parcelable {
     private String mAuthorImageUrl;
     private String mAuthorName;
-    private HashMap<String, Object> mTimestampFeedCreated;
+    @ServerTimestamp
+    private Date mTimestamp;
     private String mFeedImageUrl;
     private String mFeedDescription;
     private List<String> mFeedSearchKeywordsList;
@@ -22,10 +25,10 @@ public class Feed implements Parcelable {
     public Feed() {
     }
 
-    public Feed(String mAuthorImageUrl, String mAuthorName, HashMap<String, Object> mTimestampFeedCreated, String mFeedImageUrl, String mFeedDescription, List<String> mFeedSearchKeywordsList, String mAuthorEmail) {
+    public Feed(String mAuthorImageUrl, String mAuthorName, Date time, String mFeedImageUrl, String mFeedDescription, List<String> mFeedSearchKeywordsList, String mAuthorEmail) {
         this.mAuthorImageUrl = mAuthorImageUrl;
         this.mAuthorName = mAuthorName;
-        this.mTimestampFeedCreated = mTimestampFeedCreated;
+        this.mTimestamp = time;
         this.mFeedImageUrl = mFeedImageUrl;
         this.mFeedDescription = mFeedDescription;
         this.mFeedSearchKeywordsList = mFeedSearchKeywordsList;
@@ -48,18 +51,12 @@ public class Feed implements Parcelable {
         this.mAuthorName = mAuthorName;
     }
 
-    public HashMap<String, Object> getmTimestampFeedCreated() {
-        if (mTimestampFeedCreated != null) {
-            return mTimestampFeedCreated;
-        }
-        //Otherwise make a new object set to ServerValue.TIMESTAMP
-        HashMap<String, Object> timeCreatedFeed = new HashMap<String, Object>();
-        timeCreatedFeed.put("timestamp", FieldValue.serverTimestamp());
-        return timeCreatedFeed;
+    public Date getmTimestamp() {
+        return mTimestamp;
     }
 
-    public void setmTimestampFeedCreated(HashMap<String, Object> mTimestampFeedCreated) {
-        this.mTimestampFeedCreated = mTimestampFeedCreated;
+    public void setmTimestamp(Date mTimestamp) {
+        this.mTimestamp = mTimestamp;
     }
 
     public String getmFeedImageUrl() {
@@ -97,11 +94,12 @@ public class Feed implements Parcelable {
     protected Feed(Parcel in) {
         mAuthorImageUrl = in.readString();
         mAuthorName = in.readString();
-        mTimestampFeedCreated = (HashMap) in.readValue(HashMap.class.getClassLoader());
+        long tmpMTimestamp = in.readLong();
+        mTimestamp = tmpMTimestamp != -1 ? new Date(tmpMTimestamp) : null;
         mFeedImageUrl = in.readString();
         mFeedDescription = in.readString();
         if (in.readByte() == 0x01) {
-            mFeedSearchKeywordsList = new ArrayList<>();
+            mFeedSearchKeywordsList = new ArrayList<String>();
             in.readList(mFeedSearchKeywordsList, String.class.getClassLoader());
         } else {
             mFeedSearchKeywordsList = null;
@@ -118,7 +116,7 @@ public class Feed implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(mAuthorImageUrl);
         dest.writeString(mAuthorName);
-        dest.writeValue(mTimestampFeedCreated);
+        dest.writeLong(mTimestamp != null ? mTimestamp.getTime() : -1L);
         dest.writeString(mFeedImageUrl);
         dest.writeString(mFeedDescription);
         if (mFeedSearchKeywordsList == null) {

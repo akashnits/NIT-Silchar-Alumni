@@ -19,6 +19,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -31,8 +32,10 @@ import com.github.jorgecastilloprz.FABProgressCircle;
 import com.github.jorgecastilloprz.listeners.FABProgressListener;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -80,6 +83,8 @@ public class CreateFeedFragment extends Fragment implements FABProgressListener 
     Toolbar toolbarCreateFeed;
     @BindView(R.id.fabLayout)
     RelativeLayout fabLayout;
+
+
 
     private FirebaseFirestore mFirebaseFirestore;
     private FirebaseAuth mAuth;
@@ -164,7 +169,7 @@ public class CreateFeedFragment extends Fragment implements FABProgressListener 
                 }.execute();
                 break;
             case R.id.btPost:
-                List<String> searchKeywordList= new ArrayList<>();
+                List<String> searchKeywordList = new ArrayList<>();
                 if (TextUtils.isEmpty(editTextFeedDescription.getText())) {
                     Toast.makeText(getContext(), "Please enter a brief decription about the post",
                             Toast.LENGTH_SHORT).show();
@@ -172,13 +177,15 @@ public class CreateFeedFragment extends Fragment implements FABProgressListener 
                 }
                 //getting the search keywords
                 if (!TextUtils.isEmpty(editTextFeedKeywords.getText())) {
-                    String feedSearchKeywords = editTextFeedKeywords.getText().toString();
+                    String feedSearchKeywords = editTextFeedKeywords.getText().toString().trim();
                     if (!Pattern.compile("(\\w+)(,\\s*\\w+)*").matcher(feedSearchKeywords).matches()) {
                         Toast.makeText(getContext(), "Search keywords should be alphanumeric and separated by comma",
                                 Toast.LENGTH_SHORT).show();
                         return;
                     }
-                    searchKeywordList = Arrays.asList(editTextFeedKeywords.getText().toString().split(",\\s*]"));
+                    searchKeywordList = Arrays.asList(feedSearchKeywords.split("\\s*,\\s*"));
+                    for (String str : searchKeywordList)
+                        Log.v(TAG, "Keyword: " + str);
                 }
 
                 //creating a Feed object
@@ -190,9 +197,29 @@ public class CreateFeedFragment extends Fragment implements FABProgressListener 
                             editTextFeedDescription.getText().toString(),
                             searchKeywordList,
                             mAuthor.getmEmail());
-                }
 
-                //TODO: Write feed data to firestore
+
+
+                    mFirebaseFirestore.collection(Constants.FEED_COLLECTION)
+                            .add(feed)
+                            .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                                @Override
+                                public void onSuccess(DocumentReference documentReference) {
+                                    Log.d(TAG, "DocumentSnapshot written with ID: " + documentReference.getId());
+                                    Toast.makeText(getContext(), "Successfully posted", Toast.LENGTH_SHORT).show();
+                                    if (getFragmentManager() != null)
+                                        getFragmentManager().popBackStackImmediate();
+                                }
+                            })
+                            .addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    Log.w(TAG, "Error adding document", e);
+                                    Toast.makeText(getContext(),
+                                            "Internal error, please try after some time", Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                }
                 break;
         }
     }
