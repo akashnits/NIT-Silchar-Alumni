@@ -8,6 +8,8 @@ import android.database.Cursor;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Parcelable;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
@@ -28,17 +30,29 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.akash.android.nitsilcharalumni.R;
 import com.akash.android.nitsilcharalumni.adapter.FeedAdapter;
 import com.akash.android.nitsilcharalumni.data.FeedContract;
+import com.akash.android.nitsilcharalumni.model.Feed;
+import com.akash.android.nitsilcharalumni.model.User;
 import com.akash.android.nitsilcharalumni.ui.MainActivity;
 import com.akash.android.nitsilcharalumni.ui.drawer.DrawerHeader;
 import com.akash.android.nitsilcharalumni.ui.drawer.DrawerMenuItem;
 import com.akash.android.nitsilcharalumni.utils.ActivityUtils;
+import com.akash.android.nitsilcharalumni.utils.Constants;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.mindorks.placeholderview.PlaceHolderView;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -70,10 +84,17 @@ public class FeedFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     PlaceHolderView drawerView;
     @BindView(R.id.drawerLayoutHome)
     DrawerLayout drawerLayout;
+    @BindView(R.id.pbFeedFragment)
+    ProgressBar pbFeedFragment;
 
     private FeedAdapter mFeedAdapter;
     private Context mContext;
     private boolean isBookmarked;
+    private FirebaseFirestore mFirestore;
+    private DocumentSnapshot mLastVisible = null;
+    private static final long LIMIT = 8;
+    private boolean isLoading;
+    private int mLastDocumentSnapshotSize;
 
     public FeedFragment() {
         // Required empty public constructor
@@ -90,6 +111,7 @@ public class FeedFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
+        mFirestore = FirebaseFirestore.getInstance();
     }
 
     @Override
@@ -115,7 +137,120 @@ public class FeedFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         rvFeed.hasFixedSize();
         mFeedAdapter = new FeedAdapter(mContext, this);
         rvFeed.setAdapter(mFeedAdapter);
+
+        if(savedInstanceState == null){
+            pbFeedFragment.setVisibility(View.VISIBLE);
+            isLoading= true;
+
+            final List<Feed> newFeed= new ArrayList<>();
+            mFirestore.collection(Constants.USER_COLLECTION)
+                    .orderBy("mTimestamp")
+                    .limit(LIMIT)
+                    .get()
+                    .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                        @Override
+                        public void onSuccess(QuerySnapshot documentSnapshots) {
+                            mLastVisible = documentSnapshots.getDocuments()
+                                    .get(documentSnapshots.size() - 1);
+                            mLastDocumentSnapshotSize= documentSnapshots.size();
+                            for (DocumentSnapshot documentSnapshot : documentSnapshots)
+                                newFeed.add(documentSnapshot.toObject(Feed.class));
+                            mFeedAdapter.addAll(newFeed);
+                            if(pbFeedFragment != null)
+                                pbFeedFragment.setVisibility(View.INVISIBLE);
+                            isLoading= false;
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Toast.makeText(mContext, "Failed to Load data", Toast.LENGTH_SHORT).show();
+                            if(pbFeedFragment != null)
+                                pbFeedFragment.setVisibility(View.INVISIBLE);
+                            isLoading= false;
+                        }
+                    });
+        }
+
+        rvFeed.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+            }
+
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                if(dy > 0){
+                    int totalItemCount = recyclerView.getLayoutManager().getItemCount();
+                    int pastVisibleItem =((LinearLayoutManager) recyclerView.getLayoutManager())
+                            .findFirstVisibleItemPosition();
+                    if ((LIMIT + pastVisibleItem) >= totalItemCount && !isLoading && mLastDocumentSnapshotSize == LIMIT) {
+                        isLoading= true;
+                        loadMore();
+                    }
+                }
+            }
+        });
     }
+
+    private void loadMore(){
+        pbFeedFragment.setVisibility(View.VISIBLE);
+        isLoading= true;
+
+        final List<Feed> newFeed= new ArrayList<>();
+        mFirestore.collection(Constants.USER_COLLECTION)
+                .orderBy("mTimeStamp")
+                .startAfter(mLastVisible)
+                .limit(LIMIT)
+                .get()
+                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    @Override
+                    public void onSuccess(QuerySnapshot documentSnapshots) {
+                        pbFeedFragment.setVisibility(View.INVISIBLE);
+                        isLoading= false;
+                        if (!documentSnapshots.isEmpty()) {
+                            mLastDocumentSnapshotSize= documentSnapshots.size();
+                            mLastVisible = documentSnapshots.getDocuments()
+                                    .get(documentSnapshots.size() - 1);
+                            for (DocumentSnapshot documentSnapshot : documentSnapshots)
+                                newFeed.add(documentSnapshot.toObject(Feed.class));
+                            mFeedAdapter.addAll(newFeed);
+                        }else {
+                            mLastDocumentSnapshotSize=0;
+                        }
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(mContext, "Failed to Load data", Toast.LENGTH_SHORT).show();
+                        pbFeedFragment.setVisibility(View.INVISIBLE);
+                        isLoading= false;
+                    }
+                });
+    }
+
+    @Override
+    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
+        super.onViewStateRestored(savedInstanceState);
+        if(savedInstanceState != null)
+        {
+            List<Feed> feedList= savedInstanceState.getParcelableArrayList("feed");
+            mFeedAdapter.addAll(feedList);
+            Parcelable savedRecyclerLayoutState = savedInstanceState.getParcelable("position");
+            rvFeed.getLayoutManager().onRestoreInstanceState(savedRecyclerLayoutState);
+        }
+    }
+
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelableArrayList("feed", mFeedAdapter.getmFeedList());
+        outState.putParcelable("position", rvFeed.getLayoutManager().onSaveInstanceState());
+    }
+
 
     @Override
     public void onAttach(Context context) {
@@ -142,7 +277,7 @@ public class FeedFragment extends Fragment implements SwipeRefreshLayout.OnRefre
                 R.id.content,
                 true,
                 "CreateFeedFragment", R.anim.enter_from_right,
-                R.anim.exit_to_left );
+                R.anim.exit_to_left);
     }
 
     @Override
@@ -236,7 +371,7 @@ public class FeedFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     }
 
     private void setupDrawer() {
-        MainActivity mainActivity= (MainActivity) getActivity();
+        MainActivity mainActivity = (MainActivity) getActivity();
         drawerView
                 .addView(new DrawerHeader())
                 .addView(new DrawerMenuItem(mContext, DrawerMenuItem.DRAWER_MENU_ITEM_PROFILE, mainActivity, this))

@@ -12,8 +12,12 @@ import android.widget.TextView;
 
 import com.akash.android.nitsilcharalumni.R;
 import com.akash.android.nitsilcharalumni.data.FeedContract;
+import com.akash.android.nitsilcharalumni.model.Feed;
 import com.akash.android.nitsilcharalumni.ui.feed.FeedFragment;
 import com.squareup.picasso.Picasso;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -25,12 +29,14 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.FeedViewHolder
     private Context mContext;
     private OnBookmarkClickedHandler mBookmarkClickedHandler;
     private ContentResolver mContentResolver;
+    private ArrayList<Feed> mFeedList;
 
 
     public FeedAdapter(Context mContext, OnBookmarkClickedHandler bookmarkClickedHandler) {
         this.mContext = mContext;
         this.mBookmarkClickedHandler= bookmarkClickedHandler;
         this.mContentResolver= mContext.getContentResolver();
+        this.mFeedList= new ArrayList<>();
     }
 
     public interface OnBookmarkClickedHandler{
@@ -76,9 +82,18 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.FeedViewHolder
 
     @Override
     public int getItemCount() {
-        return 3;
+        return mFeedList.size();
     }
 
+    public void addAll(List<Feed> newFeed) {
+        int initialSize = mFeedList.size();
+        mFeedList.addAll(newFeed);
+        notifyItemRangeInserted(initialSize, newFeed.size());
+    }
+
+    public ArrayList<Feed> getmFeedList() {
+        return mFeedList;
+    }
 
     class FeedViewHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.ivProfileIcon)
