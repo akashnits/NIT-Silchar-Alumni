@@ -16,8 +16,10 @@ import com.akash.android.nitsilcharalumni.model.Feed;
 import com.akash.android.nitsilcharalumni.ui.feed.FeedFragment;
 import com.squareup.picasso.Picasso;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -51,19 +53,35 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.FeedViewHolder
 
     @Override
     public void onBindViewHolder(FeedViewHolder holder, int position) {
-        holder.tvName.setText("Akash Gupta");
-        holder.tvFeedDescription.setText("Learning android is fun. You can turn your ideas into reality and let the world know");
-        holder.tvTimeStamp.setText("July 6, 2017");
-        holder.tvSearchHashtag.setText("#android #learning #event");
+
+        Feed feed= mFeedList.get(position);
+        if(feed != null){
+            holder.tvName.setText(feed.getmAuthorName());
+            holder.tvFeedDescription.setText(feed.getmFeedDescription());
+
+            SimpleDateFormat formatter = new SimpleDateFormat("dd MMMM yyyy", Locale.ENGLISH);
+            String strDate= formatter.format(feed.getmTimestamp());
+
+            holder.tvTimeStamp.setText(strDate);
+
+            String strSearchKeyword= "";
+            for(String searchKeyword: feed.getmFeedSearchKeywordsList())
+                strSearchKeyword.concat(" #").concat(searchKeyword);
+
+            holder.tvSearchHashtag.setText(strSearchKeyword);
+
+            loadProfileImageWithPicasso(feed.getmAuthorImageUrl(),
+                    holder);
+            loadFeedImageWithPicasso(feed.getmFeedImageUrl(), holder);
+        }
+
+
 
         if(FeedFragment.getBookmarkStatus(FeedContract.FeedEntry.CONTENT_URI, mContentResolver,
                 position))
             holder.cbBookmark.setChecked(true);
         else
             holder.cbBookmark.setChecked(false);
-
-        loadProfileImageWithPicasso("https://www2.mmu.ac.uk/research/research-study/student-profiles/james-xu/james-xu.jpg", holder);
-        loadFeedImageWithPicasso("https://c.tadst.com/gfx/750w/world-post-day.jpg?1", holder);
     }
 
     private void loadProfileImageWithPicasso(String imageUrl, FeedViewHolder holder) {

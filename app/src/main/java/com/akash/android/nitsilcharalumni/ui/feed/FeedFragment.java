@@ -92,7 +92,7 @@ public class FeedFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     private boolean isBookmarked;
     private FirebaseFirestore mFirestore;
     private DocumentSnapshot mLastVisible = null;
-    private static final long LIMIT = 8;
+    private static final long LIMIT = 4;
     private boolean isLoading;
     private int mLastDocumentSnapshotSize;
 
@@ -143,19 +143,21 @@ public class FeedFragment extends Fragment implements SwipeRefreshLayout.OnRefre
             isLoading= true;
 
             final List<Feed> newFeed= new ArrayList<>();
-            mFirestore.collection(Constants.USER_COLLECTION)
+            mFirestore.collection(Constants.FEED_COLLECTION)
                     .orderBy("mTimestamp")
                     .limit(LIMIT)
                     .get()
                     .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                         @Override
                         public void onSuccess(QuerySnapshot documentSnapshots) {
-                            mLastVisible = documentSnapshots.getDocuments()
-                                    .get(documentSnapshots.size() - 1);
-                            mLastDocumentSnapshotSize= documentSnapshots.size();
-                            for (DocumentSnapshot documentSnapshot : documentSnapshots)
-                                newFeed.add(documentSnapshot.toObject(Feed.class));
-                            mFeedAdapter.addAll(newFeed);
+                            if(documentSnapshots != null && !documentSnapshots.isEmpty()){
+                                mLastVisible = documentSnapshots.getDocuments()
+                                        .get(documentSnapshots.size() - 1);
+                                mLastDocumentSnapshotSize= documentSnapshots.size();
+                                for (DocumentSnapshot documentSnapshot : documentSnapshots)
+                                    newFeed.add(documentSnapshot.toObject(Feed.class));
+                                mFeedAdapter.addAll(newFeed);
+                            }
                             if(pbFeedFragment != null)
                                 pbFeedFragment.setVisibility(View.INVISIBLE);
                             isLoading= false;
@@ -199,7 +201,7 @@ public class FeedFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         isLoading= true;
 
         final List<Feed> newFeed= new ArrayList<>();
-        mFirestore.collection(Constants.USER_COLLECTION)
+        mFirestore.collection(Constants.FEED_COLLECTION)
                 .orderBy("mTimeStamp")
                 .startAfter(mLastVisible)
                 .limit(LIMIT)
