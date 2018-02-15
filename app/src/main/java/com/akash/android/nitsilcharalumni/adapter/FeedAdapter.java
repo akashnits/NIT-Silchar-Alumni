@@ -109,6 +109,11 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.FeedViewHolder
         notifyItemRangeInserted(initialSize, newFeed.size());
     }
 
+    public void addAllAtStart(List<Feed> newFeed){
+        mFeedList.addAll(0, newFeed);
+        notifyItemRangeChanged(0, newFeed.size());
+    }
+
     public ArrayList<Feed> getmFeedList() {
         return mFeedList;
     }
