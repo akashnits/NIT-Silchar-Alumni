@@ -177,7 +177,6 @@ public class AlumniFragment extends Fragment implements AlumniAdapter.OnAlumniCl
                     int pastVisibleItem =((LinearLayoutManager) recyclerView.getLayoutManager())
                             .findFirstVisibleItemPosition();
                     if ((LIMIT + pastVisibleItem) >= totalItemCount && !isLoading && mLastDocumentSnapshotSize == LIMIT) {
-                        isLoading= true;
                         loadMore();
                     }
                 }

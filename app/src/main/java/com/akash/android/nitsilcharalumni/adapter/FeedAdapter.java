@@ -2,6 +2,7 @@ package com.akash.android.nitsilcharalumni.adapter;
 
 import android.content.ContentResolver;
 import android.content.Context;
+import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,6 +15,7 @@ import com.akash.android.nitsilcharalumni.R;
 import com.akash.android.nitsilcharalumni.data.FeedContract;
 import com.akash.android.nitsilcharalumni.model.Feed;
 import com.akash.android.nitsilcharalumni.ui.feed.FeedFragment;
+import com.akash.android.nitsilcharalumni.utils.imageUtils.PicassoCircleTransformation;
 import com.squareup.picasso.Picasso;
 
 import java.text.SimpleDateFormat;
@@ -36,12 +38,12 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.FeedViewHolder
 
     public FeedAdapter(Context mContext, OnBookmarkClickedHandler bookmarkClickedHandler) {
         this.mContext = mContext;
-        this.mBookmarkClickedHandler= bookmarkClickedHandler;
-        this.mContentResolver= mContext.getContentResolver();
-        this.mFeedList= new ArrayList<>();
+        this.mBookmarkClickedHandler = bookmarkClickedHandler;
+        this.mContentResolver = mContext.getContentResolver();
+        this.mFeedList = new ArrayList<>();
     }
 
-    public interface OnBookmarkClickedHandler{
+    public interface OnBookmarkClickedHandler {
         void onBookmarkClicked(int position);
     }
 
@@ -54,19 +56,19 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.FeedViewHolder
     @Override
     public void onBindViewHolder(FeedViewHolder holder, int position) {
 
-        Feed feed= mFeedList.get(position);
-        if(feed != null){
+        Feed feed = mFeedList.get(position);
+        if (feed != null) {
             holder.tvName.setText(feed.getmAuthorName());
             holder.tvFeedDescription.setText(feed.getmFeedDescription());
 
             SimpleDateFormat formatter = new SimpleDateFormat("dd MMMM yyyy", Locale.ENGLISH);
-            String strDate= formatter.format(feed.getmTimestamp());
+            String strDate = formatter.format(feed.getmTimestamp());
 
             holder.tvTimeStamp.setText(strDate);
 
-            String strSearchKeyword= "";
-            for(String searchKeyword: feed.getmFeedSearchKeywordsList())
-                strSearchKeyword.concat(" #").concat(searchKeyword);
+            String strSearchKeyword = "";
+            for (String searchKeyword : feed.getmFeedSearchKeywordsList())
+                strSearchKeyword = strSearchKeyword.concat("#").concat(searchKeyword).concat(" ");
 
             holder.tvSearchHashtag.setText(strSearchKeyword);
 
@@ -76,8 +78,7 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.FeedViewHolder
         }
 
 
-
-        if(FeedFragment.getBookmarkStatus(FeedContract.FeedEntry.CONTENT_URI, mContentResolver,
+        if (FeedFragment.getBookmarkStatus(FeedContract.FeedEntry.CONTENT_URI, mContentResolver,
                 position))
             holder.cbBookmark.setChecked(true);
         else
@@ -86,8 +87,7 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.FeedViewHolder
 
     private void loadProfileImageWithPicasso(String imageUrl, FeedViewHolder holder) {
         Picasso.with(mContext).load(imageUrl)
-                .fit()
-                .centerCrop()
+                .transform(new PicassoCircleTransformation())
                 .into(holder.ivProfileIcon);
     }
 

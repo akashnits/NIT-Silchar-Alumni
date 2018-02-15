@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.akash.android.nitsilcharalumni.R;
 import com.akash.android.nitsilcharalumni.model.User;
+import com.akash.android.nitsilcharalumni.utils.imageUtils.PicassoCircleTransformation;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -56,8 +57,7 @@ public class AlumniAdapter extends RecyclerView.Adapter<AlumniAdapter.AlumniView
 
     private void loadProfileImageWithPicasso(String imageUrl, AlumniViewHolder holder){
         Picasso.with(mContext).load(imageUrl)
-                .fit()
-                .centerCrop()
+                .transform(new PicassoCircleTransformation())
                 .into(holder.ivProfileIcon);
     }
 

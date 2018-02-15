@@ -11,9 +11,10 @@
         android:layout_height="80dp"
         app:layout_constraintBottom_toBottomOf="@+id/tvName"
         app:layout_constraintTop_toBottomOf="@+id/tvName"
-        android:layout_marginStart="8dp"
+        android:layout_marginStart="4dp"
         app:layout_constraintRight_toLeftOf="@+id/tvName"
-        app:layout_constraintLeft_toLeftOf="parent" />
+        app:layout_constraintLeft_toLeftOf="parent"
+        />
 
     <TextView
         android:id="@+id/tvName"
@@ -44,11 +45,11 @@
         android:id="@+id/ivFeedImage"
         android:layout_width="0dp"
         android:layout_height="160dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="4dp"
         app:layout_constraintTop_toBottomOf="@+id/ivProfileIcon"
-        android:layout_marginEnd="8dp"
+        android:layout_marginEnd="4dp"
         app:layout_constraintRight_toRightOf="parent"
-        android:layout_marginStart="8dp"
+        android:layout_marginStart="4dp"
         app:layout_constraintLeft_toLeftOf="parent" />
 
     <TextView
@@ -58,9 +59,9 @@
         tools:text="Learning android is fun. You can turn your ideas into reality and let the world know"
         tools:layout_constraintBottom_creator="1"
         tools:layout_constraintLeft_creator="1"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="4dp"
         app:layout_constraintTop_toBottomOf="@+id/ivFeedImage"
-        android:layout_marginLeft="8dp"
+        android:layout_marginLeft="4dp"
         app:layout_constraintLeft_toLeftOf="parent" />
 
     <TextView
@@ -68,12 +69,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         tools:text="#android #learning #event "
+        android:textColor="#0084b4"
         tools:layout_constraintTop_creator="1"
-        android:layout_marginStart="8dp"
+        android:layout_marginStart="4dp"
         tools:layout_constraintLeft_creator="1"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="4dp"
         app:layout_constraintTop_toBottomOf="@+id/tvFeedDescription"
-        android:layout_marginLeft="8dp"
+        android:layout_marginLeft="4dp"
         app:layout_constraintLeft_toLeftOf="parent" />
 
     <CheckBox
@@ -81,9 +83,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:button="@drawable/bookmark_checkbox_selector"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="4dp"
         app:layout_constraintTop_toBottomOf="@+id/tvFeedDescription"
-        android:layout_marginRight="8dp"
+        android:layout_marginRight="4dp"
         app:layout_constraintRight_toRightOf="parent"
         android:focusable="false"
         android:focusableInTouchMode="false"

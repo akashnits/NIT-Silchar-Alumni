@@ -38,7 +38,6 @@ import com.akash.android.nitsilcharalumni.R;
 import com.akash.android.nitsilcharalumni.adapter.FeedAdapter;
 import com.akash.android.nitsilcharalumni.data.FeedContract;
 import com.akash.android.nitsilcharalumni.model.Feed;
-import com.akash.android.nitsilcharalumni.model.User;
 import com.akash.android.nitsilcharalumni.ui.MainActivity;
 import com.akash.android.nitsilcharalumni.ui.drawer.DrawerHeader;
 import com.akash.android.nitsilcharalumni.ui.drawer.DrawerMenuItem;
@@ -48,6 +47,7 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.mindorks.placeholderview.PlaceHolderView;
 
@@ -93,7 +93,7 @@ public class FeedFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     private FirebaseFirestore mFirestore;
     private DocumentSnapshot mLastVisible = null;
     private static final long LIMIT = 4;
-    private boolean isLoading;
+    private boolean mIsLoading;
     private int mLastDocumentSnapshotSize;
 
     public FeedFragment() {
@@ -140,11 +140,11 @@ public class FeedFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
         if(savedInstanceState == null){
             pbFeedFragment.setVisibility(View.VISIBLE);
-            isLoading= true;
+            mIsLoading = true;
 
             final List<Feed> newFeed= new ArrayList<>();
             mFirestore.collection(Constants.FEED_COLLECTION)
-                    .orderBy("mTimestamp")
+                    .orderBy("mTimestamp", Query.Direction.DESCENDING)
                     .limit(LIMIT)
                     .get()
                     .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
@@ -160,7 +160,7 @@ public class FeedFragment extends Fragment implements SwipeRefreshLayout.OnRefre
                             }
                             if(pbFeedFragment != null)
                                 pbFeedFragment.setVisibility(View.INVISIBLE);
-                            isLoading= false;
+                            mIsLoading = false;
                         }
                     })
                     .addOnFailureListener(new OnFailureListener() {
@@ -169,7 +169,7 @@ public class FeedFragment extends Fragment implements SwipeRefreshLayout.OnRefre
                             Toast.makeText(mContext, "Failed to Load data", Toast.LENGTH_SHORT).show();
                             if(pbFeedFragment != null)
                                 pbFeedFragment.setVisibility(View.INVISIBLE);
-                            isLoading= false;
+                            mIsLoading = false;
                         }
                     });
         }
@@ -187,8 +187,7 @@ public class FeedFragment extends Fragment implements SwipeRefreshLayout.OnRefre
                     int totalItemCount = recyclerView.getLayoutManager().getItemCount();
                     int pastVisibleItem =((LinearLayoutManager) recyclerView.getLayoutManager())
                             .findFirstVisibleItemPosition();
-                    if ((LIMIT + pastVisibleItem) >= totalItemCount && !isLoading && mLastDocumentSnapshotSize == LIMIT) {
-                        isLoading= true;
+                    if ((LIMIT + pastVisibleItem) >= totalItemCount && !mIsLoading && mLastDocumentSnapshotSize == LIMIT) {
                         loadMore();
                     }
                 }
@@ -198,11 +197,11 @@ public class FeedFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
     private void loadMore(){
         pbFeedFragment.setVisibility(View.VISIBLE);
-        isLoading= true;
+        mIsLoading = true;
 
         final List<Feed> newFeed= new ArrayList<>();
         mFirestore.collection(Constants.FEED_COLLECTION)
-                .orderBy("mTimeStamp")
+                .orderBy("mTimestamp", Query.Direction.DESCENDING)
                 .startAfter(mLastVisible)
                 .limit(LIMIT)
                 .get()
@@ -210,7 +209,7 @@ public class FeedFragment extends Fragment implements SwipeRefreshLayout.OnRefre
                     @Override
                     public void onSuccess(QuerySnapshot documentSnapshots) {
                         pbFeedFragment.setVisibility(View.INVISIBLE);
-                        isLoading= false;
+                        mIsLoading = false;
                         if (!documentSnapshots.isEmpty()) {
                             mLastDocumentSnapshotSize= documentSnapshots.size();
                             mLastVisible = documentSnapshots.getDocuments()
@@ -228,7 +227,7 @@ public class FeedFragment extends Fragment implements SwipeRefreshLayout.OnRefre
                     public void onFailure(@NonNull Exception e) {
                         Toast.makeText(mContext, "Failed to Load data", Toast.LENGTH_SHORT).show();
                         pbFeedFragment.setVisibility(View.INVISIBLE);
-                        isLoading= false;
+                        mIsLoading = false;
                     }
                 });
     }
