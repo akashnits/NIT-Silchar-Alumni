@@ -9,6 +9,7 @@ import android.widget.Spinner;
 
 import com.akash.android.nitsilcharalumni.BasePresenter;
 import com.akash.android.nitsilcharalumni.BaseView;
+import com.akash.android.nitsilcharalumni.model.User;
 import com.google.firebase.auth.FirebaseUser;
 
 
@@ -21,6 +22,8 @@ public class AlumniOrStudentSignUpContract {
         void showMainActivity();
 
         void showErrorMessage();
+
+        void updateClassof(String classOf);
     }
 
     public interface Presenter extends BasePresenter {
@@ -29,7 +32,7 @@ public class AlumniOrStudentSignUpContract {
 
         void loadYearOnClassOfDropDown(AdapterView adapterView, android.view.View view, int position) ;
 
-        void createAccountWithEmailAndPassword(Activity activity, String email, char[] password);
+        void createAccountWithEmailAndPassword(Activity activity, User user, char[] password);
 
         void setFirebaseUser(FirebaseUser firebaseUser);
 

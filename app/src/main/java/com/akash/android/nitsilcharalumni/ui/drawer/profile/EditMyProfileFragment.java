@@ -13,6 +13,8 @@ import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -23,6 +25,14 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.akash.android.nitsilcharalumni.R;
+import com.akash.android.nitsilcharalumni.utils.Constants;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -98,14 +108,20 @@ public class EditMyProfileFragment extends Fragment {
     CoordinatorLayout coordinatorLayoutEditMyProfile;
     Unbinder unbinder;
 
+
+    private static final String TAG = EditMyProfileFragment.class.getSimpleName();
+    private FirebaseFirestore mFirestore;
+    private FirebaseAuth mAuth;
+
     public EditMyProfileFragment() {
         // Required empty public constructor
     }
 
 
     // TODO: Rename and change types and number of parameters
-    public static EditMyProfileFragment newInstance() {
+    public static EditMyProfileFragment newInstance(Bundle args) {
         EditMyProfileFragment fragment = new EditMyProfileFragment();
+        fragment.setArguments(args);
         return fragment;
     }
 
@@ -113,6 +129,8 @@ public class EditMyProfileFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
+        mFirestore = FirebaseFirestore.getInstance();
+        mAuth = FirebaseAuth.getInstance();
     }
 
     @Override
@@ -129,12 +147,29 @@ public class EditMyProfileFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        HashMap<String, Object> userHashMap = (HashMap<String, Object>) getArguments().get("userMap");
+
         ((AppCompatActivity) getActivity()).setSupportActionBar(toolbarEditMyProfile);
         ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         collapsingToolbarLayoutEditMyProfile.setTitle("Edit Mode");
         collapsingToolbarLayoutEditMyProfile.setExpandedTitleColor(Color.WHITE);
         collapsingToolbarLayoutEditMyProfile.setCollapsedTitleTextColor(Color.WHITE);
+
+        if (userHashMap.get("mAboutYou") != null)
+            etEditAboutYouMyProfile.setText(userHashMap.get("mAboutYou").toString());
+        if (userHashMap.get("mClassOf") != null)
+            etEditClassOfMyProfile.setText(userHashMap.get("mClassOf").toString());
+        etEditLocationMyProfile.setText(userHashMap.get("mLocation").toString());
+        if (userHashMap.get("mContact") != null)
+            etContactMyProfile.setText(userHashMap.get("mContact").toString());
+        etEmailMyProfile.setText(userHashMap.get("mEmail").toString());
+        if (userHashMap.get("mOrganisation") != null)
+            etOrganisationMyProfile.setText(userHashMap.get("mOrganisation").toString());
+        if (userHashMap.get("mDesignation") != null)
+            etDesignationMyProfile.setText(userHashMap.get("mDesignation").toString());
+        if (userHashMap.get("mSkills") != null)
+            etSkillsMyProfile.setText(userHashMap.get("mSkills").toString());
     }
 
     @Override
@@ -145,7 +180,48 @@ public class EditMyProfileFragment extends Fragment {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if(item.getItemId() == R.id.editDone){
+
+        if (item.getItemId() == R.id.editDone) {
+            //build the map with the updated values
+            Map<String, Object> updatedMap = new HashMap<>();
+            if (etEditAboutYouMyProfile.getText() != null)
+                updatedMap.put("mAboutYou", etEditAboutYouMyProfile.getText().toString());
+            if (etEditClassOfMyProfile.getText() != null)
+                updatedMap.put("mClassOf", etEditClassOfMyProfile.getText().toString());
+            if(etEditLocationMyProfile.getText() != null)
+                updatedMap.put("mLocation", etEditLocationMyProfile.getText().toString());
+            if (etContactMyProfile.getText() != null)
+                updatedMap.put("mContact", etContactMyProfile.getText().toString());
+            if(etEmailMyProfile.getText() != null)
+                updatedMap.put("mEmail", etEmailMyProfile.getText().toString());
+            if (etOrganisationMyProfile.getText() != null)
+                updatedMap.put("mOrganisation", etOrganisationMyProfile.getText().toString());
+            if (etDesignationMyProfile.getText() != null)
+                updatedMap.put("mDesignation", etDesignationMyProfile.getText().toString());
+            if (etSkillsMyProfile.getText() != null)
+                updatedMap.put("mSkills", etSkillsMyProfile.getText().toString());
+
+            // write updates to the server
+            mFirestore.collection(Constants.USER_COLLECTION)
+                    .document(mAuth.getCurrentUser().getEmail())
+                    .update(updatedMap)
+                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            Log.d(TAG, "DocumentSnapshot successfully updated!");
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Log.w(TAG, "Error updating document", e);
+                        }
+                    });
+
+            // restart the loader to get the updates from server
+            MyProfileFragment frag;
+            if(( frag= (MyProfileFragment) getFragmentManager().findFragmentByTag("MyProfileFragment")) != null)
+                frag.restartLoarder();
             getFragmentManager().popBackStackImmediate();
         }
         return super.onOptionsItemSelected(item);

@@ -1,6 +1,7 @@
 package com.akash.android.nitsilcharalumni.ui.drawer.profile;
 
 
+import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -9,19 +10,35 @@ import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.AsyncTaskLoader;
+import android.support.v4.content.Loader;
+import android.support.v4.util.ObjectsCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.akash.android.nitsilcharalumni.R;
 import com.akash.android.nitsilcharalumni.ui.MainActivity;
+import com.akash.android.nitsilcharalumni.utils.Constants;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -32,7 +49,7 @@ import butterknife.Unbinder;
  * Use the {@link MyProfileFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class MyProfileFragment extends Fragment {
+public class MyProfileFragment extends Fragment implements LoaderManager.LoaderCallbacks<Map<String, Object>> {
 
 
     @BindView(R.id.backdropProfileImage)
@@ -78,13 +95,22 @@ public class MyProfileFragment extends Fragment {
     Unbinder unbinder;
     @BindView(R.id.toolbarMyProfile)
     Toolbar toolbarMyProfile;
+    @BindView(R.id.pbMyProfileFragment)
+    ProgressBar pbMyProfileFragment;
+
+    private static final String TAG = MyProfileFragment.class.getSimpleName();
+    private Context mContext;
+    private FirebaseFirestore mFirestore;
+    private FirebaseAuth mAuth;
+    public static final int USERMAP_LOADER_ID = 0;
+    private HashMap<String, Object> mUserHashMap;
+
 
     public MyProfileFragment() {
         // Required empty public constructor
     }
 
 
-    // TODO: Rename and change types and number of parameters
     public static MyProfileFragment newInstance() {
         MyProfileFragment fragment = new MyProfileFragment();
 
@@ -95,6 +121,8 @@ public class MyProfileFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
+        mFirestore = FirebaseFirestore.getInstance();
+        mAuth = FirebaseAuth.getInstance();
     }
 
     @Override
@@ -111,13 +139,22 @@ public class MyProfileFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        LoaderManager loaderManager = getLoaderManager();
+        loaderManager.initLoader(USERMAP_LOADER_ID, null, this);
+
         ((AppCompatActivity) getActivity()).setSupportActionBar(toolbarMyProfile);
         ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        collapsingToolbarLayoutMyProfile.setTitle("Akash Raj");
         collapsingToolbarLayoutMyProfile.setExpandedTitleColor(Color.WHITE);
         collapsingToolbarLayoutMyProfile.setCollapsedTitleTextColor(Color.WHITE);
 
+
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        mContext = context;
     }
 
     @Override
@@ -128,9 +165,10 @@ public class MyProfileFragment extends Fragment {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-
+        Bundle args= new Bundle();
+        args.putSerializable("userMap", mUserHashMap);
         if (item.getItemId() == R.id.editProfile)
-            ((MainActivity) getActivity()).commitEditMyProfileFragment();
+            ((MainActivity) getActivity()).commitEditMyProfileFragment(args);
 
         return super.onOptionsItemSelected(item);
     }
@@ -139,5 +177,110 @@ public class MyProfileFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         unbinder.unbind();
+    }
+
+    @Override
+    public Loader<Map<String, Object>> onCreateLoader(int id, Bundle args) {
+        return new AsyncTaskLoader<Map<String, Object>>(mContext) {
+            Map<String, Object> userMap = null;
+
+            @Override
+            protected void onStartLoading() {
+                super.onStartLoading();
+                if (userMap == null) {
+                    pbMyProfileFragment.setVisibility(View.VISIBLE);
+                    getActivity().getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
+                            WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                    forceLoad();
+                } else {
+                    deliverResult(userMap);
+                }
+            }
+
+            @Nullable
+            @Override
+            public Map<String, Object> loadInBackground() {
+                mFirestore.collection(Constants.USER_COLLECTION)
+                        .document(mAuth.getCurrentUser().getEmail())
+                        .get()
+                        .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                if (task.isSuccessful()) {
+                                    DocumentSnapshot snapshot = task.getResult();
+                                    if (snapshot.exists()) {
+                                        userMap = snapshot.getData();
+                                        mUserHashMap= toHashMap(userMap);
+                                        deliverResult(userMap);
+                                    } else {
+                                        Log.d(TAG, "No such document");
+                                    }
+                                } else {
+                                    Log.d(TAG, "get failed with ", task.getException());
+                                }
+                            }
+                        });
+                return null;
+            }
+
+            @Override
+            public void deliverResult(@Nullable Map<String, Object> data) {
+                if(data != null){
+                    userMap = data;
+                }
+                super.deliverResult(data);
+            }
+        };
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Map<String, Object>> loader, Map<String, Object> data) {
+        if(data != null) {
+            //set the data on profile fields
+            Object name= null;
+            Object email= null;
+            Object location= null;
+            Object classOf= null;
+            Object organisation= null;
+            Object aboutYou= null;
+            Object contact= null;
+            Object designation= null;
+            Object skills= null;
+
+            if(( name= data.get("mName")) != null)
+                collapsingToolbarLayoutMyProfile.setTitle(name.toString());
+            if((classOf = data.get("mClassOf")) != null)
+                tvClassofTextMyProfile.setText(classOf.toString());
+            if((location = data.get("mLocation")) != null)
+                tvLocationTextMyProfile.setText(location.toString());
+            if((email = data.get("mEmail")) != null)
+                tvEmailTextMyProfile.setText(email.toString());
+            if((organisation = data.get("mOrganisation")) != null)
+                tvOrganisationTextMyProfile.setText(organisation.toString());
+            if((aboutYou = data.get("mAboutYou")) != null)
+                tvAboutYouTextMyProfile.setText(aboutYou.toString());
+            if((contact = data.get("mContact")) != null)
+                tvContactTextMyProfile.setText(contact.toString());
+            if((designation = data.get("mDesignation")) != null)
+                tvDesignationTextMyProfile.setText(designation.toString());
+            if((skills = data.get("mSkills")) != null)
+                tvSkillsTextMyProfile.setText(skills.toString());
+
+            getActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+            pbMyProfileFragment.setVisibility(View.INVISIBLE);
+        }
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Map<String, Object>> loader) {
+
+    }
+
+    private HashMap<String, Object> toHashMap(Map<String, Object> userMap){
+        return new HashMap<>(userMap);
+    }
+
+    public void restartLoarder(){
+        getLoaderManager().restartLoader(USERMAP_LOADER_ID, null, this);
     }
 }

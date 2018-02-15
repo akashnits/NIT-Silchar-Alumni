@@ -7,6 +7,7 @@ import android.text.Editable;
 import com.akash.android.nitsilcharalumni.BasePresenter;
 import com.akash.android.nitsilcharalumni.BaseView;
 import com.akash.android.nitsilcharalumni.model.User;
+import com.akash.android.nitsilcharalumni.signup.SignUpActivity;
 import com.google.firebase.auth.FirebaseUser;
 
 
@@ -26,7 +27,7 @@ public class PlaceAutoCompleteContract {
 
         boolean validateLocationEntered(Editable location);
 
-        void createAccountWithEmailAndPassword(Activity activity, String email, char[] password);
+        void createAccountWithEmailAndPassword(SignUpActivity activity, User user, char[] password);
 
         void setFirebaseUser(FirebaseUser firebaseUser);
 

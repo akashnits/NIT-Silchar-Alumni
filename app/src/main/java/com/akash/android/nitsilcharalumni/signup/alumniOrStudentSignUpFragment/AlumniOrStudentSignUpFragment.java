@@ -53,6 +53,8 @@ public class AlumniOrStudentSignUpFragment extends Fragment implements AlumniOrS
 
     private AlumniOrStudentSignUpContract.Presenter mPresenter;
 
+    private String mClassOf;
+
     public AlumniOrStudentSignUpFragment() {
         // Required empty public constructor
     }
@@ -138,9 +140,19 @@ public class AlumniOrStudentSignUpFragment extends Fragment implements AlumniOrS
         Bundle b= getArguments();
         User user= b.getParcelable("user");
         //TODO: insert classof and organisaton in user object
+        switch(user.getmTypeOfUser()){
+            case "Student":
+                user.setmClassOf(mClassOf);
+                break;
+            case "Alumni":
+                user.setmClassOf(mClassOf);
+                user.setmOrganisation(etOrganisation.getText().toString());
+                break;
+            default:break;
+        }
 
         char[] password= b.getCharArray("password");
-        mPresenter.createAccountWithEmailAndPassword(getActivity(), user.getmEmail(), password);
+        mPresenter.createAccountWithEmailAndPassword(getActivity(), user, password);
     }
 
     @Override
@@ -153,5 +165,10 @@ public class AlumniOrStudentSignUpFragment extends Fragment implements AlumniOrS
     public void showErrorMessage() {
         Toast.makeText(getContext(), "Authentication failed: You're probably signed up already",
                 Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void updateClassof(String classOf) {
+        mClassOf= classOf;
     }
 }

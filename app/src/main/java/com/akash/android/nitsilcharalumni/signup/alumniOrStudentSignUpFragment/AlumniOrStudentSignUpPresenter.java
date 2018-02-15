@@ -11,6 +11,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.akash.android.nitsilcharalumni.R;
+import com.akash.android.nitsilcharalumni.model.User;
 import com.google.firebase.auth.FirebaseUser;
 
 public class AlumniOrStudentSignUpPresenter implements AlumniOrStudentSignUpContract.Presenter {
@@ -46,12 +47,15 @@ public class AlumniOrStudentSignUpPresenter implements AlumniOrStudentSignUpCont
         if (adapterView != null && adapterView.getChildCount() != 0) {
             ((TextView) adapterView.getChildAt(0)).setTextColor(Color.WHITE);
             ((TextView) adapterView.getChildAt(0)).setTextSize(20);
+            if(position != 0)
+                mAlumniOrStudentSignUpView.updateClassof(
+                    ((TextView)adapterView.getChildAt(0)).getText().toString());
         }
     }
 
     @Override
-    public void createAccountWithEmailAndPassword(Activity activity, String email, char[] password) {
-        mAlumniOrStudentSignUpInteractor.signUpWithEmailAndPassword(activity, email, password);
+    public void createAccountWithEmailAndPassword(Activity activity, User user, char[] password) {
+        mAlumniOrStudentSignUpInteractor.signUpWithEmailAndPassword(activity, user, password);
     }
 
     @Override

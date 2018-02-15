@@ -1,10 +1,9 @@
 package com.akash.android.nitsilcharalumni.utils;
 
-/**
- * Created by akash on 26/11/17.
- */
 
-public class Contants {
+public  class  Constants {
 
+    public static final String USER_COLLECTION= "users";
     public static final String FIREBASE_URL= "https://nit-silchar-alumni.firebaseio.com/";
+    public static final String FEED_COLLECTION= "feed";
 }

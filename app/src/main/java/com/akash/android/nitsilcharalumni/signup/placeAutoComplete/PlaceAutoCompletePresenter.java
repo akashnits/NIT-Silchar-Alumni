@@ -1,10 +1,10 @@
 package com.akash.android.nitsilcharalumni.signup.placeAutoComplete;
 
-import android.app.Activity;
 import android.text.Editable;
 import android.text.TextUtils;
 
 import com.akash.android.nitsilcharalumni.model.User;
+import com.akash.android.nitsilcharalumni.signup.SignUpActivity;
 import com.google.firebase.auth.FirebaseUser;
 
 /**
@@ -42,8 +42,8 @@ public class PlaceAutoCompletePresenter implements PlaceAutoCompleteContract.Pre
     }
 
     @Override
-    public void createAccountWithEmailAndPassword(Activity activity, String email, char[] password) {
-        mPlaceAutoCompleteInteractor.signUpWithEmailAndPassword(activity, email, password);
+    public void createAccountWithEmailAndPassword(SignUpActivity activity, User user, char[] password) {
+        mPlaceAutoCompleteInteractor.signUpWithEmailAndPassword(activity, user, password);
     }
 
     @Override

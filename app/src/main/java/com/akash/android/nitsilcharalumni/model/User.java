@@ -14,16 +14,20 @@ public class User implements Parcelable {
     private String mGender;
     private String mTypeOfUser;
     private String mLocation;
-    private int mClassOf;
+    private String mClassOf;
     private String mOrganisation;
+    private String mAboutYou;
+    private String mContact;
+    private String mDesignation;
+    private String mSkills;
 
+    public User() {}
 
     public User(String mName, String mEmail, String mGender, String mTypeOfUser) {
         this.mName = mName;
         this.mEmail = mEmail;
         this.mGender = mGender;
         this.mTypeOfUser = mTypeOfUser;
-
     }
 
     public String getmName() {
@@ -46,7 +50,7 @@ public class User implements Parcelable {
         return mLocation;
     }
 
-    public int getmClassOf() {
+    public String getmClassOf() {
         return mClassOf;
     }
 
@@ -74,12 +78,44 @@ public class User implements Parcelable {
         this.mLocation = mLocation;
     }
 
-    public void setmClassOf(int mClassOf) {
+    public void setmClassOf(String mClassOf) {
         this.mClassOf = mClassOf;
     }
 
     public void setmOrganisation(String mOrganisation) {
         this.mOrganisation = mOrganisation;
+    }
+
+    public String getmAboutYou() {
+        return mAboutYou;
+    }
+
+    public void setmAboutYou(String mAboutYou) {
+        this.mAboutYou = mAboutYou;
+    }
+
+    public String getmContact() {
+        return mContact;
+    }
+
+    public void setmContact(String mContact) {
+        this.mContact = mContact;
+    }
+
+    public String getmDesignation() {
+        return mDesignation;
+    }
+
+    public void setmDesignation(String mDesignation) {
+        this.mDesignation = mDesignation;
+    }
+
+    public String getmSkills() {
+        return mSkills;
+    }
+
+    public void setmSkills(String mSkills) {
+        this.mSkills = mSkills;
     }
 
     public HashMap<String, Object> toMap()
@@ -92,6 +128,10 @@ public class User implements Parcelable {
         userMap.put("location", mLocation);
         userMap.put("classOf", mClassOf);
         userMap.put("organisation", mOrganisation);
+        userMap.put("aboutYou", mAboutYou);
+        userMap.put("contact", mContact);
+        userMap.put("designation", mDesignation);
+        userMap.put("skills", mSkills);
         return userMap;
     }
 
@@ -101,8 +141,12 @@ public class User implements Parcelable {
         mGender = in.readString();
         mTypeOfUser = in.readString();
         mLocation = in.readString();
-        mClassOf = in.readInt();
+        mClassOf = in.readString();
         mOrganisation = in.readString();
+        mAboutYou= in.readString();
+        mContact= in.readString();
+        mDesignation= in.readString();
+        mSkills= in.readString();
     }
 
     @Override
@@ -117,8 +161,12 @@ public class User implements Parcelable {
         dest.writeString(mGender);
         dest.writeString(mTypeOfUser);
         dest.writeString(mLocation);
-        dest.writeInt(mClassOf);
+        dest.writeString(mClassOf);
         dest.writeString(mOrganisation);
+        dest.writeString(mAboutYou);
+        dest.writeString(mContact);
+        dest.writeString(mDesignation);
+        dest.writeString(mSkills);
     }
 
     @SuppressWarnings("unused")
