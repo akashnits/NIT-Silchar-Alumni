@@ -3,15 +3,21 @@ package com.akash.android.nitsilcharalumni.signup.placeAutoComplete;
 import android.text.Editable;
 import android.text.TextUtils;
 
+import com.akash.android.nitsilcharalumni.data.DataManager;
 import com.akash.android.nitsilcharalumni.model.User;
 import com.akash.android.nitsilcharalumni.signup.SignUpActivity;
 import com.google.firebase.auth.FirebaseUser;
+
+import javax.inject.Inject;
 
 /**
  * Created by 20125350 on 11/16/2017.
  */
 
 public class PlaceAutoCompletePresenter implements PlaceAutoCompleteContract.Presenter {
+
+    @Inject
+    DataManager mDataManager;
 
     private PlaceAutoCompleteContract.View mPlaceAutoCompleteView;
 
@@ -55,5 +61,10 @@ public class PlaceAutoCompletePresenter implements PlaceAutoCompleteContract.Pre
     @Override
     public void loadErrorMessage() {
         mPlaceAutoCompleteView.showErrorMessage();
+    }
+
+    @Override
+    public void saveLoggedInUserName(String name) {
+        mPlaceAutoCompleteView.saveLoggedInUsername(name);
     }
 }

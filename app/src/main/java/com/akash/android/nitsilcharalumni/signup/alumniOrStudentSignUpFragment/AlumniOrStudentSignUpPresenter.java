@@ -73,4 +73,9 @@ public class AlumniOrStudentSignUpPresenter implements AlumniOrStudentSignUpCont
     public boolean validateSpinnerItemSelected(Spinner classOf) {
         return classOf.getSelectedItem().toString().equals("Select");
     }
+
+    @Override
+    public void saveLoggedInUserName(String name) {
+        mAlumniOrStudentSignUpView.saveLoggedInUsername(name);
+    }
 }

@@ -205,4 +205,9 @@ public class PlaceAutoCompleteFragment extends Fragment implements PlaceAutoComp
         startActivity(new Intent(getActivity(), MainActivity.class));
         ((SignUpActivity) getActivity()).finish();
     }
+
+    @Override
+    public void saveLoggedInUsername(String name) {
+        mDatamanager.saveUserName(name);
+    }
 }

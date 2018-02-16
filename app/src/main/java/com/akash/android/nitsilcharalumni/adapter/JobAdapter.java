@@ -9,7 +9,14 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.akash.android.nitsilcharalumni.R;
+import com.akash.android.nitsilcharalumni.model.Job;
+import com.akash.android.nitsilcharalumni.utils.imageUtils.PicassoCircleTransformation;
 import com.squareup.picasso.Picasso;
+
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -17,10 +24,14 @@ import butterknife.ButterKnife;
 
 public class JobAdapter extends RecyclerView.Adapter<JobAdapter.JobViewHolder> {
 
+
     private Context mContext;
+    private ArrayList<Job> mJobList;
+
 
     public JobAdapter(Context mContext) {
         this.mContext = mContext;
+        this.mJobList = new ArrayList<>();
     }
 
     @Override
@@ -31,28 +42,39 @@ public class JobAdapter extends RecyclerView.Adapter<JobAdapter.JobViewHolder> {
 
     @Override
     public void onBindViewHolder(JobViewHolder holder, int position) {
-        holder.tvNameJob.setText("Akash Raj");
-        holder.tvClassOfJob.setText("2013");
-        holder.tvOrganisationNameJob.setText("L & T Technology Services");
-        holder.tvJobDescription.setText("Hiring for 2 years experienced Android developer who is passionate about learning new technologies ");
-        holder.tvJobOrganisationName.setText("Google Inc.");
-        holder.tvJobTtitle.setText("Android developer");
-        holder.tvJobLocation.setText("Bangalore");
-        holder.tvJobSearchHashtag.setText("#android #java");
+        Job job = mJobList.get(position);
+        if (job != null) {
 
-        loadProfileImageWithPicasso("https://www2.mmu.ac.uk/research/research-study/student-profiles/james-xu/james-xu.jpg", holder);
-        loadFeedImageWithPicasso("https://c.tadst.com/gfx/750w/world-post-day.jpg?1", holder);
+            holder.tvNameJob.setText(job.getmAuthorName());
 
+            SimpleDateFormat formatter = new SimpleDateFormat("dd MMMM yyyy", Locale.ENGLISH);
+            String strDate = formatter.format(job.getmTimestamp());
+
+            holder.tvTimeStampJob.setText(strDate);
+
+            holder.tvJobDescription.setText(job.getmJobDescription());
+            holder.tvJobOrganisationName.setText(job.getmJobOrganisation());
+            holder.tvJobTtitle.setText(job.getmJobTitle() + ", ");
+            holder.tvJobLocation.setText(job.getmJobLocation());
+
+            String strSearchKeyword = "";
+            for (String searchKeyword : job.getmJobSearchKeywordsList())
+                strSearchKeyword = strSearchKeyword.concat("#").concat(searchKeyword).concat(" ");
+
+            holder.tvJobSearchHashtag.setText(strSearchKeyword);
+
+            loadProfileImageWithPicasso("https://www2.mmu.ac.uk/research/research-study/student-profiles/james-xu/james-xu.jpg", holder);
+            loadFeedImageWithPicasso("https://c.tadst.com/gfx/750w/world-post-day.jpg?1", holder);
+        }
     }
 
-    private void loadProfileImageWithPicasso(String imageUrl, JobViewHolder holder){
+    private void loadProfileImageWithPicasso(String imageUrl, JobViewHolder holder) {
         Picasso.with(mContext).load(imageUrl)
-                .fit()
-                .centerCrop()
+                .transform(new PicassoCircleTransformation())
                 .into(holder.ivProfileIconJob);
     }
 
-    private void loadFeedImageWithPicasso(String imageUrl, JobViewHolder holder){
+    private void loadFeedImageWithPicasso(String imageUrl, JobViewHolder holder) {
         Picasso.with(mContext).load(imageUrl)
                 .fit()
                 .centerCrop()
@@ -61,7 +83,22 @@ public class JobAdapter extends RecyclerView.Adapter<JobAdapter.JobViewHolder> {
 
     @Override
     public int getItemCount() {
-        return 5;
+        return mJobList.size();
+    }
+
+    public void addAll(List<Job> newJob) {
+        int initialSize = mJobList.size();
+        mJobList.addAll(newJob);
+        notifyItemRangeInserted(initialSize, newJob.size());
+    }
+
+    public void addAllAtStart(List<Job> newJob) {
+        mJobList.addAll(0, newJob);
+        notifyItemRangeChanged(0, newJob.size());
+    }
+
+    public ArrayList<Job> getmJobList() {
+        return mJobList;
     }
 
     class JobViewHolder extends RecyclerView.ViewHolder {
@@ -70,10 +107,8 @@ public class JobAdapter extends RecyclerView.Adapter<JobAdapter.JobViewHolder> {
         ImageView ivProfileIconJob;
         @BindView(R.id.tvNameJob)
         TextView tvNameJob;
-        @BindView(R.id.tvClassOfJob)
-        TextView tvClassOfJob;
-        @BindView(R.id.tvOrganisationNameJob)
-        TextView tvOrganisationNameJob;
+        @BindView(R.id.tvTimeStampJob)
+        TextView tvTimeStampJob;
         @BindView(R.id.tvJobTtitle)
         TextView tvJobTtitle;
         @BindView(R.id.tvJobLocation)

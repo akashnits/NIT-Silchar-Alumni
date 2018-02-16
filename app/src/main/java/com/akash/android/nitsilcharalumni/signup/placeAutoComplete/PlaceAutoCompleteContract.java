@@ -19,6 +19,8 @@ public class PlaceAutoCompleteContract {
         void showErrorMessage();
 
         void showMainActivity();
+
+        void saveLoggedInUsername(String name);
     }
 
     public interface Presenter extends BasePresenter {
@@ -32,5 +34,7 @@ public class PlaceAutoCompleteContract {
         void setFirebaseUser(FirebaseUser firebaseUser);
 
         void loadErrorMessage();
+
+        void saveLoggedInUserName(String name);
     }
 }

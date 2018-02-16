@@ -24,7 +24,13 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.akash.android.nitsilcharalumni.NITSilcharAlumniApp;
 import com.akash.android.nitsilcharalumni.R;
+import com.akash.android.nitsilcharalumni.data.DataManager;
+import com.akash.android.nitsilcharalumni.di.component.CreateFeedFragmentComponent;
+import com.akash.android.nitsilcharalumni.di.component.CreateJobFragmentComponent;
+import com.akash.android.nitsilcharalumni.di.component.DaggerCreateFeedFragmentComponent;
+import com.akash.android.nitsilcharalumni.di.module.CreateFeedFragmentModule;
 import com.akash.android.nitsilcharalumni.model.Feed;
 import com.akash.android.nitsilcharalumni.model.User;
 import com.akash.android.nitsilcharalumni.utils.Constants;
@@ -43,6 +49,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Pattern;
+
+import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -84,11 +92,13 @@ public class CreateFeedFragment extends Fragment implements FABProgressListener 
     @BindView(R.id.fabLayout)
     RelativeLayout fabLayout;
 
+    @Inject
+    DataManager mDatamanager;
 
-
+    private CreateFeedFragmentComponent createFeedFragmentComponent;
     private FirebaseFirestore mFirebaseFirestore;
     private FirebaseAuth mAuth;
-    private User mAuthor;
+    private String mAuthorName;
 
     public CreateFeedFragment() {
         // Required empty public constructor
@@ -105,7 +115,17 @@ public class CreateFeedFragment extends Fragment implements FABProgressListener 
         setRetainInstance(true);
         mFirebaseFirestore = FirebaseFirestore.getInstance();
         mAuth = FirebaseAuth.getInstance();
-        downloadAuthorData();
+        getCreateFeedFragmentComponent().inject(this);
+    }
+
+    public CreateFeedFragmentComponent getCreateFeedFragmentComponent(){
+        if (createFeedFragmentComponent == null) {
+            createFeedFragmentComponent = DaggerCreateFeedFragmentComponent.builder()
+                    .createFeedFragmentModule(new CreateFeedFragmentModule(this))
+                    .appComponent(NITSilcharAlumniApp.get(getContext()).getAppComponent())
+                    .build();
+        }
+        return createFeedFragmentComponent;
     }
 
     @Override
@@ -188,15 +208,16 @@ public class CreateFeedFragment extends Fragment implements FABProgressListener 
                         Log.v(TAG, "Keyword: " + str);
                 }
 
+                mAuthorName= mDatamanager.getUserName();
                 //creating a Feed object
-                if (mAuthor != null) {
+                if (mAuthorName != null) {
                     Feed feed = new Feed("https://www2.mmu.ac.uk/research/research-study/student-profiles/james-xu/james-xu.jpg",
-                            mAuthor.getmName(),
+                            mAuthorName,
                             null,
                             "https://c.tadst.com/gfx/750w/world-post-day.jpg?1",
                             editTextFeedDescription.getText().toString(),
                             searchKeywordList,
-                            mAuthor.getmEmail());
+                            mAuth.getCurrentUser().getEmail());
 
 
 
@@ -224,28 +245,5 @@ public class CreateFeedFragment extends Fragment implements FABProgressListener 
         }
     }
 
-    private void downloadAuthorData() {
-        String authorEmail = mAuth.getCurrentUser() != null ? mAuth.getCurrentUser().getEmail() : null;
-        if (authorEmail != null) {
-            //get user's display name
-            mFirebaseFirestore.collection(Constants.USER_COLLECTION)
-                    .document(authorEmail)
-                    .get()
-                    .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                        @Override
-                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                            if (task.isSuccessful()) {
-                                DocumentSnapshot document = task.getResult();
-                                if (document != null) {
-                                    mAuthor = document.toObject(User.class);
-                                } else {
-                                    Log.d(TAG, "No such document");
-                                }
-                            } else {
-                                Log.d(TAG, "get failed with ", task.getException());
-                            }
-                        }
-                    });
-        }
-    }
+
 }

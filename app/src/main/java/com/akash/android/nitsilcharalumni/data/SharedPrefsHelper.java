@@ -12,6 +12,8 @@ public class SharedPrefsHelper {
 
     public static String PREF_KEY_USERTYPE = "typeOfUser";
 
+    public static String PREF_KEY_USERNAME = "username";
+
     private SharedPreferences mSharedPreferences;
 
     @Inject

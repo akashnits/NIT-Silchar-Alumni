@@ -1,11 +1,12 @@
 package com.akash.android.nitsilcharalumni.login;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
+import com.akash.android.nitsilcharalumni.model.User;
+import com.akash.android.nitsilcharalumni.utils.Constants;
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
@@ -24,7 +25,8 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.firebase.auth.GoogleAuthProvider;
-
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 
 public class LoginInteractor  {
@@ -39,12 +41,14 @@ public class LoginInteractor  {
 
     private CallbackManager mCallbackManager;
 
+    private FirebaseFirestore mFirebaseFirestore;
+
     public LoginInteractor() {
     }
 
     public LoginInteractor(LoginContract.Presenter mLoginPresenter) {
         this.mLoginPresenter = mLoginPresenter;
-
+        mFirebaseFirestore= FirebaseFirestore.getInstance();
         mAuth = FirebaseAuth.getInstance();
     }
 
@@ -59,6 +63,7 @@ public class LoginInteractor  {
                         if (task.isSuccessful()) {
                             Log.d(TAG, "signInWithEmail:success");
                             FirebaseUser user = mAuth.getCurrentUser();
+                            downloadUserData();
                             mLoginPresenter.loadMainActivity();
                         } else {
                             // If sign in fails, display a message to the user.
@@ -109,6 +114,7 @@ public class LoginInteractor  {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "signInWithCredential:success");
                             FirebaseUser user = mAuth.getCurrentUser();
+                            downloadUserData();
                             mLoginPresenter.loadMainActivity();
                         } else {
                             // If sign in fails, display a message to the user.
@@ -158,6 +164,7 @@ public class LoginInteractor  {
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "signInWithCredential:success");
+                            downloadUserData();
                             mLoginPresenter.loadMainActivity();
                         } else {
                             // If sign in fails, display a message to the user.
@@ -166,6 +173,32 @@ public class LoginInteractor  {
                         }
                     }
                 });
+    }
+
+    private void downloadUserData() {
+        String authorEmail = mAuth.getCurrentUser() != null ? mAuth.getCurrentUser().getEmail() : null;
+        if (authorEmail != null) {
+            //get user's display name
+            mFirebaseFirestore.collection(Constants.USER_COLLECTION)
+                    .document(authorEmail)
+                    .get()
+                    .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                            if (task.isSuccessful()) {
+                                DocumentSnapshot document = task.getResult();
+                                if (document != null) {
+                                    User user = document.toObject(User.class);
+                                    mLoginPresenter.saveLoggedInUserData(user);
+                                } else {
+                                    Log.d(TAG, "No such document");
+                                }
+                            } else {
+                                Log.d(TAG, "get failed with ", task.getException());
+                            }
+                        }
+                    });
+        }
     }
 }
 

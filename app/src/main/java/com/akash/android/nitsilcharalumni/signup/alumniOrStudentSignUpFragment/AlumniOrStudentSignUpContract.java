@@ -24,6 +24,8 @@ public class AlumniOrStudentSignUpContract {
         void showErrorMessage();
 
         void updateClassof(String classOf);
+
+        void saveLoggedInUsername(String name);
     }
 
     public interface Presenter extends BasePresenter {
@@ -39,5 +41,7 @@ public class AlumniOrStudentSignUpContract {
         void loadErrorMessage();
 
         boolean validateSpinnerItemSelected(Spinner classOf);
+
+        void saveLoggedInUserName(String name);
     }
 }

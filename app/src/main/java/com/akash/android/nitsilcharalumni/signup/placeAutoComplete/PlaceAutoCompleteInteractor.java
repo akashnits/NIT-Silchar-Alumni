@@ -48,8 +48,7 @@ public class PlaceAutoCompleteInteractor {
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "createUserWithEmail:success");
-                            FirebaseUser fUser = mAuth.getCurrentUser();
-                            mPlaceAutoCompletePresenter.setFirebaseUser(fUser);
+                            final FirebaseUser fUser = mAuth.getCurrentUser();
                             new AsyncTask<Void, Void, Void>(){
                                 @Override
                                 protected void onPreExecute() {
@@ -63,6 +62,7 @@ public class PlaceAutoCompleteInteractor {
                                             .set(user).addOnSuccessListener(new OnSuccessListener<Void>() {
                                         @Override
                                         public void onSuccess(Void aVoid) {
+                                            mPlaceAutoCompletePresenter.saveLoggedInUserName(user.getmName());
                                             Log.d(TAG, "DocumentSnapshot successfully written!");
                                         }
                                     }).addOnFailureListener(new OnFailureListener() {
@@ -77,6 +77,7 @@ public class PlaceAutoCompleteInteractor {
                                 @Override
                                 protected void onPostExecute(Void aVoid) {
                                     super.onPostExecute(aVoid);
+                                    mPlaceAutoCompletePresenter.setFirebaseUser(fUser);
                                 }
                             }.execute();
                         } else {

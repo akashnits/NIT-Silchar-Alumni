@@ -3,11 +3,13 @@ package com.akash.android.nitsilcharalumni.login;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BaseTransientBottomBar;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,11 +18,23 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.akash.android.nitsilcharalumni.NITSilcharAlumniApp;
 import com.akash.android.nitsilcharalumni.R;
+import com.akash.android.nitsilcharalumni.data.DataManager;
+import com.akash.android.nitsilcharalumni.di.component.DaggerLoginFragmentComponent;
+import com.akash.android.nitsilcharalumni.di.component.LoginFragmentComponent;
+import com.akash.android.nitsilcharalumni.di.module.LoginFragmentModule;
+import com.akash.android.nitsilcharalumni.model.User;
 import com.akash.android.nitsilcharalumni.ui.MainActivity;
 import com.akash.android.nitsilcharalumni.signup.SignUpActivity;
+import com.akash.android.nitsilcharalumni.utils.Constants;
 import com.facebook.login.widget.LoginButton;
 import com.google.android.gms.common.SignInButton;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentSnapshot;
+
+import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -57,6 +71,11 @@ public class LoginFragment extends Fragment implements LoginContract.View {
 
     private LoginContract.Presenter mLoginContractPresenter;
 
+    private LoginFragmentComponent loginFragmentComponent;
+
+    @Inject
+    DataManager mDataManager;
+
     public LoginFragment() {
         // Required empty public constructor
     }
@@ -66,6 +85,7 @@ public class LoginFragment extends Fragment implements LoginContract.View {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mLoginContractPresenter= new LoginPresenter(this);
+        getLoginFragmentComponent().inject(this);
     }
 
     @Override
@@ -147,5 +167,20 @@ public class LoginFragment extends Fragment implements LoginContract.View {
         super.onActivityResult(requestCode, resultCode, data);
         mLoginContractPresenter.onActivityResultCallbackReceived(requestCode, resultCode, data,
                 (LoginActivity) getActivity());
+    }
+
+    public LoginFragmentComponent getLoginFragmentComponent() {
+        if (loginFragmentComponent == null) {
+            loginFragmentComponent = DaggerLoginFragmentComponent.builder()
+                    .loginFragmentModule(new LoginFragmentModule(this))
+                    .appComponent(NITSilcharAlumniApp.get(getContext()).getAppComponent())
+                    .build();
+        }
+        return loginFragmentComponent;
+    }
+
+    @Override
+    public void saveLoggedInUsername(String name) {
+        mDataManager.saveUserName(name);
     }
 }

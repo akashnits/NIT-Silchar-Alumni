@@ -47,8 +47,7 @@ public class AlumniOrStudentSignUpInteractor {
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "createUserWithEmail:success");
-                            FirebaseUser fUser = mAuth.getCurrentUser();
-                            mAlumniOrStudentSignUpPresenter.setFirebaseUser(fUser);
+                            final FirebaseUser fUser = mAuth.getCurrentUser();
                             new AsyncTask<Void, Void, Void>(){
                                 @Override
                                 protected void onPreExecute() {
@@ -63,6 +62,8 @@ public class AlumniOrStudentSignUpInteractor {
                                         @Override
                                         public void onSuccess(Void aVoid) {
                                             Log.d(TAG, "DocumentSnapshot successfully written!");
+                                            mAlumniOrStudentSignUpPresenter.saveLoggedInUserName
+                                                    (user.getmName());
                                         }
                                     }).addOnFailureListener(new OnFailureListener() {
                                         @Override
@@ -76,6 +77,7 @@ public class AlumniOrStudentSignUpInteractor {
                                 @Override
                                 protected void onPostExecute(Void aVoid) {
                                     super.onPostExecute(aVoid);
+                                    mAlumniOrStudentSignUpPresenter.setFirebaseUser(fUser);
                                 }
                             }.execute();
                         } else {
