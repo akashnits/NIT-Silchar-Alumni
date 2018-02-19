@@ -51,8 +51,10 @@ import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.mindorks.placeholderview.PlaceHolderView;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -327,19 +329,29 @@ public class FeedFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         isBookmarked = getBookmarkStatus(uri, resolver, position);
 
         if (!isBookmarked) {
+            Feed feed= mFeedAdapter.getFeedObjectAtPosition(position);
             ContentValues cv = new ContentValues();
             cv.put(FeedContract.FeedEntry.COLUMN_FEED_ID, position);
             cv.put(FeedContract.FeedEntry.COLUMN_FEED_IMAGE_URL,
-                    "https://c.tadst.com/gfx/750w/world-post-day.jpg?1");
+                    feed.getmFeedImageUrl());
             cv.put(FeedContract.FeedEntry.COLUMN_PROFILE_IMAGE_URL,
-                    "https://www2.mmu.ac.uk/research/research-study/student-profiles/james-xu/james-xu.jpg");
-            cv.put(FeedContract.FeedEntry.COLUMN_PROFILE_NAME, "Akash Gupta");
+                    feed.getmAuthorImageUrl());
+            cv.put(FeedContract.FeedEntry.COLUMN_PROFILE_NAME, feed.getmAuthorName());
             cv.put(FeedContract.FeedEntry.COLUMN_FEED_DESCRIPTION,
-                    "Learning android is fun. You can turn your ideas into reality and let the world know");
+                    feed.getmFeedDescription());
+
+            SimpleDateFormat formatter = new SimpleDateFormat("dd MMMM yyyy", Locale.ENGLISH);
+            String strDate = formatter.format(feed.getmTimestamp());
+
             cv.put(FeedContract.FeedEntry.COLUMN_FEED_TIMESTAMP,
-                    "July 6, 2017");
+                    strDate);
+
+            String strSearchKeyword = "";
+            for (String searchKeyword : feed.getmFeedSearchKeywordsList())
+                strSearchKeyword = strSearchKeyword.concat("#").concat(searchKeyword).concat(" ");
+
             cv.put(FeedContract.FeedEntry.COLUMN_FEED_HASHTAG,
-                    "#android #learning #event");
+                    strSearchKeyword);
             Uri returnedUri = resolver.insert(uri, cv);
             Log.v(TAG, "Inserted uri: " + returnedUri);
             isBookmarked = true;

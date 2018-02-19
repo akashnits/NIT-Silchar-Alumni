@@ -118,6 +118,10 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.FeedViewHolder
         return mFeedList;
     }
 
+    public Feed getFeedObjectAtPosition(int position){
+        return mFeedList.get(position);
+    }
+
     class FeedViewHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.ivProfileIcon)
         ImageView ivProfileIcon;
