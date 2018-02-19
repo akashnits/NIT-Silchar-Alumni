@@ -45,7 +45,9 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 import javax.inject.Inject;
@@ -207,7 +209,7 @@ public class CreateJobFragment extends Fragment implements FABProgressListener {
                 }.execute();
                 break;
             case R.id.btPostJob:
-                List<String> searchKeywordList = new ArrayList<>();
+                Map<String, Boolean> searchKeywordMap = new HashMap<>();
                 if (TextUtils.isEmpty(editTextPostJobKeywords.getText())) {
                     Toast.makeText(getContext(), "Please enter a brief decription about the post",
                             Toast.LENGTH_SHORT).show();
@@ -221,7 +223,9 @@ public class CreateJobFragment extends Fragment implements FABProgressListener {
                                 Toast.LENGTH_SHORT).show();
                         return;
                     }
-                    searchKeywordList = Arrays.asList(jobSearchKeywords.split("\\s*,\\s*"));
+                    String[] searchKeywordArray = jobSearchKeywords.split("\\s*,\\s*");
+                    for (String str : searchKeywordArray)
+                        searchKeywordMap.put(str, true);
                 }
 
                 mAuthorName= mDataManager.getUserName();
@@ -235,7 +239,7 @@ public class CreateJobFragment extends Fragment implements FABProgressListener {
                             editTextPostJobOrganiation.getText().toString(),
                             editTextPostJobDescription.getText().toString(),
                             "https://c.tadst.com/gfx/750w/world-post-day.jpg?1",
-                            searchKeywordList);
+                            searchKeywordMap);
 
 
 

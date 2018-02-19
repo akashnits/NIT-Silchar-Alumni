@@ -9,7 +9,9 @@ import com.google.firebase.firestore.ServerTimestamp;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Keep
 public class Feed implements Parcelable {
@@ -19,19 +21,20 @@ public class Feed implements Parcelable {
     private Date mTimestamp;
     private String mFeedImageUrl;
     private String mFeedDescription;
-    private List<String> mFeedSearchKeywordsList;
+    private Map<String, Boolean> mFeedSearchKeywordsMap;
     private String mAuthorEmail;
 
     public Feed() {
     }
 
-    public Feed(String mAuthorImageUrl, String mAuthorName, Date time, String mFeedImageUrl, String mFeedDescription, List<String> mFeedSearchKeywordsList, String mAuthorEmail) {
+    public Feed(String mAuthorImageUrl, String mAuthorName, Date time, String mFeedImageUrl,
+                String mFeedDescription, Map<String, Boolean> mFeedSearchKeywordsMap, String mAuthorEmail) {
         this.mAuthorImageUrl = mAuthorImageUrl;
         this.mAuthorName = mAuthorName;
         this.mTimestamp = time;
         this.mFeedImageUrl = mFeedImageUrl;
         this.mFeedDescription = mFeedDescription;
-        this.mFeedSearchKeywordsList = mFeedSearchKeywordsList;
+        this.mFeedSearchKeywordsMap = mFeedSearchKeywordsMap;
         this.mAuthorEmail = mAuthorEmail;
     }
 
@@ -75,12 +78,12 @@ public class Feed implements Parcelable {
         this.mFeedDescription = mFeedDescription;
     }
 
-    public List<String> getmFeedSearchKeywordsList() {
-        return mFeedSearchKeywordsList;
+    public Map<String, Boolean> getmFeedSearchKeywordsMap() {
+        return mFeedSearchKeywordsMap;
     }
 
-    public void setmFeedSearchKeywordsList(List<String> mFeedSearchKeywordsList) {
-        this.mFeedSearchKeywordsList = mFeedSearchKeywordsList;
+    public void setmFeedSearchKeywordsMap(Map<String, Boolean> mFeedSearchKeywordsMap) {
+        this.mFeedSearchKeywordsMap = mFeedSearchKeywordsMap;
     }
 
     public String getmAuthorEmail() {
@@ -98,12 +101,6 @@ public class Feed implements Parcelable {
         mTimestamp = tmpMTimestamp != -1 ? new Date(tmpMTimestamp) : null;
         mFeedImageUrl = in.readString();
         mFeedDescription = in.readString();
-        if (in.readByte() == 0x01) {
-            mFeedSearchKeywordsList = new ArrayList<String>();
-            in.readList(mFeedSearchKeywordsList, String.class.getClassLoader());
-        } else {
-            mFeedSearchKeywordsList = null;
-        }
         mAuthorEmail = in.readString();
     }
 
@@ -119,12 +116,6 @@ public class Feed implements Parcelable {
         dest.writeLong(mTimestamp != null ? mTimestamp.getTime() : -1L);
         dest.writeString(mFeedImageUrl);
         dest.writeString(mFeedDescription);
-        if (mFeedSearchKeywordsList == null) {
-            dest.writeByte((byte) (0x00));
-        } else {
-            dest.writeByte((byte) (0x01));
-            dest.writeList(mFeedSearchKeywordsList);
-        }
         dest.writeString(mAuthorEmail);
     }
 

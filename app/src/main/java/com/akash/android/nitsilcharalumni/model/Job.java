@@ -9,6 +9,7 @@ import com.google.firebase.firestore.ServerTimestamp;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 public class Job implements Parcelable {
 
@@ -21,14 +22,14 @@ public class Job implements Parcelable {
     private String mJobOrganisation;
     private String mJobDescription;
     private String mJobImageUrl;
-    private List<String> mJobSearchKeywordsList;
+    private Map<String, Boolean> mJobSearchKeywordsMap;
 
     public Job() {
     }
 
     public Job(String mAuthorName, String mAuthorImageUrl, Date mTimestamp, String mJobTitle,
                String mJobLocation, String mJobOrganisation, String mJobDescription, String mJobImageUrl,
-               List<String> mJobSearchKeywordsList) {
+               Map<String, Boolean> mJobSearchKeywordsMap) {
         this.mAuthorName = mAuthorName;
         this.mAuthorImageUrl = mAuthorImageUrl;
         this.mTimestamp = mTimestamp;
@@ -37,7 +38,7 @@ public class Job implements Parcelable {
         this.mJobOrganisation = mJobOrganisation;
         this.mJobDescription = mJobDescription;
         this.mJobImageUrl = mJobImageUrl;
-        this.mJobSearchKeywordsList = mJobSearchKeywordsList;
+        this.mJobSearchKeywordsMap = mJobSearchKeywordsMap;
     }
 
     public String getmAuthorName() {
@@ -104,12 +105,12 @@ public class Job implements Parcelable {
         this.mJobImageUrl = mJobImageUrl;
     }
 
-    public List<String> getmJobSearchKeywordsList() {
-        return mJobSearchKeywordsList;
+    public Map<String, Boolean> getmJobSearchKeywordsMap() {
+        return mJobSearchKeywordsMap;
     }
 
-    public void setmJobSearchKeywordsList(List<String> mJobSearchKeywordsList) {
-        this.mJobSearchKeywordsList = mJobSearchKeywordsList;
+    public void setmJobSearchKeywordsMap(Map<String, Boolean> mJobSearchKeywordsMap) {
+        this.mJobSearchKeywordsMap = mJobSearchKeywordsMap;
     }
 
     protected Job(Parcel in) {
@@ -122,12 +123,6 @@ public class Job implements Parcelable {
         mJobOrganisation = in.readString();
         mJobDescription = in.readString();
         mJobImageUrl = in.readString();
-        if (in.readByte() == 0x01) {
-            mJobSearchKeywordsList = new ArrayList<String>();
-            in.readList(mJobSearchKeywordsList, String.class.getClassLoader());
-        } else {
-            mJobSearchKeywordsList = null;
-        }
     }
 
     @Override
@@ -145,12 +140,6 @@ public class Job implements Parcelable {
         dest.writeString(mJobOrganisation);
         dest.writeString(mJobDescription);
         dest.writeString(mJobImageUrl);
-        if (mJobSearchKeywordsList == null) {
-            dest.writeByte((byte) (0x00));
-        } else {
-            dest.writeByte((byte) (0x01));
-            dest.writeList(mJobSearchKeywordsList);
-        }
     }
 
     @SuppressWarnings("unused")

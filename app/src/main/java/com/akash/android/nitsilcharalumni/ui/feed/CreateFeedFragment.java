@@ -47,7 +47,9 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 import javax.inject.Inject;
@@ -189,12 +191,12 @@ public class CreateFeedFragment extends Fragment implements FABProgressListener 
                 }.execute();
                 break;
             case R.id.btPost:
-                List<String> searchKeywordList = new ArrayList<>();
                 if (TextUtils.isEmpty(editTextFeedDescription.getText())) {
-                    Toast.makeText(getContext(), "Please enter a brief decription about the post",
+                    Toast.makeText(getContext(), "Please enter brief description about the post",
                             Toast.LENGTH_SHORT).show();
                     return;
                 }
+                Map<String, Boolean> searchKeywordMap = new HashMap<>();
                 //getting the search keywords
                 if (!TextUtils.isEmpty(editTextFeedKeywords.getText())) {
                     String feedSearchKeywords = editTextFeedKeywords.getText().toString().trim();
@@ -203,9 +205,9 @@ public class CreateFeedFragment extends Fragment implements FABProgressListener 
                                 Toast.LENGTH_SHORT).show();
                         return;
                     }
-                    searchKeywordList = Arrays.asList(feedSearchKeywords.split("\\s*,\\s*"));
-                    for (String str : searchKeywordList)
-                        Log.v(TAG, "Keyword: " + str);
+                    String[] searchKeywordArray =feedSearchKeywords.split("\\s*,\\s*");
+                    for (String str : searchKeywordArray)
+                        searchKeywordMap.put(str, true);
                 }
 
                 mAuthorName= mDatamanager.getUserName();
@@ -216,7 +218,7 @@ public class CreateFeedFragment extends Fragment implements FABProgressListener 
                             null,
                             "https://c.tadst.com/gfx/750w/world-post-day.jpg?1",
                             editTextFeedDescription.getText().toString(),
-                            searchKeywordList,
+                            searchKeywordMap,
                             mAuth.getCurrentUser().getEmail());
 
 

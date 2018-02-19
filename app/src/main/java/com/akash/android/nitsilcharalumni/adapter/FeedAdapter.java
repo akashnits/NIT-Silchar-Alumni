@@ -20,8 +20,10 @@ import com.squareup.picasso.Picasso;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -66,9 +68,10 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.FeedViewHolder
 
             holder.tvTimeStamp.setText(strDate);
 
-            String strSearchKeyword = "";
-            for (String searchKeyword : feed.getmFeedSearchKeywordsList())
-                strSearchKeyword = strSearchKeyword.concat("#").concat(searchKeyword).concat(" ");
+            String strSearchKeyword= "";
+            Map<String, Boolean> strSearchKeywordMap = feed.getmFeedSearchKeywordsMap();
+            for (String key: strSearchKeywordMap.keySet())
+                strSearchKeyword = strSearchKeyword.concat("#").concat(key).concat(" ");
 
             holder.tvSearchHashtag.setText(strSearchKeyword);
 
@@ -112,6 +115,19 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.FeedViewHolder
     public void addAllAtStart(List<Feed> newFeed){
         mFeedList.addAll(0, newFeed);
         notifyItemRangeChanged(0, newFeed.size());
+    }
+
+    public void addAsPerSearch(List<Feed> searchedFeed){
+        //get the current items
+        int currentSize = mFeedList.size();
+        //remove the current items
+        mFeedList.clear();
+        //add all the new items
+        mFeedList.addAll(searchedFeed);
+        //tell the recycler view that all the old items are gone
+        notifyItemRangeRemoved(0, currentSize);
+        //tell the recycler view how many new items we added
+        notifyItemRangeInserted(0, mFeedList.size());
     }
 
     public ArrayList<Feed> getmFeedList() {

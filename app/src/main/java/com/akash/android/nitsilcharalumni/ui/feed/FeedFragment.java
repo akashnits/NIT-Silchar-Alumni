@@ -22,6 +22,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -281,13 +282,13 @@ public class FeedFragment extends Fragment implements SwipeRefreshLayout.OnRefre
                     public void onSuccess(QuerySnapshot documentSnapshots) {
 
                         if (documentSnapshots != null && !documentSnapshots.isEmpty()) {
-                            mDocumentAtFirstPosition= documentSnapshots.getDocuments().get(0);
+                            mDocumentAtFirstPosition = documentSnapshots.getDocuments().get(0);
                             for (DocumentSnapshot documentSnapshot : documentSnapshots)
                                 newFeed.add(documentSnapshot.toObject(Feed.class));
                             mFeedAdapter.addAllAtStart(newFeed);
                             Toast.makeText(mContext, "Refreshed", Toast.LENGTH_SHORT).show();
                             swipeRefreshLayout.setRefreshing(false);
-                        }else {
+                        } else {
                             Toast.makeText(mContext, "No new feed", Toast.LENGTH_SHORT).show();
                             swipeRefreshLayout.setRefreshing(false);
                         }
@@ -329,7 +330,7 @@ public class FeedFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         isBookmarked = getBookmarkStatus(uri, resolver, position);
 
         if (!isBookmarked) {
-            Feed feed= mFeedAdapter.getFeedObjectAtPosition(position);
+            Feed feed = mFeedAdapter.getFeedObjectAtPosition(position);
             ContentValues cv = new ContentValues();
             cv.put(FeedContract.FeedEntry.COLUMN_FEED_ID, position);
             cv.put(FeedContract.FeedEntry.COLUMN_FEED_IMAGE_URL,
@@ -347,8 +348,8 @@ public class FeedFragment extends Fragment implements SwipeRefreshLayout.OnRefre
                     strDate);
 
             String strSearchKeyword = "";
-            for (String searchKeyword : feed.getmFeedSearchKeywordsList())
-                strSearchKeyword = strSearchKeyword.concat("#").concat(searchKeyword).concat(" ");
+            for (String key : feed.getmFeedSearchKeywordsMap().keySet())
+                strSearchKeyword = strSearchKeyword.concat("#").concat(key).concat(" ");
 
             cv.put(FeedContract.FeedEntry.COLUMN_FEED_HASHTAG,
                     strSearchKeyword);
@@ -397,7 +398,29 @@ public class FeedFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
                 //TODO: Search for the newText in the list of feeds and update the list
                 //TODO: set the new list on adapter and notify
-
+                if (!TextUtils.isEmpty(newText)) {
+                    final List<Feed> searchedFeed = new ArrayList<Feed>();
+                    String whereCondition = String.format("%s.%s", "mFeedSearchKeywordsMap", newText);
+                    mFirestore.collection(Constants.FEED_COLLECTION)
+                            .whereEqualTo(whereCondition, true)
+                            .get()
+                            .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                                @Override
+                                public void onSuccess(QuerySnapshot documentSnapshots) {
+                                    if (documentSnapshots != null && !documentSnapshots.isEmpty()) {
+                                        for (DocumentSnapshot documentSnapshot : documentSnapshots)
+                                            searchedFeed.add(documentSnapshot.toObject(Feed.class));
+                                        mFeedAdapter.addAsPerSearch(searchedFeed);
+                                    }
+                                }
+                            })
+                            .addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    Toast.makeText(mContext, "Failed to search", Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                }
                 return true;
             }
         });

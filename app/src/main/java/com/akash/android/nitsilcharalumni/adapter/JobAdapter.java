@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.akash.android.nitsilcharalumni.R;
+import com.akash.android.nitsilcharalumni.model.Feed;
 import com.akash.android.nitsilcharalumni.model.Job;
 import com.akash.android.nitsilcharalumni.utils.imageUtils.PicassoCircleTransformation;
 import com.squareup.picasso.Picasso;
@@ -17,6 +18,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -57,9 +59,10 @@ public class JobAdapter extends RecyclerView.Adapter<JobAdapter.JobViewHolder> {
             holder.tvJobTtitle.setText(job.getmJobTitle() + ", ");
             holder.tvJobLocation.setText(job.getmJobLocation());
 
-            String strSearchKeyword = "";
-            for (String searchKeyword : job.getmJobSearchKeywordsList())
-                strSearchKeyword = strSearchKeyword.concat("#").concat(searchKeyword).concat(" ");
+            String strSearchKeyword= "";
+            Map<String, Boolean> strSearchKeywordMap = job.getmJobSearchKeywordsMap();
+            for (String key: strSearchKeywordMap.keySet())
+                strSearchKeyword = strSearchKeyword.concat("#").concat(key).concat(" ");
 
             holder.tvJobSearchHashtag.setText(strSearchKeyword);
 
@@ -95,6 +98,19 @@ public class JobAdapter extends RecyclerView.Adapter<JobAdapter.JobViewHolder> {
     public void addAllAtStart(List<Job> newJob) {
         mJobList.addAll(0, newJob);
         notifyItemRangeChanged(0, newJob.size());
+    }
+
+    public void addAsPerSearch(List<Job> searchedJob){
+        //get the current items
+        int currentSize = mJobList.size();
+        //remove the current items
+        mJobList.clear();
+        //add all the new items
+        mJobList.addAll(searchedJob);
+        //tell the recycler view that all the old items are gone
+        notifyItemRangeRemoved(0, currentSize);
+        //tell the recycler view how many new items we added
+        notifyItemRangeInserted(0, mJobList.size());
     }
 
     public ArrayList<Job> getmJobList() {
