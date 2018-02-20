@@ -14,6 +14,7 @@ import com.akash.android.nitsilcharalumni.utils.imageUtils.PicassoCircleTransfor
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import butterknife.BindView;
@@ -72,6 +73,31 @@ public class AlumniAdapter extends RecyclerView.Adapter<AlumniAdapter.AlumniView
         notifyItemRangeInserted(initialSize, newAlumni.size());
     }
 
+    public void addAsPerSearch(List<User> searchedFeed){
+        //get the current items
+        int currentSize = mAlumniList.size();
+        //remove the current items
+        mAlumniList.clear();
+        //add all the new items
+        mAlumniList.addAll(searchedFeed);
+        //tell the recycler view that all the old items are gone
+        notifyItemRangeRemoved(0, currentSize);
+        //tell the recycler view how many new items we added
+        notifyItemRangeInserted(0, mAlumniList.size());
+    }
+
+    public void replaceWithInitialList(User[] originalArray, int currentSize){
+        mAlumniList.clear();
+        mAlumniList.addAll(Arrays.asList(originalArray));
+        notifyItemRangeRemoved(0, currentSize);
+        notifyItemRangeInserted(0, mAlumniList.size());
+    }
+
+    public void setEmptyView(){
+        int currentSize= mAlumniList.size();
+        mAlumniList.clear();
+        notifyItemRangeRemoved(0, currentSize);
+    }
     class AlumniViewHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.ivProfileIcon)
         ImageView ivProfileIcon;
