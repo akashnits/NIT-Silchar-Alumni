@@ -20,6 +20,7 @@ import com.squareup.picasso.Picasso;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
@@ -128,6 +129,19 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.FeedViewHolder
         notifyItemRangeRemoved(0, currentSize);
         //tell the recycler view how many new items we added
         notifyItemRangeInserted(0, mFeedList.size());
+    }
+
+    public void replaceWithInitialList(Feed[] originalArray, int currentSize){
+        mFeedList.clear();
+        mFeedList.addAll(Arrays.asList(originalArray));
+        notifyItemRangeRemoved(0, currentSize);
+        notifyItemRangeInserted(0, mFeedList.size());
+    }
+
+    public void setEmptyView(){
+        int currentSize= mFeedList.size();
+        mFeedList.clear();
+        notifyItemRangeRemoved(0, currentSize);
     }
 
     public ArrayList<Feed> getmFeedList() {

@@ -99,6 +99,9 @@ public class FeedFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     private boolean mIsLoading;
     private int mLastDocumentSnapshotSize;
     private DocumentSnapshot mDocumentAtFirstPosition = null;
+    private Feed[] mInitialArray;
+    private SearchView mSearchView;
+    private String mSearchString;
 
     public FeedFragment() {
         // Required empty public constructor
@@ -134,7 +137,6 @@ public class FeedFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         swipeRefreshLayout.setOnRefreshListener(this);
         ((AppCompatActivity) getActivity()).setSupportActionBar(toolbarHome);
         setupDrawer();
-
 
         LinearLayoutManager lm = new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false);
         rvFeed.setLayoutManager(lm);
@@ -247,6 +249,7 @@ public class FeedFragment extends Fragment implements SwipeRefreshLayout.OnRefre
             mFeedAdapter.addAll(feedList);
             Parcelable savedRecyclerLayoutState = savedInstanceState.getParcelable("position");
             rvFeed.getLayoutManager().onRestoreInstanceState(savedRecyclerLayoutState);
+            mSearchString= savedInstanceState.getString("searchFeed");
         }
     }
 
@@ -256,6 +259,8 @@ public class FeedFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         super.onSaveInstanceState(outState);
         outState.putParcelableArrayList("feed", mFeedAdapter.getmFeedList());
         outState.putParcelable("position", rvFeed.getLayoutManager().onSaveInstanceState());
+        if(!TextUtils.isEmpty(mSearchView.getQuery()))
+            outState.putString("searchFeed", mSearchView.getQuery().toString());
     }
 
 
@@ -378,16 +383,22 @@ public class FeedFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.optionmenu, menu);
 
-        final MenuItem searchItem = menu.findItem(R.id.searchFeed);
-        final SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
-        searchView.setQueryHint("Search...");
+        MenuItem searchItem = menu.findItem(R.id.searchFeed);
+        mSearchView = (SearchView) MenuItemCompat.getActionView(searchItem);
+        mSearchView.setQueryHint("Search...");
 
-        EditText etSearch = (EditText) searchView.findViewById(android.support.v7.appcompat.R.id.search_src_text);
+        EditText etSearch = (EditText) mSearchView.findViewById(android.support.v7.appcompat.R.id.search_src_text);
         etSearch.setHintTextColor(Color.DKGRAY);
         etSearch.setTextColor(Color.WHITE);
 
 
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+        if (!TextUtils.isEmpty(mSearchString)) {
+            searchItem.expandActionView();
+            mSearchView.setQuery(mSearchString, true);
+            mSearchView.clearFocus();
+        }
+
+        mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 return false;
@@ -395,9 +406,6 @@ public class FeedFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
             @Override
             public boolean onQueryTextChange(String newText) {
-
-                //TODO: Search for the newText in the list of feeds and update the list
-                //TODO: set the new list on adapter and notify
                 if (!TextUtils.isEmpty(newText)) {
                     final List<Feed> searchedFeed = new ArrayList<Feed>();
                     String whereCondition = String.format("%s.%s", "mFeedSearchKeywordsMap", newText);
@@ -411,6 +419,8 @@ public class FeedFragment extends Fragment implements SwipeRefreshLayout.OnRefre
                                         for (DocumentSnapshot documentSnapshot : documentSnapshots)
                                             searchedFeed.add(documentSnapshot.toObject(Feed.class));
                                         mFeedAdapter.addAsPerSearch(searchedFeed);
+                                    }else {
+                                        mFeedAdapter.setEmptyView();
                                     }
                                 }
                             })
@@ -429,16 +439,20 @@ public class FeedFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
             @Override
             public boolean onMenuItemActionExpand(MenuItem item) {
-
+                //save the current list
+                List<Feed> initialFeedList= mFeedAdapter.getmFeedList();
+                mInitialArray = initialFeedList.toArray(new Feed[initialFeedList.size()]);
                 return true;
             }
 
             @Override
             public boolean onMenuItemActionCollapse(MenuItem item) {
-
                 //TODO: set the whole list (without any filter) on adapter and notify
+                List<Feed> feedList= mFeedAdapter.getmFeedList();
+                int currentSize = feedList != null ? feedList.size():0;
+                //remove the current items
+                    mFeedAdapter.replaceWithInitialList(mInitialArray, currentSize);
                 return true;
-
             }
         });
         super.onCreateOptionsMenu(menu, inflater);

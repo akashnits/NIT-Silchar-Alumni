@@ -83,6 +83,9 @@ public class JobFragment extends Fragment implements SwipeRefreshLayout.OnRefres
     private DocumentSnapshot mDocumentAtFirstPosition= null;
     private DocumentSnapshot mLastVisible = null;
     private int mLastDocumentSnapshotSize;
+    private Job[] mInitialArray;
+    private SearchView mSearchView;
+    private String mSearchString;
 
     public JobFragment() {
         // Required empty public constructor
@@ -229,6 +232,7 @@ public class JobFragment extends Fragment implements SwipeRefreshLayout.OnRefres
             mJobAdapter.addAll(jobList);
             Parcelable savedRecyclerLayoutState = savedInstanceState.getParcelable("position");
             rvJob.getLayoutManager().onRestoreInstanceState(savedRecyclerLayoutState);
+            mSearchString= savedInstanceState.getString("searchJob");
         }
     }
 
@@ -238,6 +242,8 @@ public class JobFragment extends Fragment implements SwipeRefreshLayout.OnRefres
         super.onSaveInstanceState(outState);
         outState.putParcelableArrayList("job", mJobAdapter.getmJobList());
         outState.putParcelable("position", rvJob.getLayoutManager().onSaveInstanceState());
+        if(!TextUtils.isEmpty(mSearchView.getQuery()))
+            outState.putString("searchJob", mSearchView.getQuery().toString());
     }
 
     @Override
@@ -318,14 +324,20 @@ public class JobFragment extends Fragment implements SwipeRefreshLayout.OnRefres
     public void onCreateOptionsMenu(final Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.jobmenu, menu);
         final MenuItem searchItem = menu.findItem(R.id.searchJob);
-        final SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
-        searchView.setQueryHint("Search...");
+        mSearchView = (SearchView) MenuItemCompat.getActionView(searchItem);
+        mSearchView.setQueryHint("Search...");
 
-        EditText etSearch = (EditText) searchView.findViewById(android.support.v7.appcompat.R.id.search_src_text);
+        EditText etSearch = (EditText) mSearchView.findViewById(android.support.v7.appcompat.R.id.search_src_text);
         etSearch.setHintTextColor(Color.DKGRAY);
         etSearch.setTextColor(Color.WHITE);
 
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+        if (!TextUtils.isEmpty(mSearchString)) {
+            searchItem.expandActionView();
+            mSearchView.setQuery(mSearchString, true);
+            mSearchView.clearFocus();
+        }
+
+        mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 return false;
@@ -350,6 +362,8 @@ public class JobFragment extends Fragment implements SwipeRefreshLayout.OnRefres
                                         for (DocumentSnapshot documentSnapshot : documentSnapshots)
                                             searchedJob.add(documentSnapshot.toObject(Job.class));
                                         mJobAdapter.addAsPerSearch(searchedJob);
+                                    }else {
+                                        mJobAdapter.setEmptyView();
                                     }
                                 }
                             })
@@ -369,6 +383,8 @@ public class JobFragment extends Fragment implements SwipeRefreshLayout.OnRefres
             @Override
             public boolean onMenuItemActionExpand(MenuItem item) {
                 setItemsVisibility(menu, searchItem, false);
+                List<Job> initialJobList= mJobAdapter.getmJobList();
+                mInitialArray = initialJobList.toArray(new Job[initialJobList.size()]);
                 return true;
             }
 
@@ -376,8 +392,11 @@ public class JobFragment extends Fragment implements SwipeRefreshLayout.OnRefres
             public boolean onMenuItemActionCollapse(MenuItem item) {
                 setItemsVisibility(menu, searchItem, true);
                 //TODO: set the whole list (without any filter) on adapter and notify
+                List<Job> jobList=  mJobAdapter.getmJobList();
+                int currentSize = jobList != null ? jobList.size():0;
+                //remove the current items
+                mJobAdapter.replaceWithInitialList(mInitialArray, currentSize);
                 return true;
-
             }
         });
         super.onCreateOptionsMenu(menu, inflater);

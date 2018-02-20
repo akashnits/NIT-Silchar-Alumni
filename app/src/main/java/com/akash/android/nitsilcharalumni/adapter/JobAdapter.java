@@ -16,6 +16,7 @@ import com.squareup.picasso.Picasso;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -111,6 +112,19 @@ public class JobAdapter extends RecyclerView.Adapter<JobAdapter.JobViewHolder> {
         notifyItemRangeRemoved(0, currentSize);
         //tell the recycler view how many new items we added
         notifyItemRangeInserted(0, mJobList.size());
+    }
+
+    public void replaceWithInitialList(Job[] originalArray, int currentSize){
+        mJobList.clear();
+        mJobList.addAll(Arrays.asList(originalArray));
+        notifyItemRangeRemoved(0, currentSize);
+        notifyItemRangeInserted(0, mJobList.size());
+    }
+
+    public void setEmptyView(){
+        int currentSize= mJobList.size();
+        mJobList.clear();
+        notifyItemRangeRemoved(0, currentSize);
     }
 
     public ArrayList<Job> getmJobList() {
