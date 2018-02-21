@@ -52,7 +52,7 @@ public class AlumniAdapter extends RecyclerView.Adapter<AlumniAdapter.AlumniView
         if(alumni != null) {
             holder.tvName.setText(alumni.getmName());
             holder.tvOrganisationName.setText(alumni.getmOrganisation());
-            holder.tvClassOf.setText(alumni.getmClassOf());
+            holder.tvClassOf.setText(String.format("Class of %s,", alumni.getmClassOf()));
         }
     }
 

@@ -280,6 +280,8 @@ public class AlumniFragment extends Fragment implements AlumniAdapter.OnAlumniCl
             searchItem.expandActionView();
             mSearchView.setQuery(mSearchString, true);
             mSearchView.clearFocus();
+            mSearchView.setMaxWidth( Integer.MAX_VALUE );
+            menu.findItem(R.id.filter).setVisible(false);
         }
 
         mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
@@ -289,19 +291,24 @@ public class AlumniFragment extends Fragment implements AlumniAdapter.OnAlumniCl
             }
 
             @Override
-            public boolean onQueryTextChange(String newText) {
-                if (!TextUtils.isEmpty(newText)) {
+            public boolean onQueryTextChange(final String newText) {
+                if (newText != null) {
                     final List<User> searchedAlumni = new ArrayList<User>();
                     mFirestore.collection(Constants.USER_COLLECTION)
                             .whereEqualTo("mTypeOfUser", "Alumni")
-                            .whereEqualTo("mName", newText)
                             .get()
                             .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                                 @Override
                                 public void onSuccess(QuerySnapshot documentSnapshots) {
-                                    if (documentSnapshots != null && !documentSnapshots.isEmpty()) {
-                                        for (DocumentSnapshot documentSnapshot : documentSnapshots)
-                                            searchedAlumni.add(documentSnapshot.toObject(User.class));
+                                    if (documentSnapshots != null) {
+                                        for (DocumentSnapshot documentSnapshot : documentSnapshots){
+                                            User alumni= documentSnapshot.toObject(User.class);
+                                            String name= alumni.getmName();
+
+                                            if(name.toLowerCase().contains(newText.toLowerCase())){
+                                                searchedAlumni.add(alumni);
+                                            }
+                                        }
                                         mAlumniAdapter.addAsPerSearch(searchedAlumni);
                                     } else {
                                         mAlumniAdapter.setEmptyView();
