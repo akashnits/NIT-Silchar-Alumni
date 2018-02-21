@@ -8,7 +8,6 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,9 +16,17 @@ import android.view.animation.AlphaAnimation;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.akash.android.nitsilcharalumni.R;
+import com.akash.android.nitsilcharalumni.model.User;
+import com.akash.android.nitsilcharalumni.utils.Constants;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -82,9 +89,14 @@ public class AlumniDetailsFragment extends Fragment implements AppBarLayout.OnOf
     TextView tvSkillsText;
     @BindView(R.id.toolbarAlumniDetails)
     Toolbar toolbarAlumniDetails;
+    @BindView(R.id.tvAlumniDetailsNameBelowDp)
+    TextView tvAlumniDetailsNameBelowDp;
+
 
 
     private Context mContext;
+    private FirebaseFirestore mFirestore;
+    private User mAlumni;
 
     private static final float PERCENTAGE_TO_SHOW_TITLE_AT_TOOLBAR = 0.9f;
     private static final float PERCENTAGE_TO_HIDE_TITLE_DETAILS = 0.3f;
@@ -98,8 +110,9 @@ public class AlumniDetailsFragment extends Fragment implements AppBarLayout.OnOf
     }
 
     // TODO: Rename and change types and number of parameters
-    public static AlumniDetailsFragment newInstance() {
+    public static AlumniDetailsFragment newInstance(Bundle args) {
         AlumniDetailsFragment fragment = new AlumniDetailsFragment();
+        fragment.setArguments(args);
         return fragment;
     }
 
@@ -112,6 +125,7 @@ public class AlumniDetailsFragment extends Fragment implements AppBarLayout.OnOf
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mFirestore = FirebaseFirestore.getInstance();
     }
 
     @Override
@@ -128,7 +142,45 @@ public class AlumniDetailsFragment extends Fragment implements AppBarLayout.OnOf
         super.onViewCreated(view, savedInstanceState);
         appBarLayout.addOnOffsetChangedListener(this);
 
+        if (savedInstanceState == null) {
+            String email = getArguments().getString("email");
+            mFirestore.collection(Constants.USER_COLLECTION)
+                    .whereEqualTo("mTypeOfUser", "Alumni")
+                    .whereEqualTo("mEmail", email)
+                    .get()
+                    .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                        @Override
+                        public void onSuccess(QuerySnapshot documentSnapshots) {
+                            if (!documentSnapshots.isEmpty()) {
+                                for (DocumentSnapshot documentSnapshot : documentSnapshots) {
+                                    mAlumni = documentSnapshot.toObject(User.class);
+                                    updateUI();
+                                }
+                            }
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            e.printStackTrace();
+                        }
+                    });
+        }
         startAlphaAnimation(tvTitle, 0, View.INVISIBLE);
+    }
+
+
+    private void updateUI(){
+        tvTitle.setText(mAlumni.getmName());
+        tvAlumniDetailsNameBelowDp.setText(mAlumni.getmName());
+        tvAboutYouText.setText(mAlumni.getmAboutYou());
+        tvClassofText.setText(mAlumni.getmClassOf());
+        tvLocationText.setText(mAlumni.getmLocation());
+        tvContactText.setText(mAlumni.getmContact());
+        tvEmailText.setText(mAlumni.getmEmail());
+        tvOrganisationText.setText(mAlumni.getmOrganisation());
+        tvDesignationText.setText(mAlumni.getmDesignation());
+        tvSkillsText.setText(mAlumni.getmSkills());
     }
 
     @Override

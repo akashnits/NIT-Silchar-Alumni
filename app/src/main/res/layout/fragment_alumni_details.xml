@@ -52,11 +52,12 @@
                     >
 
                     <TextView
+                        android:id="@+id/tvAlumniDetailsNameBelowDp"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
                         android:gravity="bottom|center"
-                        android:text="Akash Raj"
+                        tools:text="Akash Raj"
                         android:textColor="@android:color/white"
                         android:textSize="30sp"
                         />
@@ -99,7 +100,7 @@
                     android:layout_alignParentTop="true"
                     android:layout_marginLeft="200dp"
                     android:padding="4dp"
-                    android:text="Virat Kohli was born on 5 November 1988 in Delhi into a Punjabi family.[13] His father, Prem Kohli, worked as a criminal lawyer and his mother, Saroj Kohli, is a housewife.[14] He has an elder brother, Vikash, and an elder sister, Bhavna." />
+                    tools:text="Virat Kohli was born on 5 November 1988 in Delhi into a Punjabi family.[13] His father, Prem Kohli, worked as a criminal lawyer and his mother, Saroj Kohli, is a housewife.[14] He has an elder brother, Vikash, and an elder sister, Bhavna." />
 
                 <TextView
                     android:id="@+id/tvClassOf"
@@ -116,7 +117,7 @@
                     android:layout_below="@+id/tvAboutYouText"
                     android:layout_marginLeft="200dp"
                     android:padding="4dp"
-                    android:text="2013" />
+                    tools:text="2013" />
 
                 <TextView
                     android:id="@+id/tvLocation"
@@ -133,7 +134,7 @@
                     android:layout_below="@+id/tvClassofText"
                     android:layout_marginLeft="200dp"
                     android:padding="4dp"
-                    android:text="Bangalore" />
+                    tools:text="Bangalore" />
 
                 <TextView
                     android:id="@+id/tvContact"
@@ -150,7 +151,7 @@
                     android:layout_below="@+id/tvLocationText"
                     android:layout_marginLeft="200dp"
                     android:padding="4dp"
-                    android:text="9644548961" />
+                    tools:text="9644548961" />
 
                 <TextView
                     android:id="@+id/tvEmail"
@@ -167,7 +168,7 @@
                     android:layout_below="@+id/tvContactText"
                     android:layout_marginLeft="200dp"
                     android:padding="4dp"
-                    android:text="akash@gmail.com" />
+                    tools:text="akash@gmail.com" />
 
                 <TextView
                     android:id="@+id/tvOrganisation"
@@ -184,7 +185,7 @@
                     android:layout_below="@+id/tvEmailText"
                     android:layout_marginLeft="200dp"
                     android:padding="4dp"
-                    android:text="Google Inc." />
+                    tools:text="Google Inc." />
 
                 <TextView
                     android:id="@+id/tvDesignation"
@@ -201,7 +202,7 @@
                     android:layout_below="@+id/tvOrganisationText"
                     android:layout_marginLeft="200dp"
                     android:padding="4dp"
-                    android:text="Senior Engineer" />
+                    tools:text="Senior Engineer" />
 
                 <TextView
                     android:id="@+id/tvSkills"
@@ -218,7 +219,9 @@
                     android:layout_below="@+id/tvDesignationText"
                     android:layout_marginLeft="200dp"
                     android:padding="4dp"
-                    android:text="Android development, SEO, Java, PHP" />
+                    tools:text="Android development, SEO, Java, PHP" />
+
+
             </RelativeLayout>
 
         </android.support.v7.widget.CardView>
@@ -253,7 +256,7 @@
                 android:layout_height="match_parent"
                 android:layout_marginLeft="8dp"
                 android:gravity="center_vertical"
-                android:text="Akash Raj"
+                tools:text="Akash Raj"
                 android:textColor="@android:color/white"
                 android:textSize="20sp"
                 />

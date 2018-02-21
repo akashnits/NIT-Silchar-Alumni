@@ -335,6 +335,8 @@ public class JobFragment extends Fragment implements SwipeRefreshLayout.OnRefres
             searchItem.expandActionView();
             mSearchView.setQuery(mSearchString, true);
             mSearchView.clearFocus();
+            mSearchView.setMaxWidth( Integer.MAX_VALUE );
+            menu.findItem(R.id.jobFilter).setVisible(false);
         }
 
         mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {

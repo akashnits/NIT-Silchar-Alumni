@@ -2,16 +2,12 @@ package com.akash.android.nitsilcharalumni.ui.alumni;
 
 
 import android.content.Context;
-import android.content.res.Configuration;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.AsyncTaskLoader;
-import android.support.v4.content.Loader;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
@@ -20,7 +16,6 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -200,8 +195,10 @@ public class AlumniFragment extends Fragment implements AlumniAdapter.OnAlumniCl
         unbinder.unbind();
     }
 
-    public void onAlumniClicked(int position, View view) {
-        ((MainActivity) getActivity()).commitAlumniDetailsFragment();
+    public void onAlumniClicked(String email, View view) {
+        Bundle b= new Bundle();
+        b.putString("email", email);
+        ((MainActivity) getActivity()).commitAlumniDetailsFragment(b);
     }
 
     private void loadMore() {

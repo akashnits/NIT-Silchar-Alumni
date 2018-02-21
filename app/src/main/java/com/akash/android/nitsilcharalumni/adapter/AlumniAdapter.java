@@ -28,7 +28,7 @@ public class AlumniAdapter extends RecyclerView.Adapter<AlumniAdapter.AlumniView
     private ArrayList<User> mAlumniList;
 
     public interface OnAlumniClickHandler{
-        void onAlumniClicked(int position, View view);
+        void onAlumniClicked(String email, View view);
     }
 
     public AlumniAdapter(Context mContext, OnAlumniClickHandler mHandler) {
@@ -114,7 +114,8 @@ public class AlumniAdapter extends RecyclerView.Adapter<AlumniAdapter.AlumniView
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    mHandler.onAlumniClicked(getAdapterPosition(), view);
+                    String email= mAlumniList.get(getAdapterPosition()).getmEmail();
+                    mHandler.onAlumniClicked(email, view);
                 }
             });
         }
