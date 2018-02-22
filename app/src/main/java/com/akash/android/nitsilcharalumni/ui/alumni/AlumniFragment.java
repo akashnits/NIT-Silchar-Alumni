@@ -215,7 +215,8 @@ public class AlumniFragment extends Fragment implements AlumniAdapter.OnAlumniCl
                 .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                     @Override
                     public void onSuccess(QuerySnapshot documentSnapshots) {
-                        pbAlumniFragment.setVisibility(View.INVISIBLE);
+                        if(pbAlumniFragment != null)
+                            pbAlumniFragment.setVisibility(View.INVISIBLE);
                         isLoading = false;
                         if (!documentSnapshots.isEmpty()) {
                             mLastDocumentSnapshotSize = documentSnapshots.size();
@@ -233,7 +234,8 @@ public class AlumniFragment extends Fragment implements AlumniAdapter.OnAlumniCl
                     @Override
                     public void onFailure(@NonNull Exception e) {
                         Toast.makeText(mContext, "Failed to Load data", Toast.LENGTH_SHORT).show();
-                        pbAlumniFragment.setVisibility(View.INVISIBLE);
+                        if(pbAlumniFragment != null)
+                            pbAlumniFragment.setVisibility(View.INVISIBLE);
                         isLoading = false;
                     }
                 });
@@ -246,7 +248,8 @@ public class AlumniFragment extends Fragment implements AlumniAdapter.OnAlumniCl
             List<User> alumniList = savedInstanceState.getParcelableArrayList("alumni");
             mAlumniAdapter.addAll(alumniList);
             Parcelable savedRecyclerLayoutState = savedInstanceState.getParcelable("position");
-            rvAlumni.getLayoutManager().onRestoreInstanceState(savedRecyclerLayoutState);
+            if(rvAlumni != null)
+                rvAlumni.getLayoutManager().onRestoreInstanceState(savedRecyclerLayoutState);
             mSearchString= savedInstanceState.getString("searchAlumni");
         }
     }
@@ -256,7 +259,8 @@ public class AlumniFragment extends Fragment implements AlumniAdapter.OnAlumniCl
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putParcelableArrayList("alumni", mAlumniAdapter.getmAlumniList());
-        outState.putParcelable("position", rvAlumni.getLayoutManager().onSaveInstanceState());
+        if(rvAlumni != null)
+            outState.putParcelable("position", rvAlumni.getLayoutManager().onSaveInstanceState());
         if(!TextUtils.isEmpty(mSearchView.getQuery()))
             outState.putString("searchAlumni", mSearchView.getQuery().toString());
     }

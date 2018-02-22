@@ -259,7 +259,7 @@ public class FeedFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         super.onSaveInstanceState(outState);
         outState.putParcelableArrayList("feed", mFeedAdapter.getmFeedList());
         outState.putParcelable("position", rvFeed.getLayoutManager().onSaveInstanceState());
-        if(!TextUtils.isEmpty(mSearchView.getQuery()))
+        if(mSearchView != null && !TextUtils.isEmpty(mSearchView.getQuery()))
             outState.putString("searchFeed", mSearchView.getQuery().toString());
     }
 

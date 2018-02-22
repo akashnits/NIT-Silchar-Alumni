@@ -82,7 +82,7 @@ public class MainActivity extends AppCompatActivity implements DrawerMenuItem.Dr
                 getSupportFragmentManager(),
                 AlumniDetailsFragment.newInstance(args),
                 R.id.content,
-                true,
+                false,
                 "AlumniDetails",
                 R.anim.enter_from_right,
                 R.anim.exit_to_left );

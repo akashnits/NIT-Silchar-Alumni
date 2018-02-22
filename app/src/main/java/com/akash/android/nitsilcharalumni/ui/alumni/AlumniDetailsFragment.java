@@ -126,21 +126,7 @@ public class AlumniDetailsFragment extends Fragment implements AppBarLayout.OnOf
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mFirestore = FirebaseFirestore.getInstance();
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_alumni_details, container, false);
-        unbinder = ButterKnife.bind(this, view);
-        return view;
-    }
-
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        appBarLayout.addOnOffsetChangedListener(this);
+        setRetainInstance(true);
 
         if (savedInstanceState == null) {
             String email = getArguments().getString("email");
@@ -166,21 +152,40 @@ public class AlumniDetailsFragment extends Fragment implements AppBarLayout.OnOf
                         }
                     });
         }
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        View view = inflater.inflate(R.layout.fragment_alumni_details, container, false);
+        unbinder = ButterKnife.bind(this, view);
+        return view;
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        appBarLayout.addOnOffsetChangedListener(this);
         startAlphaAnimation(tvTitle, 0, View.INVISIBLE);
+        if(savedInstanceState != null)
+            updateUI();
     }
 
 
     private void updateUI(){
-        tvTitle.setText(mAlumni.getmName());
-        tvAlumniDetailsNameBelowDp.setText(mAlumni.getmName());
-        tvAboutYouText.setText(mAlumni.getmAboutYou());
-        tvClassofText.setText(mAlumni.getmClassOf());
-        tvLocationText.setText(mAlumni.getmLocation());
-        tvContactText.setText(mAlumni.getmContact());
-        tvEmailText.setText(mAlumni.getmEmail());
-        tvOrganisationText.setText(mAlumni.getmOrganisation());
-        tvDesignationText.setText(mAlumni.getmDesignation());
-        tvSkillsText.setText(mAlumni.getmSkills());
+        if(mAlumni != null) {
+            tvTitle.setText(mAlumni.getmName());
+            tvAlumniDetailsNameBelowDp.setText(mAlumni.getmName());
+            tvAboutYouText.setText(mAlumni.getmAboutYou());
+            tvClassofText.setText(mAlumni.getmClassOf());
+            tvLocationText.setText(mAlumni.getmLocation());
+            tvContactText.setText(mAlumni.getmContact());
+            tvEmailText.setText(mAlumni.getmEmail());
+            tvOrganisationText.setText(mAlumni.getmOrganisation());
+            tvDesignationText.setText(mAlumni.getmDesignation());
+            tvSkillsText.setText(mAlumni.getmSkills());
+        }
     }
 
     @Override
@@ -235,6 +240,11 @@ public class AlumniDetailsFragment extends Fragment implements AppBarLayout.OnOf
         v.startAnimation(alphaAnimation);
     }
 
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelable("alumniData", mAlumni);
+    }
 
     @Override
     public void onDestroyView() {
