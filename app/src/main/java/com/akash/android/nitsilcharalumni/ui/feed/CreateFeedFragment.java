@@ -1,7 +1,9 @@
 package com.akash.android.nitsilcharalumni.ui.feed;
 
 
+import android.content.Intent;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -19,7 +21,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -28,27 +29,22 @@ import com.akash.android.nitsilcharalumni.NITSilcharAlumniApp;
 import com.akash.android.nitsilcharalumni.R;
 import com.akash.android.nitsilcharalumni.data.DataManager;
 import com.akash.android.nitsilcharalumni.di.component.CreateFeedFragmentComponent;
-import com.akash.android.nitsilcharalumni.di.component.CreateJobFragmentComponent;
 import com.akash.android.nitsilcharalumni.di.component.DaggerCreateFeedFragmentComponent;
 import com.akash.android.nitsilcharalumni.di.module.CreateFeedFragmentModule;
 import com.akash.android.nitsilcharalumni.model.Feed;
-import com.akash.android.nitsilcharalumni.model.User;
 import com.akash.android.nitsilcharalumni.utils.Constants;
 import com.github.jorgecastilloprz.FABProgressCircle;
 import com.github.jorgecastilloprz.listeners.FABProgressListener;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
@@ -58,6 +54,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
+
+import static android.app.Activity.RESULT_OK;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -97,10 +95,15 @@ public class CreateFeedFragment extends Fragment implements FABProgressListener 
     @Inject
     DataManager mDatamanager;
 
+    private static final int SELECT_FEED_PICTURE = 1;
+
     private CreateFeedFragmentComponent createFeedFragmentComponent;
     private FirebaseFirestore mFirebaseFirestore;
     private FirebaseAuth mAuth;
     private String mAuthorName;
+    private FirebaseStorage mFirebaseStorage;
+    private Uri mSelectedImageUri;
+    private Uri mDownloadUri;
 
     public CreateFeedFragment() {
         // Required empty public constructor
@@ -116,11 +119,12 @@ public class CreateFeedFragment extends Fragment implements FABProgressListener 
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
         mFirebaseFirestore = FirebaseFirestore.getInstance();
+        mFirebaseStorage = FirebaseStorage.getInstance();
         mAuth = FirebaseAuth.getInstance();
         getCreateFeedFragmentComponent().inject(this);
     }
 
-    public CreateFeedFragmentComponent getCreateFeedFragmentComponent(){
+    public CreateFeedFragmentComponent getCreateFeedFragmentComponent() {
         if (createFeedFragmentComponent == null) {
             createFeedFragmentComponent = DaggerCreateFeedFragmentComponent.builder()
                     .createFeedFragmentModule(new CreateFeedFragmentModule(this))
@@ -162,33 +166,41 @@ public class CreateFeedFragment extends Fragment implements FABProgressListener 
                 .show();
     }
 
-    @OnClick({R.id.uploadFab, R.id.btPost})
+    @OnClick({R.id.btSelectImage, R.id.uploadFab, R.id.btPost})
     public void onViewClicked(View view) {
         switch (view.getId()) {
+            case R.id.btSelectImage:
+                Intent intent = new Intent();
+                intent.setType("image/*");
+                intent.setAction(Intent.ACTION_GET_CONTENT);
+                startActivityForResult(Intent.createChooser(intent,
+                        "Select a picture"), SELECT_FEED_PICTURE);
+                break;
             case R.id.uploadFab:
-                new AsyncTask<Void, Void, Void>() {
-                    @Override
-                    protected void onPreExecute() {
-                        super.onPreExecute();
-                        fabProgressCircle.show();
-                    }
+                //start uploading the selected picture
+                if (mSelectedImageUri != null && !Uri.EMPTY.equals(mSelectedImageUri)) {
+                    //show animation that upload is in progress
+                    fabProgressCircle.show();
+                    StorageReference selectedFeedImagesReference = mFirebaseStorage.getReference()
+                            .child(Constants.FEED_IMAGE_COLLECTION + mSelectedImageUri.getLastPathSegment());
+                    UploadTask uploadTask = selectedFeedImagesReference.putFile(mSelectedImageUri);
 
-                    @Override
-                    protected Void doInBackground(Void... params) {
-                        try {
-                            Thread.sleep(5000);
-                        } catch (Exception e) {
+                    uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                            mDownloadUri= taskSnapshot.getDownloadUrl();
+                            Log.v(TAG, "Download uri is" + mDownloadUri);
+                            fabProgressCircle.beginFinalAnimation();
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
                             e.printStackTrace();
                         }
-                        return null;
-                    }
-
-                    @Override
-                    protected void onPostExecute(Void aVoid) {
-                        super.onPostExecute(aVoid);
-                        fabProgressCircle.beginFinalAnimation();
-                    }
-                }.execute();
+                    });
+                }else {
+                    Toast.makeText(getContext(), "Please select a image to upload", Toast.LENGTH_SHORT).show();
+                }
                 break;
             case R.id.btPost:
                 if (TextUtils.isEmpty(editTextFeedDescription.getText())) {
@@ -205,22 +217,23 @@ public class CreateFeedFragment extends Fragment implements FABProgressListener 
                                 Toast.LENGTH_SHORT).show();
                         return;
                     }
-                    String[] searchKeywordArray =feedSearchKeywords.split("\\s*,\\s*");
+                    String[] searchKeywordArray = feedSearchKeywords.split("\\s*,\\s*");
                     for (String str : searchKeywordArray)
                         searchKeywordMap.put(str, true);
                 }
 
-                mAuthorName= mDatamanager.getUserName();
+                mAuthorName = mDatamanager.getUserName();
                 //creating a Feed object
                 if (mAuthorName != null) {
-                    Feed feed = new Feed("https://www2.mmu.ac.uk/research/research-study/student-profiles/james-xu/james-xu.jpg",
+                    Feed feed = new Feed(
+                            "https://www2.mmu.ac.uk/research/research-study/student-profiles/james-xu/james-xu.jpg",
                             mAuthorName,
                             null,
-                            "https://c.tadst.com/gfx/750w/world-post-day.jpg?1",
+                            (mDownloadUri != null && !Uri.EMPTY.equals(mDownloadUri))? mDownloadUri.toString():
+                                    "https://c.tadst.com/gfx/750w/world-post-day.jpg?1",
                             editTextFeedDescription.getText().toString(),
                             searchKeywordMap,
                             mAuth.getCurrentUser().getEmail());
-
 
 
                     mFirebaseFirestore.collection(Constants.FEED_COLLECTION)
@@ -247,5 +260,30 @@ public class CreateFeedFragment extends Fragment implements FABProgressListener 
         }
     }
 
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        if(mSelectedImageUri != null){
+            outState.putString("selectedImage", mSelectedImageUri.getLastPathSegment());
+        }
+    }
 
+    @Override
+    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
+        super.onViewStateRestored(savedInstanceState);
+        if(mSelectedImageUri != null)
+            btSelectImage.setText(savedInstanceState.get("selectedImage").toString());
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK) {
+            if (requestCode == SELECT_FEED_PICTURE) {
+                mSelectedImageUri = data.getData();
+                Log.i(TAG, "Uri is " + mSelectedImageUri);
+                btSelectImage.setText(mSelectedImageUri.getLastPathSegment());
+            }
+        }
+    }
 }

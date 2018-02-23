@@ -248,7 +248,8 @@ public class FeedFragment extends Fragment implements SwipeRefreshLayout.OnRefre
             List<Feed> feedList = savedInstanceState.getParcelableArrayList("feed");
             mFeedAdapter.addAll(feedList);
             Parcelable savedRecyclerLayoutState = savedInstanceState.getParcelable("position");
-            rvFeed.getLayoutManager().onRestoreInstanceState(savedRecyclerLayoutState);
+            if(rvFeed != null)
+                rvFeed.getLayoutManager().onRestoreInstanceState(savedRecyclerLayoutState);
             mSearchString= savedInstanceState.getString("searchFeed");
         }
     }
@@ -258,7 +259,8 @@ public class FeedFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putParcelableArrayList("feed", mFeedAdapter.getmFeedList());
-        outState.putParcelable("position", rvFeed.getLayoutManager().onSaveInstanceState());
+        if(rvFeed != null)
+            outState.putParcelable("position", rvFeed.getLayoutManager().onSaveInstanceState());
         if(mSearchView != null && !TextUtils.isEmpty(mSearchView.getQuery()))
             outState.putString("searchFeed", mSearchView.getQuery().toString());
     }

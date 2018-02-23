@@ -3,10 +3,13 @@ package com.akash.android.nitsilcharalumni.adapter;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.Point;
 import android.support.v7.widget.RecyclerView;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -96,9 +99,12 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.FeedViewHolder
     }
 
     private void loadFeedImageWithPicasso(String imageUrl, FeedViewHolder holder) {
+        Display display =  mContext.getSystemService(WindowManager.class).getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+        int width = size.x;
         Picasso.with(mContext).load(imageUrl)
-                .fit()
-                .centerCrop()
+                .resize(width,0)
                 .into(holder.ivFeedImage);
     }
 
