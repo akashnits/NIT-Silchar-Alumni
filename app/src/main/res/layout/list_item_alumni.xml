@@ -45,7 +45,7 @@
         app:layout_constraintTop_toTopOf="@+id/tvClassOf"
         android:layout_marginTop="0dp"
         app:layout_constraintLeft_toRightOf="@+id/tvClassOf"
-        android:layout_marginLeft="8dp" />
+        android:layout_marginLeft="4dp" />
 
 
 </android.support.constraint.ConstraintLayout>

@@ -14,6 +14,7 @@ import com.akash.android.nitsilcharalumni.utils.imageUtils.PicassoCircleTransfor
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import butterknife.BindView;
@@ -27,7 +28,7 @@ public class AlumniAdapter extends RecyclerView.Adapter<AlumniAdapter.AlumniView
     private ArrayList<User> mAlumniList;
 
     public interface OnAlumniClickHandler{
-        void onAlumniClicked(int position, View view);
+        void onAlumniClicked(String email, View view);
     }
 
     public AlumniAdapter(Context mContext, OnAlumniClickHandler mHandler) {
@@ -51,7 +52,7 @@ public class AlumniAdapter extends RecyclerView.Adapter<AlumniAdapter.AlumniView
         if(alumni != null) {
             holder.tvName.setText(alumni.getmName());
             holder.tvOrganisationName.setText(alumni.getmOrganisation());
-            holder.tvClassOf.setText(alumni.getmClassOf());
+            holder.tvClassOf.setText(String.format("Class of %s,", alumni.getmClassOf()));
         }
     }
 
@@ -72,6 +73,31 @@ public class AlumniAdapter extends RecyclerView.Adapter<AlumniAdapter.AlumniView
         notifyItemRangeInserted(initialSize, newAlumni.size());
     }
 
+    public void addAsPerSearch(List<User> searchedFeed){
+        //get the current items
+        int currentSize = mAlumniList.size();
+        //remove the current items
+        mAlumniList.clear();
+        //add all the new items
+        mAlumniList.addAll(searchedFeed);
+        //tell the recycler view that all the old items are gone
+        notifyItemRangeRemoved(0, currentSize);
+        //tell the recycler view how many new items we added
+        notifyItemRangeInserted(0, mAlumniList.size());
+    }
+
+    public void replaceWithInitialList(User[] originalArray, int currentSize){
+        mAlumniList.clear();
+        mAlumniList.addAll(Arrays.asList(originalArray));
+        notifyItemRangeRemoved(0, currentSize);
+        notifyItemRangeInserted(0, mAlumniList.size());
+    }
+
+    public void setEmptyView(){
+        int currentSize= mAlumniList.size();
+        mAlumniList.clear();
+        notifyItemRangeRemoved(0, currentSize);
+    }
     class AlumniViewHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.ivProfileIcon)
         ImageView ivProfileIcon;
@@ -88,7 +114,8 @@ public class AlumniAdapter extends RecyclerView.Adapter<AlumniAdapter.AlumniView
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    mHandler.onAlumniClicked(getAdapterPosition(), view);
+                    String email= mAlumniList.get(getAdapterPosition()).getmEmail();
+                    mHandler.onAlumniClicked(email, view);
                 }
             });
         }

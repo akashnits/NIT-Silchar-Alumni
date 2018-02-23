@@ -18,10 +18,17 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.akash.android.nitsilcharalumni.NITSilcharAlumniApp;
 import com.akash.android.nitsilcharalumni.R;
+import com.akash.android.nitsilcharalumni.data.DataManager;
+import com.akash.android.nitsilcharalumni.di.component.AlumniOrStudentSignUpFragmentComponent;
+import com.akash.android.nitsilcharalumni.di.component.DaggerAlumniOrStudentSignUpFragmentComponent;
+import com.akash.android.nitsilcharalumni.di.module.AlumniOrStudentSignUpFragmentModule;
 import com.akash.android.nitsilcharalumni.ui.MainActivity;
 import com.akash.android.nitsilcharalumni.model.User;
 import com.akash.android.nitsilcharalumni.signup.SignUpActivity;
+
+import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -51,9 +58,14 @@ public class AlumniOrStudentSignUpFragment extends Fragment implements AlumniOrS
     Button btCreateAccount;
     Unbinder unbinder;
 
+    @Inject
+    DataManager mDataManager;
+
     private AlumniOrStudentSignUpContract.Presenter mPresenter;
 
     private String mClassOf;
+
+    private AlumniOrStudentSignUpFragmentComponent alumniOrStudentSignUpFragmentComponent;
 
     public AlumniOrStudentSignUpFragment() {
         // Required empty public constructor
@@ -76,8 +88,18 @@ public class AlumniOrStudentSignUpFragment extends Fragment implements AlumniOrS
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
         mPresenter = new AlumniOrStudentSignUpPresenter(this);
+        getAlumniOrStudentSignUpFragmentComponent().inject(this);
     }
 
+    public AlumniOrStudentSignUpFragmentComponent getAlumniOrStudentSignUpFragmentComponent(){
+        if (alumniOrStudentSignUpFragmentComponent == null) {
+            alumniOrStudentSignUpFragmentComponent = DaggerAlumniOrStudentSignUpFragmentComponent.builder()
+                    .alumniOrStudentSignUpFragmentModule(new AlumniOrStudentSignUpFragmentModule(this))
+                    .appComponent(NITSilcharAlumniApp.get(getContext()).getAppComponent())
+                    .build();
+        }
+        return alumniOrStudentSignUpFragmentComponent;
+    }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -170,5 +192,10 @@ public class AlumniOrStudentSignUpFragment extends Fragment implements AlumniOrS
     @Override
     public void updateClassof(String classOf) {
         mClassOf= classOf;
+    }
+
+    @Override
+    public void saveLoggedInUsername(String name) {
+        mDataManager.saveUserName(name);
     }
 }

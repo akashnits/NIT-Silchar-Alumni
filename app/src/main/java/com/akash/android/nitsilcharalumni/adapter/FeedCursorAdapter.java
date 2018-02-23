@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.akash.android.nitsilcharalumni.R;
 import com.akash.android.nitsilcharalumni.ui.bookmark.BookmarkFragment;
+import com.akash.android.nitsilcharalumni.utils.imageUtils.PicassoCircleTransformation;
 import com.squareup.picasso.Picasso;
 
 import butterknife.BindView;
@@ -48,7 +49,7 @@ public class FeedCursorAdapter extends RecyclerView.Adapter<FeedCursorAdapter.Bo
             holder.tvSearchHashtag.setText(mCursor.getString(BookmarkFragment.INDEX_FEED_HASHTAG));
 
             String profileImageUrl = mCursor.getString(BookmarkFragment.INDEX_PROFILE_IMAGE_URL);
-            Picasso.with(context).load(profileImageUrl).fit().centerCrop().into(holder.ivProfileIcon);
+            Picasso.with(context).load(profileImageUrl).transform(new PicassoCircleTransformation()).into(holder.ivProfileIcon);
             String feedImageUrl = mCursor.getString(BookmarkFragment.INDEX_FEED_IMAGE_URL);
             Picasso.with(context).load(feedImageUrl).fit().centerCrop().into(holder.ivFeedImage);
             holder.itemView.setTag(mCursor.getInt(BookmarkFragment.INDEX_FEED_ID));

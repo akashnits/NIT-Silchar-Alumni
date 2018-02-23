@@ -47,7 +47,7 @@ public class BookmarkFragment extends Fragment implements LoaderManager.LoaderCa
             FeedContract.FeedEntry.COLUMN_PROFILE_NAME,
             FeedContract.FeedEntry.COLUMN_FEED_DESCRIPTION,
             FeedContract.FeedEntry.COLUMN_FEED_TIMESTAMP,
-            FeedContract.FeedEntry.COLUMN_FEED_HASHTAG,
+            FeedContract.FeedEntry.COLUMN_FEED_HASHTAG
     };
 
     public static final int INDEX_FEED_ID = 0;

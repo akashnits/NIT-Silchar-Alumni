@@ -6,6 +6,7 @@ import android.text.Editable;
 import android.widget.EditText;
 
 import com.akash.android.nitsilcharalumni.R;
+import com.akash.android.nitsilcharalumni.model.User;
 import com.akash.android.nitsilcharalumni.utils.ActivityUtils;
 import com.facebook.login.widget.LoginButton;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -80,5 +81,10 @@ public class LoginPresenter implements LoginContract.Presenter {
     @Override
     public void onActivityResultCallbackReceived(int requestCode, int resultCode, Intent data, Activity context) {
         mLoginInteractor.onActivityResult(requestCode, resultCode, data, context);
+    }
+
+    @Override
+    public void saveLoggedInUserData(User user) {
+        mLoginView.saveLoggedInUsername(user.getmName());
     }
 }

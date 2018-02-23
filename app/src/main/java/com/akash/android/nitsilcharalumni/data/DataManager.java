@@ -34,4 +34,12 @@ public class DataManager {
     public String getTypeOfUser(){
         return mSharedPrefsHelper.get(SharedPrefsHelper.PREF_KEY_USERTYPE, null);
     }
+
+    public void saveUserName(String name){
+        mSharedPrefsHelper.put(SharedPrefsHelper.PREF_KEY_USERNAME, name);
+    }
+
+    public String getUserName(){
+        return mSharedPrefsHelper.get(SharedPrefsHelper.PREF_KEY_USERNAME, null);
+    }
 }

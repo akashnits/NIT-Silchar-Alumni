@@ -18,14 +18,15 @@ import com.facebook.login.widget.LoginButton;
 public class LoginContract {
     public interface View extends BaseView<LoginContract.Presenter> {
 
-    void showErrorMessage();
+        void showErrorMessage();
 
-    void showMainActivity();
+        void showMainActivity();
 
-    void showGoogleSignInErrorMessage();
+        void showGoogleSignInErrorMessage();
 
-    void showFacebookSignInErrorMessage();
+        void showFacebookSignInErrorMessage();
 
+        void saveLoggedInUsername(String name);
     }
 
     public interface Presenter extends BasePresenter {
@@ -45,6 +46,8 @@ public class LoginContract {
         void signInUsingFacebook(LoginButton fbLoginButton, Activity context);
 
         void loadFacebookSignInErrorMessage();
+
+        void saveLoggedInUserData(User user);
 
     }
 }

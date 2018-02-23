@@ -14,7 +14,7 @@
         android:layout_marginLeft="8dp"
         android:layout_marginRight="280dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="4dp"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
@@ -33,25 +33,15 @@
         tools:text="Akash Raj" />
 
     <TextView
-        android:id="@+id/tvClassOfJob"
+        android:id="@+id/tvTimeStampJob"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="8dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="4dp"
         app:layout_constraintLeft_toRightOf="@+id/ivProfileIconJob"
         app:layout_constraintTop_toBottomOf="@+id/tvNameJob"
-        tools:text="Class of 2013, " />
-
-    <TextView
-        android:id="@+id/tvOrganisationNameJob"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="8dp"
-        android:layout_marginStart="8dp"
-        app:layout_constraintLeft_toRightOf="@+id/tvClassOfJob"
-        app:layout_constraintTop_toTopOf="@+id/tvClassOfJob"
-        tools:text="L n T Technology Services" />
+        tools:text="16 Feb, 2018 " />
 
     <TextView
         android:id="@+id/tvJobTtitle"
@@ -59,7 +49,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="8dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="4dp"
         tools:text="Android Engineer"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvJobId" />
@@ -68,7 +58,7 @@
         android:id="@+id/tvJobLocation"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="4dp"
         tools:text=", Bangalore"
         app:layout_constraintLeft_toRightOf="@+id/tvJobTtitle"
         app:layout_constraintTop_toBottomOf="@+id/tvJobId" />
@@ -80,7 +70,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="8dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="7dp"
+        android:layout_marginTop="4dp"
         tools:text="Google Inc."
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvJobLocation" />
@@ -91,7 +81,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="8dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="7dp"
+        android:layout_marginTop="4dp"
         tools:text="Hiring for 2 years experienced Android developer who is passionate about learning new technologies "
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvJobOrganisationName" />
@@ -102,8 +92,9 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="8dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="4dp"
         tools:text="#android #java"
+        android:textColor="#0084b4"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/ivJobDescription" />
 
@@ -113,9 +104,10 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="8dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:text="Job Description"
-        android:textStyle="italic"
+        android:layout_marginTop="4dp"
+        android:text="Job description: "
+        android:textStyle="bold"
+        android:textColor="@android:color/black"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/ivProfileIconJob" />
 
@@ -125,7 +117,7 @@
         android:layout_height="160dp"
         android:layout_marginLeft="8dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="4dp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvJobDescription" />
 

@@ -77,10 +77,10 @@ public class MainActivity extends AppCompatActivity implements DrawerMenuItem.Dr
 
     };
 
-    public void commitAlumniDetailsFragment(){
+    public void commitAlumniDetailsFragment(Bundle args){
         ActivityUtils.replaceFragmentOnActivity(
                 getSupportFragmentManager(),
-                AlumniDetailsFragment.newInstance(),
+                AlumniDetailsFragment.newInstance(args),
                 R.id.content,
                 true,
                 "AlumniDetails",
