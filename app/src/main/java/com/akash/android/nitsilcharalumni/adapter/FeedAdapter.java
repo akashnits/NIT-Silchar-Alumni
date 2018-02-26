@@ -99,12 +99,13 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.FeedViewHolder
     }
 
     private void loadFeedImageWithPicasso(String imageUrl, FeedViewHolder holder) {
-        Display display =  mContext.getSystemService(WindowManager.class).getDefaultDisplay();
+        /*Display display =  mContext.getSystemService(WindowManager.class).getDefaultDisplay();
         Point size = new Point();
         display.getSize(size);
-        int width = size.x;
+        int width = size.x;*/
         Picasso.with(mContext).load(imageUrl)
-                .resize(width,0)
+                .placeholder(R.drawable.loading)
+                .fit()
                 .into(holder.ivFeedImage);
     }
 

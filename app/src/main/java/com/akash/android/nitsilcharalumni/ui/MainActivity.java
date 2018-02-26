@@ -39,7 +39,7 @@ public class MainActivity extends AppCompatActivity implements DrawerMenuItem.Dr
                             false,
                             "Home",
                             R.anim.enter_from_right,
-                            R.anim.exit_to_left );
+                            R.anim.exit_to_left);
                     return true;
                 case R.id.navigation_alumni:
                     ActivityUtils.replaceFragmentOnActivity(
