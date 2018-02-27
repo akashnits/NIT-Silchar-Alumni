@@ -252,7 +252,7 @@ public class CreateFeedFragment extends Fragment implements FABProgressListener 
                             mAuthorName,
                             null,
                             (mDownloadUri != null && !Uri.EMPTY.equals(mDownloadUri)) ? mDownloadUri.toString() :
-                                    "https://c.tadst.com/gfx/750w/world-post-day.jpg?1",
+                                    null,
                             editTextFeedDescription.getText().toString(),
                             searchKeywordMap,
                             mAuth.getCurrentUser().getEmail());

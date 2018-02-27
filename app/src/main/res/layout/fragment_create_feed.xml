@@ -104,7 +104,9 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
                 android:layout_marginRight="4dp"
-                android:layout_marginTop="8dp">
+                android:layout_marginTop="8dp"
+                android:padding="2dp"
+                android:clipToPadding="false">
 
                 <!--Google FAB-->
                 <android.support.design.widget.FloatingActionButton
@@ -123,7 +125,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/fabLayout"
-            android:layout_marginTop="65dp"
+            android:layout_marginTop="60dp"
             android:background="@color/colorPrimary"
             android:text="Post"
             android:textColor="@android:color/white" />

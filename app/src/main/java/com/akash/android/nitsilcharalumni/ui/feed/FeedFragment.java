@@ -18,6 +18,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
@@ -141,6 +142,8 @@ public class FeedFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         LinearLayoutManager lm = new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false);
         rvFeed.setLayoutManager(lm);
         rvFeed.hasFixedSize();
+        rvFeed.addItemDecoration(new DividerItemDecoration(rvFeed.getContext(),
+                DividerItemDecoration.VERTICAL));
         mFeedAdapter = new FeedAdapter(mContext, this);
         rvFeed.setAdapter(mFeedAdapter);
 
@@ -266,7 +269,7 @@ public class FeedFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        if(getUserVisibleHint())
+        if(getUserVisibleHint() && isVisible())
             outState.putParcelableArrayList("feed", mFeedAdapter.getmFeedList());
         if(rvFeed != null)
             outState.putParcelable("position", rvFeed.getLayoutManager().onSaveInstanceState());
@@ -296,7 +299,6 @@ public class FeedFragment extends Fragment implements SwipeRefreshLayout.OnRefre
                 .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                     @Override
                     public void onSuccess(QuerySnapshot documentSnapshots) {
-
                         if (documentSnapshots != null && !documentSnapshots.isEmpty()) {
                             mDocumentAtFirstPosition = documentSnapshots.getDocuments().get(0);
                             for (DocumentSnapshot documentSnapshot : documentSnapshots)
@@ -319,7 +321,6 @@ public class FeedFragment extends Fragment implements SwipeRefreshLayout.OnRefre
                         mIsLoading = false;
                     }
                 });
-
     }
 
     @Override
