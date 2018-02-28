@@ -1,9 +1,13 @@
 package com.akash.android.nitsilcharalumni.ui.job;
 
 
+import android.content.Context;
+import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Color;
-import android.os.AsyncTask;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
@@ -30,23 +34,19 @@ import com.akash.android.nitsilcharalumni.di.component.CreateJobFragmentComponen
 import com.akash.android.nitsilcharalumni.di.component.DaggerCreateJobFragmentComponent;
 import com.akash.android.nitsilcharalumni.di.module.CreateJobFragmentModule;
 import com.akash.android.nitsilcharalumni.model.Job;
-import com.akash.android.nitsilcharalumni.model.User;
 import com.akash.android.nitsilcharalumni.utils.Constants;
 import com.github.jorgecastilloprz.FABProgressCircle;
 import com.github.jorgecastilloprz.listeners.FABProgressListener;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
@@ -56,6 +56,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
+
+import static android.app.Activity.RESULT_OK;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -74,7 +76,7 @@ public class CreateJobFragment extends Fragment implements FABProgressListener {
     @BindView(R.id.tvPostJobOrganisation)
     TextView tvPostJobOrganisation;
     @BindView(R.id.edit_text_post_job_organiation)
-    EditText editTextPostJobOrganiation;
+    EditText editTextPostJobOrganisation;
     @BindView(R.id.til_post_job_organisation)
     TextInputLayout tilPostJobOrganisation;
     @BindView(R.id.tvPostJobLocation)
@@ -114,10 +116,18 @@ public class CreateJobFragment extends Fragment implements FABProgressListener {
 
     public static final String TAG = CreateJobFragment.class.getSimpleName();
 
+    private static final int SELECT_JOB_PICTURE = 7347;
+
     private CreateJobFragmentComponent createJobFragmentComponent;
     private FirebaseFirestore mFirebaseFirestore;
     private FirebaseAuth mAuth;
     private String mAuthorName;
+    private Uri mSelectedImageUri;
+    private Uri mDownloadUri;
+    private Context mContext;
+    private String mNameOfFile;
+    private FirebaseStorage mFirebaseStorage;
+
 
     public CreateJobFragment() {
         // Required empty public constructor
@@ -132,12 +142,20 @@ public class CreateJobFragment extends Fragment implements FABProgressListener {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setRetainInstance(true);
         mFirebaseFirestore = FirebaseFirestore.getInstance();
         mAuth = FirebaseAuth.getInstance();
+        mFirebaseStorage = FirebaseStorage.getInstance();
         getCreateJobFragmentComponent().inject(this);
     }
 
-    public CreateJobFragmentComponent getCreateJobFragmentComponent(){
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        mContext = context;
+    }
+
+    public CreateJobFragmentComponent getCreateJobFragmentComponent() {
         if (createJobFragmentComponent == null) {
             createJobFragmentComponent = DaggerCreateJobFragmentComponent.builder()
                     .createJobFragmentModule(new CreateJobFragmentModule(this))
@@ -180,37 +198,49 @@ public class CreateJobFragment extends Fragment implements FABProgressListener {
                 .show();
     }
 
-    @OnClick({R.id.postJobUploadFab, R.id.btPostJob})
+    @OnClick({R.id.postJobUploadFab, R.id.btPostJob, R.id.btPostJobSelectImage})
     public void onViewClicked(View view) {
         switch (view.getId()) {
+            case R.id.btPostJobSelectImage:
+                Intent intent = new Intent();
+                intent.setType("image/*");
+                intent.setAction(Intent.ACTION_GET_CONTENT);
+                startActivityForResult(Intent.createChooser(intent,
+                        "Select a picture"), SELECT_JOB_PICTURE);
+                break;
             case R.id.postJobUploadFab:
-                new AsyncTask<Void, Void, Void>() {
-                    @Override
-                    protected void onPreExecute() {
-                        super.onPreExecute();
-                        postJobFabProgressCircle.show();
-                    }
+                //start uploading the selected picture
+                if (mSelectedImageUri != null && !Uri.EMPTY.equals(mSelectedImageUri)) {
+                    btPostJob.setEnabled(false);
+                    //show animation that upload is in progress
+                    postJobFabProgressCircle.show();
+                    StorageReference selectedFeedImagesReference = mFirebaseStorage.getReference()
+                            .child(Constants.FEED_IMAGE_COLLECTION + mSelectedImageUri.getLastPathSegment());
+                    UploadTask uploadTask = selectedFeedImagesReference.putFile(mSelectedImageUri);
 
-                    @Override
-                    protected Void doInBackground(Void... params) {
-                        try {
-                            Thread.sleep(5000);
-                        } catch (Exception e) {
-                            e.printStackTrace();
+                    uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                            mDownloadUri = taskSnapshot.getDownloadUrl();
+                            Log.v(TAG, "Download uri is" + mDownloadUri);
+                            postJobFabProgressCircle.beginFinalAnimation();
+                            btPostJob.setEnabled(true);
                         }
-                        return null;
-                    }
-
-                    @Override
-                    protected void onPostExecute(Void aVoid) {
-                        super.onPostExecute(aVoid);
-                        postJobFabProgressCircle.beginFinalAnimation();
-                    }
-                }.execute();
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            e.printStackTrace();
+                            Toast.makeText(mContext, "Upload failed", Toast.LENGTH_SHORT).show();
+                            btPostJob.setEnabled(true);
+                        }
+                    });
+                } else {
+                    Toast.makeText(mContext, "Please select a image to upload", Toast.LENGTH_SHORT).show();
+                }
                 break;
             case R.id.btPostJob:
                 Map<String, Boolean> searchKeywordMap = new HashMap<>();
-                if (TextUtils.isEmpty(editTextPostJobKeywords.getText())) {
+                if (TextUtils.isEmpty(editTextPostJobDescription.getText())) {
                     Toast.makeText(getContext(), "Please enter a brief decription about the post",
                             Toast.LENGTH_SHORT).show();
                     return;
@@ -228,28 +258,28 @@ public class CreateJobFragment extends Fragment implements FABProgressListener {
                         searchKeywordMap.put(str, true);
                 }
 
-                mAuthorName= mDataManager.getUserName();
+                mAuthorName = mDataManager.getUserName();
                 //creating a job object
                 if (mAuthorName != null) {
                     Job job = new Job(mAuthorName,
                             "https://www2.mmu.ac.uk/research/research-study/student-profiles/james-xu/james-xu.jpg",
                             null,
-                            editTextPostJobTitle.getText().toString(),
-                            editTextPostJobLocation.getText().toString(),
-                            editTextPostJobOrganiation.getText().toString(),
+                            TextUtils.isEmpty(editTextPostJobTitle.getText())? null: editTextPostJobTitle.getText().toString(),
+                            TextUtils.isEmpty(editTextPostJobLocation.getText())? null: editTextPostJobLocation.getText().toString(),
+                            TextUtils.isEmpty(editTextPostJobOrganisation.getText())? null:editTextPostJobOrganisation.getText().toString(),
                             editTextPostJobDescription.getText().toString(),
-                            "https://c.tadst.com/gfx/750w/world-post-day.jpg?1",
+                            (mDownloadUri != null && !Uri.EMPTY.equals(mDownloadUri)) ? mDownloadUri.toString() :
+                                    null,
                             searchKeywordMap);
 
-
-
+                    Toast.makeText(mContext, "Posting...", Toast.LENGTH_SHORT).show();
                     mFirebaseFirestore.collection(Constants.JOB_COLLECTION)
                             .add(job)
                             .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                                 @Override
                                 public void onSuccess(DocumentReference documentReference) {
                                     Log.d(TAG, "DocumentSnapshot written with ID: " + documentReference.getId());
-                                    Toast.makeText(getContext(), "Successfully posted", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(getContext(), "Updated", Toast.LENGTH_SHORT).show();
                                     if (getFragmentManager() != null)
                                         getFragmentManager().popBackStackImmediate();
                                 }
@@ -264,6 +294,55 @@ public class CreateJobFragment extends Fragment implements FABProgressListener {
                             });
                 }
                 break;
+        }
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        if (mSelectedImageUri != null) {
+            outState.putString("selectedImage", mNameOfFile);
+        }
+    }
+
+    @Override
+    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
+        super.onViewStateRestored(savedInstanceState);
+        if (savedInstanceState != null && mSelectedImageUri != null)
+            if (savedInstanceState.get("selectedImage") != null) {
+                btPostJobSelectImage.setText(savedInstanceState.get("selectedImage").toString());
+            }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK) {
+            if (requestCode == SELECT_JOB_PICTURE) {
+                mSelectedImageUri = data.getData();
+                Log.i(TAG, "Uri is " + mSelectedImageUri);
+                if (mSelectedImageUri != null) {
+                    String[] filePathColumn = {MediaStore.Images.Media.DATA};
+                    Cursor cursor = mContext.getContentResolver().query(mSelectedImageUri,
+                            filePathColumn, null, null, null);
+                    if (cursor != null) {
+                        cursor.moveToFirst();
+                        int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+                        String[] filePathElements = cursor.getString(columnIndex) != null ?
+                                cursor.getString(columnIndex).split("\\/") : null;
+                        if (filePathElements != null && filePathElements.length > 0) {
+                            mNameOfFile = filePathElements[filePathElements.length - 1];
+                            if (!TextUtils.isEmpty(mNameOfFile))
+                                btPostJobSelectImage.setText(mNameOfFile);
+                            else
+                                btPostJobSelectImage.setText("Image selected");
+                            cursor.close();
+                        } else {
+                            btPostJobSelectImage.setText("Image selected");
+                        }
+                    }
+                }
+            }
         }
     }
 }
