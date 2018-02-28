@@ -15,6 +15,7 @@ import android.view.WindowManager;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.akash.android.nitsilcharalumni.R;
@@ -79,26 +80,19 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.FeedViewHolder
             String strSearchKeyword= "";
             Map<String, Boolean> strSearchKeywordMap = feed.getmFeedSearchKeywordsMap();
             if(strSearchKeywordMap != null && !strSearchKeywordMap.isEmpty()) {
-/*
-                holder.tvSearchHashtag.getLayoutParams().height= LinearLayout.LayoutParams.WRAP_CONTENT;
-*/
                 for (String key : strSearchKeywordMap.keySet())
                     strSearchKeyword = strSearchKeyword.concat("#").concat(key).concat(" ");
 
                 holder.tvSearchHashtag.setVisibility(View.VISIBLE);
                 holder.tvSearchHashtag.setText(strSearchKeyword);
-                ViewGroup.LayoutParams params = holder.tvSearchHashtag.getLayoutParams();
-                params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
-                holder.tvSearchHashtag.setLayoutParams(params);
             }else {
                 holder.tvSearchHashtag.setVisibility(View.GONE);
-                holder.tvSearchHashtag.setHeight(0);
             }
 
             loadProfileImageWithPicasso(feed.getmAuthorImageUrl(),
                     holder);
             if(feed.getmFeedImageUrl() != null) {
-                holder.tvSearchHashtag.setVisibility(View.VISIBLE);
+                holder.ivFeedImage.setVisibility(View.VISIBLE);
                 loadFeedImageWithPicasso(feed.getmFeedImageUrl(), holder);
             }else{
                 holder.ivFeedImage.setVisibility(View.GONE);
@@ -207,5 +201,19 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.FeedViewHolder
                 }
             });
         }
+
+       /* public void setVisibility(boolean isVisible, View view){
+            RelativeLayout.LayoutParams param = (RelativeLayout.LayoutParams) view.getLayoutParams();
+            if (isVisible){
+                param.height = RelativeLayout.LayoutParams.WRAP_CONTENT;
+                param.width = RelativeLayout.LayoutParams.MATCH_PARENT;
+                view.setVisibility(View.VISIBLE);
+            }else{
+                view.setVisibility(View.GONE);
+                param.height = 0;
+                param.width = 0;
+            }
+            view.setLayoutParams(param);
+        }*/
     }
 }
