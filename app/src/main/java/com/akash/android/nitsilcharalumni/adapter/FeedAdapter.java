@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.CheckBox;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.akash.android.nitsilcharalumni.R;
@@ -66,7 +67,8 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.FeedViewHolder
 
         Feed feed = mFeedList.get(position);
         if (feed != null) {
-            holder.tvName.setText(feed.getmAuthorName());String s= "<b>" + "Description: " + "</b> " + feed.getmFeedDescription();
+            holder.tvName.setText(feed.getmAuthorName());String s= "<b>" + "Description: " + "</b> "
+                    + feed.getmFeedDescription();
             holder.tvFeedDescription.setText(Html.fromHtml(s));
 
             SimpleDateFormat formatter = new SimpleDateFormat("dd MMMM yyyy", Locale.ENGLISH);
@@ -77,10 +79,17 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.FeedViewHolder
             String strSearchKeyword= "";
             Map<String, Boolean> strSearchKeywordMap = feed.getmFeedSearchKeywordsMap();
             if(strSearchKeywordMap != null && !strSearchKeywordMap.isEmpty()) {
-                holder.tvSearchHashtag.setVisibility(View.VISIBLE);
+/*
+                holder.tvSearchHashtag.getLayoutParams().height= LinearLayout.LayoutParams.WRAP_CONTENT;
+*/
                 for (String key : strSearchKeywordMap.keySet())
                     strSearchKeyword = strSearchKeyword.concat("#").concat(key).concat(" ");
+
+                holder.tvSearchHashtag.setVisibility(View.VISIBLE);
                 holder.tvSearchHashtag.setText(strSearchKeyword);
+                ViewGroup.LayoutParams params = holder.tvSearchHashtag.getLayoutParams();
+                params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+                holder.tvSearchHashtag.setLayoutParams(params);
             }else {
                 holder.tvSearchHashtag.setVisibility(View.GONE);
                 holder.tvSearchHashtag.setHeight(0);
