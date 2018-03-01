@@ -3,6 +3,7 @@ package com.akash.android.nitsilcharalumni.adapter;
 import android.content.Context;
 import android.database.Cursor;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -46,12 +47,23 @@ public class FeedCursorAdapter extends RecyclerView.Adapter<FeedCursorAdapter.Bo
             holder.tvName.setText(mCursor.getString(BookmarkFragment.INDEX_PROFILE_NAME));
             holder.tvFeedDescription.setText(mCursor.getString(BookmarkFragment.INDEX_FEED_DESCRIPTION));
             holder.tvTimeStamp.setText(mCursor.getString(BookmarkFragment.INDEX_FEED_TIMESTAMP));
-            holder.tvSearchHashtag.setText(mCursor.getString(BookmarkFragment.INDEX_FEED_HASHTAG));
+            if(!TextUtils.isEmpty(mCursor.getString(BookmarkFragment.INDEX_FEED_HASHTAG))) {
+                holder.tvSearchHashtag.setVisibility(View.VISIBLE);
+                holder.tvSearchHashtag.setText(mCursor.getString(BookmarkFragment.INDEX_FEED_HASHTAG));
+            }else {
+                holder.tvSearchHashtag.setVisibility(View.GONE);
+            }
 
             String profileImageUrl = mCursor.getString(BookmarkFragment.INDEX_PROFILE_IMAGE_URL);
             Picasso.with(context).load(profileImageUrl).transform(new PicassoCircleTransformation()).into(holder.ivProfileIcon);
+
             String feedImageUrl = mCursor.getString(BookmarkFragment.INDEX_FEED_IMAGE_URL);
-            Picasso.with(context).load(feedImageUrl).fit().centerCrop().into(holder.ivFeedImage);
+            if(feedImageUrl != null) {
+                holder.ivFeedImage.setVisibility(View.VISIBLE);
+                Picasso.with(context).load(feedImageUrl).placeholder(R.drawable.loading).fit().into(holder.ivFeedImage);
+            }else{
+                holder.ivFeedImage.setVisibility(View.GONE);
+            }
             holder.itemView.setTag(mCursor.getInt(BookmarkFragment.INDEX_FEED_ID));
         }
     }

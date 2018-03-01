@@ -46,6 +46,7 @@ public class JobAdapter extends RecyclerView.Adapter<JobAdapter.JobViewHolder> {
     public void onBindViewHolder(JobViewHolder holder, int position) {
         Job job = mJobList.get(position);
         if (job != null) {
+            boolean flag= false;
 
             holder.tvNameJob.setText(job.getmAuthorName());
 
@@ -67,13 +68,17 @@ public class JobAdapter extends RecyclerView.Adapter<JobAdapter.JobViewHolder> {
             if (jobLocation != null) {
                 holder.tvJobLocation.setText(job.getmJobLocation());
                 holder.tvJobLocation.setVisibility(View.VISIBLE);
+                flag= true;
             } else
                 holder.tvJobLocation.setVisibility(View.GONE);
 
             String jobTitle = job.getmJobTitle();
             if (jobTitle != null) {
                 holder.tvJobTitle.setVisibility(View.VISIBLE);
-                holder.tvJobTitle.setText(job.getmJobTitle().concat(", "));
+                if(flag)
+                    holder.tvJobTitle.setText(job.getmJobTitle().concat(", "));
+                else
+                    holder.tvJobTitle.setText(job.getmJobTitle());
             } else
                 holder.tvJobTitle.setVisibility(View.GONE);
 
