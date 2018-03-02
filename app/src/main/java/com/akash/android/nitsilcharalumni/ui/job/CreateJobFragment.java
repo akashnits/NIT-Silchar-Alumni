@@ -35,6 +35,7 @@ import com.akash.android.nitsilcharalumni.di.component.DaggerCreateJobFragmentCo
 import com.akash.android.nitsilcharalumni.di.module.CreateJobFragmentModule;
 import com.akash.android.nitsilcharalumni.model.Job;
 import com.akash.android.nitsilcharalumni.utils.Constants;
+import com.akash.android.nitsilcharalumni.utils.imageUtils.LoggedInUser;
 import com.github.jorgecastilloprz.FABProgressCircle;
 import com.github.jorgecastilloprz.listeners.FABProgressListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -262,7 +263,7 @@ public class CreateJobFragment extends Fragment implements FABProgressListener {
                 //creating a job object
                 if (mAuthorName != null) {
                     Job job = new Job(mAuthorName,
-                            "https://www2.mmu.ac.uk/research/research-study/student-profiles/james-xu/james-xu.jpg",
+                            LoggedInUser.getLoggedInUserProfileImageUrl(),
                             null,
                             TextUtils.isEmpty(editTextPostJobTitle.getText())? null: editTextPostJobTitle.getText().toString(),
                             TextUtils.isEmpty(editTextPostJobLocation.getText())? null: editTextPostJobLocation.getText().toString(),

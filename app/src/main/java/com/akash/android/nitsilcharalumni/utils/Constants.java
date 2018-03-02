@@ -8,4 +8,5 @@ public  class  Constants {
     public static final String FEED_COLLECTION= "feed";
     public static final String JOB_COLLECTION= "job";
     public static final String FEED_IMAGE_COLLECTION= "images/feed/";
+    public static final String PROFILE_IMAGE_COLLECTION= "images/profile/";
 }

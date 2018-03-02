@@ -1,7 +1,10 @@
 package com.akash.android.nitsilcharalumni.ui.drawer.profile;
 
 
+import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -10,10 +13,10 @@ import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -22,21 +25,34 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.akash.android.nitsilcharalumni.R;
+import com.akash.android.nitsilcharalumni.model.User;
 import com.akash.android.nitsilcharalumni.utils.Constants;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
+import com.squareup.picasso.Picasso;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import butterknife.Unbinder;
+
+import static android.app.Activity.RESULT_OK;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -108,10 +124,18 @@ public class EditMyProfileFragment extends Fragment {
     CoordinatorLayout coordinatorLayoutEditMyProfile;
     Unbinder unbinder;
 
+    public static final int SELECT_PROFILE_PICTURE = 749;
 
     private static final String TAG = EditMyProfileFragment.class.getSimpleName();
+    @BindView(R.id.pbEditMyProfileFragment)
+    ProgressBar pbEditMyProfileFragment;
     private FirebaseFirestore mFirestore;
     private FirebaseAuth mAuth;
+    private Uri mSelectedImageUri;
+    private Context mContext;
+    private FirebaseStorage mFirebaseStorage;
+    private Uri mDownloadUri;
+    private boolean mEditDoneVisible = true;
 
     public EditMyProfileFragment() {
         // Required empty public constructor
@@ -131,6 +155,7 @@ public class EditMyProfileFragment extends Fragment {
         setRetainInstance(true);
         mFirestore = FirebaseFirestore.getInstance();
         mAuth = FirebaseAuth.getInstance();
+        mFirebaseStorage = FirebaseStorage.getInstance();
     }
 
     @Override
@@ -170,12 +195,27 @@ public class EditMyProfileFragment extends Fragment {
             etDesignationMyProfile.setText(userHashMap.get("mDesignation").toString());
         if (userHashMap.get("mSkills") != null)
             etSkillsMyProfile.setText(userHashMap.get("mSkills").toString());
+        if(userHashMap.get("mProfileImageUrl") != null)
+            Picasso.with(mContext).load(userHashMap.get("mProfileImageUrl").toString()).fit().into(backdropEditProfileImage);
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        mContext = context;
     }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.editmyprofile, menu);
         super.onCreateOptionsMenu(menu, inflater);
+    }
+
+
+    @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        super.onPrepareOptionsMenu(menu);
+        menu.getItem(0).setEnabled(mEditDoneVisible);
     }
 
     @Override
@@ -188,11 +228,11 @@ public class EditMyProfileFragment extends Fragment {
                 updatedMap.put("mAboutYou", etEditAboutYouMyProfile.getText().toString());
             if (etEditClassOfMyProfile.getText() != null)
                 updatedMap.put("mClassOf", etEditClassOfMyProfile.getText().toString());
-            if(etEditLocationMyProfile.getText() != null)
+            if (etEditLocationMyProfile.getText() != null)
                 updatedMap.put("mLocation", etEditLocationMyProfile.getText().toString());
             if (etContactMyProfile.getText() != null)
                 updatedMap.put("mContact", etContactMyProfile.getText().toString());
-            if(etEmailMyProfile.getText() != null)
+            if (etEmailMyProfile.getText() != null)
                 updatedMap.put("mEmail", etEmailMyProfile.getText().toString());
             if (etOrganisationMyProfile.getText() != null)
                 updatedMap.put("mOrganisation", etOrganisationMyProfile.getText().toString());
@@ -220,7 +260,7 @@ public class EditMyProfileFragment extends Fragment {
 
             // restart the loader to get the updates from server
             MyProfileFragment frag;
-            if(( frag= (MyProfileFragment) getFragmentManager().findFragmentByTag("MyProfileFragment")) != null)
+            if ((frag = (MyProfileFragment) getFragmentManager().findFragmentByTag("MyProfileFragment")) != null)
                 frag.restartLoarder();
             getFragmentManager().popBackStackImmediate();
         }
@@ -231,5 +271,97 @@ public class EditMyProfileFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         unbinder.unbind();
+    }
+
+    @OnClick(R.id.ivEditProfileImage)
+    public void onViewClicked() {
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(Intent.createChooser(intent,
+                "Select a picture"), SELECT_PROFILE_PICTURE);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK) {
+            if (requestCode == SELECT_PROFILE_PICTURE) {
+                mSelectedImageUri = data.getData();
+                Log.i(TAG, "Uri is " + mSelectedImageUri);
+                if (mSelectedImageUri != null && !Uri.EMPTY.equals(mSelectedImageUri)) {
+                    mEditDoneVisible = false;
+                    if (getActivity() != null)
+                        getActivity().invalidateOptionsMenu();
+
+                    StorageReference storageReference = mFirebaseStorage.getReference()
+                            .child(Constants.PROFILE_IMAGE_COLLECTION + mSelectedImageUri.getLastPathSegment());
+
+                    //show progress bar while uploading the profile picture
+                    pbEditMyProfileFragment.setVisibility(View.VISIBLE);
+                    UploadTask uploadTask = storageReference.putFile(mSelectedImageUri);
+
+                    uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                            mDownloadUri = taskSnapshot.getDownloadUrl();
+                            Log.v(TAG, "Download uri is" + mDownloadUri);
+                            if ((mDownloadUri != null && !Uri.EMPTY.equals
+                                    (mDownloadUri))) {
+                                final String downloadUrl = mDownloadUri.toString();
+                                String email = FirebaseAuth.getInstance().getCurrentUser().getEmail();
+
+                                //update the document of current user
+                                DocumentReference userRef = mFirestore.collection(Constants.USER_COLLECTION)
+                                        .document(email);
+
+                                userRef.update("mProfileImageUrl", downloadUrl)
+                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                            @Override
+                                            public void onSuccess(Void aVoid) {
+                                                Log.d(TAG, "DocumentSnapshot successfully updated!");
+                                                if (pbEditMyProfileFragment != null)
+                                                    pbEditMyProfileFragment.setVisibility(View.GONE);
+                                                //show done icon
+                                                mEditDoneVisible = true;
+                                                if (getActivity() != null)
+                                                    getActivity().invalidateOptionsMenu();
+
+                                                //update the image on backdropEditProfileImage
+                                                Picasso.with(mContext).load(downloadUrl).fit()
+                                                        .placeholder(R.drawable.loading)
+                                                        .into(backdropEditProfileImage);
+                                            }
+                                        })
+                                        .addOnFailureListener(new OnFailureListener() {
+                                            @Override
+                                            public void onFailure(@NonNull Exception e) {
+                                                Log.w(TAG, "Error updating document", e);
+                                                if (pbEditMyProfileFragment != null)
+                                                    pbEditMyProfileFragment.setVisibility(View.GONE);
+
+                                                //show done icon
+                                                mEditDoneVisible = true;
+                                                if (getActivity() != null)
+                                                    getActivity().invalidateOptionsMenu();
+                                            }
+                                        });
+                            }
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            e.printStackTrace();
+                            Toast.makeText(mContext, "Upload failed", Toast.LENGTH_SHORT).show();
+                            mEditDoneVisible = true;
+                            if (getActivity() != null)
+                                getActivity().invalidateOptionsMenu();
+                        }
+                    });
+                } else {
+                    Toast.makeText(mContext, "Please select a image to upload", Toast.LENGTH_SHORT).show();
+                }
+            }
+        }
     }
 }

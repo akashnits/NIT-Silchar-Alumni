@@ -98,8 +98,6 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.FeedViewHolder
                 holder.ivFeedImage.setVisibility(View.GONE);
             }
         }
-
-
         if (FeedFragment.getBookmarkStatus(FeedContract.FeedEntry.CONTENT_URI, mContentResolver,
                 position))
             holder.cbBookmark.setChecked(true);
@@ -108,9 +106,15 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.FeedViewHolder
     }
 
     private void loadProfileImageWithPicasso(String imageUrl, FeedViewHolder holder) {
-        Picasso.with(mContext).load(imageUrl)
-                .transform(new PicassoCircleTransformation())
-                .into(holder.ivProfileIcon);
+        if(imageUrl != null) {
+            Picasso.with(mContext).load(imageUrl)
+                    .transform(new PicassoCircleTransformation())
+                    .into(holder.ivProfileIcon);
+        }else {
+            Picasso.with(mContext).load(R.drawable.loading)
+                    .transform(new PicassoCircleTransformation())
+                    .into(holder.ivProfileIcon);
+        }
     }
 
     private void loadFeedImageWithPicasso(String imageUrl, FeedViewHolder holder) {
@@ -201,19 +205,5 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.FeedViewHolder
                 }
             });
         }
-
-       /* public void setVisibility(boolean isVisible, View view){
-            RelativeLayout.LayoutParams param = (RelativeLayout.LayoutParams) view.getLayoutParams();
-            if (isVisible){
-                param.height = RelativeLayout.LayoutParams.WRAP_CONTENT;
-                param.width = RelativeLayout.LayoutParams.MATCH_PARENT;
-                view.setVisibility(View.VISIBLE);
-            }else{
-                view.setVisibility(View.GONE);
-                param.height = 0;
-                param.width = 0;
-            }
-            view.setLayoutParams(param);
-        }*/
     }
 }

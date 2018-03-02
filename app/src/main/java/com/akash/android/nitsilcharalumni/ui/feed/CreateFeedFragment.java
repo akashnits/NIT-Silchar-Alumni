@@ -36,6 +36,7 @@ import com.akash.android.nitsilcharalumni.di.component.DaggerCreateFeedFragmentC
 import com.akash.android.nitsilcharalumni.di.module.CreateFeedFragmentModule;
 import com.akash.android.nitsilcharalumni.model.Feed;
 import com.akash.android.nitsilcharalumni.utils.Constants;
+import com.akash.android.nitsilcharalumni.utils.imageUtils.LoggedInUser;
 import com.github.jorgecastilloprz.FABProgressCircle;
 import com.github.jorgecastilloprz.listeners.FABProgressListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -248,7 +249,7 @@ public class CreateFeedFragment extends Fragment implements FABProgressListener 
                 //creating a Feed object
                 if (mAuthorName != null) {
                     Feed feed = new Feed(
-                            "https://www2.mmu.ac.uk/research/research-study/student-profiles/james-xu/james-xu.jpg",
+                            LoggedInUser.getLoggedInUserProfileImageUrl(),
                             mAuthorName,
                             null,
                             (mDownloadUri != null && !Uri.EMPTY.equals(mDownloadUri)) ? mDownloadUri.toString() :

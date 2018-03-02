@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.akash.android.nitsilcharalumni.R;
 import com.akash.android.nitsilcharalumni.model.Job;
+import com.akash.android.nitsilcharalumni.utils.imageUtils.LoggedInUser;
 import com.akash.android.nitsilcharalumni.utils.imageUtils.PicassoCircleTransformation;
 import com.squareup.picasso.Picasso;
 
@@ -93,7 +94,7 @@ public class JobAdapter extends RecyclerView.Adapter<JobAdapter.JobViewHolder> {
                 holder.tvJobSearchHashtag.setVisibility(View.GONE);
             }
 
-            loadProfileImageWithPicasso("https://www2.mmu.ac.uk/research/research-study/student-profiles/james-xu/james-xu.jpg", holder);
+            loadProfileImageWithPicasso(job.getmAuthorImageUrl(), holder);
             if (job.getmJobImageUrl() != null) {
                 holder.ivJobDescription.setVisibility(View.VISIBLE);
                 loadFeedImageWithPicasso(job.getmJobImageUrl(), holder);
@@ -103,9 +104,15 @@ public class JobAdapter extends RecyclerView.Adapter<JobAdapter.JobViewHolder> {
     }
 
     private void loadProfileImageWithPicasso(String imageUrl, JobViewHolder holder) {
-        Picasso.with(mContext).load(imageUrl)
-                .transform(new PicassoCircleTransformation())
-                .into(holder.ivProfileIconJob);
+        if(imageUrl != null) {
+            Picasso.with(mContext).load(imageUrl)
+                    .transform(new PicassoCircleTransformation())
+                    .into(holder.ivProfileIconJob);
+        }else {
+            Picasso.with(mContext).load(R.drawable.loading)
+                    .transform(new PicassoCircleTransformation())
+                    .into(holder.ivProfileIconJob);
+        }
     }
 
     private void loadFeedImageWithPicasso(String imageUrl, JobViewHolder holder) {

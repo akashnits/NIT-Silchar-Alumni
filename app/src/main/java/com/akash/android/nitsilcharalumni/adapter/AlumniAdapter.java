@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.akash.android.nitsilcharalumni.R;
 import com.akash.android.nitsilcharalumni.model.User;
+import com.akash.android.nitsilcharalumni.utils.imageUtils.LoggedInUser;
 import com.akash.android.nitsilcharalumni.utils.imageUtils.PicassoCircleTransformation;
 import com.squareup.picasso.Picasso;
 
@@ -46,20 +47,26 @@ public class AlumniAdapter extends RecyclerView.Adapter<AlumniAdapter.AlumniView
 
     @Override
     public void onBindViewHolder(AlumniViewHolder holder, int position) {
-        loadProfileImageWithPicasso("https://www2.mmu.ac.uk/research/research-study/student-profiles/james-xu/james-xu.jpg", holder);
 
         User alumni= mAlumniList.get(position);
         if(alumni != null) {
             holder.tvName.setText(alumni.getmName());
             holder.tvOrganisationName.setText(alumni.getmOrganisation());
             holder.tvClassOf.setText(String.format("Class of %s,", alumni.getmClassOf()));
+            loadProfileImageWithPicasso(alumni.getmProfileImageUrl(), holder);
         }
     }
 
     private void loadProfileImageWithPicasso(String imageUrl, AlumniViewHolder holder){
-        Picasso.with(mContext).load(imageUrl)
-                .transform(new PicassoCircleTransformation())
-                .into(holder.ivProfileIcon);
+        if(imageUrl != null) {
+            Picasso.with(mContext).load(imageUrl)
+                    .transform(new PicassoCircleTransformation())
+                    .into(holder.ivAlumniProfileIcon);
+        }else {
+            Picasso.with(mContext).load(R.drawable.loading)
+                    .transform(new PicassoCircleTransformation())
+                    .into(holder.ivAlumniProfileIcon);
+        }
     }
 
     @Override
@@ -99,8 +106,8 @@ public class AlumniAdapter extends RecyclerView.Adapter<AlumniAdapter.AlumniView
         notifyItemRangeRemoved(0, currentSize);
     }
     class AlumniViewHolder extends RecyclerView.ViewHolder {
-        @BindView(R.id.ivProfileIcon)
-        ImageView ivProfileIcon;
+        @BindView(R.id.ivAlumniProfileIcon)
+        ImageView ivAlumniProfileIcon;
         @BindView(R.id.tvName)
         TextView tvName;
         @BindView(R.id.tvClassOf)
