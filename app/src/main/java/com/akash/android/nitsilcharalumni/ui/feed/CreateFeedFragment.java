@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
@@ -35,15 +34,17 @@ import com.akash.android.nitsilcharalumni.di.component.CreateFeedFragmentCompone
 import com.akash.android.nitsilcharalumni.di.component.DaggerCreateFeedFragmentComponent;
 import com.akash.android.nitsilcharalumni.di.module.CreateFeedFragmentModule;
 import com.akash.android.nitsilcharalumni.model.Feed;
+import com.akash.android.nitsilcharalumni.model.User;
 import com.akash.android.nitsilcharalumni.utils.Constants;
-import com.akash.android.nitsilcharalumni.utils.imageUtils.LoggedInUser;
 import com.github.jorgecastilloprz.FABProgressCircle;
 import com.github.jorgecastilloprz.listeners.FABProgressListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -110,6 +111,7 @@ public class CreateFeedFragment extends Fragment implements FABProgressListener 
     private Uri mDownloadUri;
     private Context mContext;
     private String mNameOfFile;
+    private String mAuthorImageUrl;
 
     public CreateFeedFragment() {
         // Required empty public constructor
@@ -163,6 +165,7 @@ public class CreateFeedFragment extends Fragment implements FABProgressListener 
         toolbarCreateFeed.setTitleTextColor(Color.WHITE);
         ((AppCompatActivity) getActivity()).setSupportActionBar(toolbarCreateFeed);
         ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getLoggedInUserProfileImageUrl();
     }
 
     @Override
@@ -249,7 +252,7 @@ public class CreateFeedFragment extends Fragment implements FABProgressListener 
                 //creating a Feed object
                 if (mAuthorName != null) {
                     Feed feed = new Feed(
-                            LoggedInUser.getLoggedInUserProfileImageUrl(),
+                            mAuthorImageUrl,
                             mAuthorName,
                             null,
                             (mDownloadUri != null && !Uri.EMPTY.equals(mDownloadUri)) ? mDownloadUri.toString() :
@@ -330,5 +333,30 @@ public class CreateFeedFragment extends Fragment implements FABProgressListener 
                 }
             }
         }
+    }
+
+    private void getLoggedInUserProfileImageUrl() {
+        String email = FirebaseAuth.getInstance().getCurrentUser().getEmail();
+        FirebaseFirestore.getInstance().collection(Constants.USER_COLLECTION)
+                .whereEqualTo("mEmail", email)
+                .get()
+                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    @Override
+                    public void onSuccess(QuerySnapshot documentSnapshots) {
+                        if (documentSnapshots != null && !documentSnapshots.isEmpty()) {
+                            User currentUser = null;
+                            for (DocumentSnapshot documentSnapshot : documentSnapshots)
+                                currentUser = documentSnapshot.toObject(User.class);
+                            if (currentUser != null)
+                                mAuthorImageUrl = currentUser.getmProfileImageUrl();
+                        }
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        e.printStackTrace();
+                    }
+                });
     }
 }

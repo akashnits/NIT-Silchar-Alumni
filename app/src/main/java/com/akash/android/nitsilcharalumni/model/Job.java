@@ -23,13 +23,14 @@ public class Job implements Parcelable {
     private String mJobDescription;
     private String mJobImageUrl;
     private Map<String, Boolean> mJobSearchKeywordsMap;
+    private String mAuthorEmail;
 
     public Job() {
     }
 
     public Job(String mAuthorName, String mAuthorImageUrl, Date mTimestamp, String mJobTitle,
                String mJobLocation, String mJobOrganisation, String mJobDescription, String mJobImageUrl,
-               Map<String, Boolean> mJobSearchKeywordsMap) {
+               Map<String, Boolean> mJobSearchKeywordsMap, String mAuthorEmail) {
         this.mAuthorName = mAuthorName;
         this.mAuthorImageUrl = mAuthorImageUrl;
         this.mTimestamp = mTimestamp;
@@ -39,6 +40,7 @@ public class Job implements Parcelable {
         this.mJobDescription = mJobDescription;
         this.mJobImageUrl = mJobImageUrl;
         this.mJobSearchKeywordsMap = mJobSearchKeywordsMap;
+        this.mAuthorEmail= mAuthorEmail;
     }
 
     public String getmAuthorName() {
@@ -113,6 +115,14 @@ public class Job implements Parcelable {
         this.mJobSearchKeywordsMap = mJobSearchKeywordsMap;
     }
 
+    public String getmAuthorEmail() {
+        return mAuthorEmail;
+    }
+
+    public void setmAuthorEmail(String mAuthorEmail) {
+        this.mAuthorEmail = mAuthorEmail;
+    }
+
     protected Job(Parcel in) {
         mAuthorName = in.readString();
         mAuthorImageUrl = in.readString();
@@ -123,6 +133,7 @@ public class Job implements Parcelable {
         mJobOrganisation = in.readString();
         mJobDescription = in.readString();
         mJobImageUrl = in.readString();
+        mAuthorEmail= in.readString();
     }
 
     @Override
@@ -140,6 +151,7 @@ public class Job implements Parcelable {
         dest.writeString(mJobOrganisation);
         dest.writeString(mJobDescription);
         dest.writeString(mJobImageUrl);
+        dest.writeString(mAuthorEmail);
     }
 
     @SuppressWarnings("unused")

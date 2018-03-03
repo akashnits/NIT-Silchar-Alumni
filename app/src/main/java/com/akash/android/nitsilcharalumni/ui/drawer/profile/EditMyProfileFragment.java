@@ -32,13 +32,16 @@ import android.widget.Toast;
 import com.akash.android.nitsilcharalumni.R;
 import com.akash.android.nitsilcharalumni.model.User;
 import com.akash.android.nitsilcharalumni.utils.Constants;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.WriteBatch;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -195,7 +198,7 @@ public class EditMyProfileFragment extends Fragment {
             etDesignationMyProfile.setText(userHashMap.get("mDesignation").toString());
         if (userHashMap.get("mSkills") != null)
             etSkillsMyProfile.setText(userHashMap.get("mSkills").toString());
-        if(userHashMap.get("mProfileImageUrl") != null)
+        if (userHashMap.get("mProfileImageUrl") != null)
             Picasso.with(mContext).load(userHashMap.get("mProfileImageUrl").toString()).fit().into(backdropEditProfileImage);
     }
 
@@ -240,8 +243,74 @@ public class EditMyProfileFragment extends Fragment {
                 updatedMap.put("mDesignation", etDesignationMyProfile.getText().toString());
             if (etSkillsMyProfile.getText() != null)
                 updatedMap.put("mSkills", etSkillsMyProfile.getText().toString());
+            if (mDownloadUri != null && !Uri.EMPTY.equals(mDownloadUri)) {
+                final String downloadUrl = mDownloadUri.toString();
+                updatedMap.put("mProfileImageUrl", downloadUrl);
 
-            // write updates to the server
+                //updating feed and job documents for author image url
+
+                final WriteBatch batchFeed = mFirestore.batch();
+                mFirestore.collection(Constants.FEED_COLLECTION)
+                        .whereEqualTo("mAuthorEmail", mAuth.getCurrentUser().getEmail())
+                        .get()
+                        .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                            @Override
+                            public void onSuccess(QuerySnapshot documentSnapshots) {
+                                if (documentSnapshots != null && !documentSnapshots.isEmpty()) {
+                                    for (DocumentSnapshot documentSnapshot : documentSnapshots) {
+                                        if (documentSnapshot.exists()) {
+                                            DocumentReference documentReference = documentSnapshot.getReference();
+                                            batchFeed.update(documentReference, "mAuthorImageUrl", downloadUrl);
+                                        }
+                                    }
+                                    batchFeed.commit().addOnCompleteListener(new OnCompleteListener<Void>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<Void> task) {
+                                            Log.v(TAG, "Feed Batch write completed");
+                                        }
+                                    });
+                                }
+                            }
+                        })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+
+                            }
+                        });
+
+                final WriteBatch batchJob = mFirestore.batch();
+                mFirestore.collection(Constants.JOB_COLLECTION)
+                        .whereEqualTo("mAuthorEmail", mAuth.getCurrentUser().getEmail())
+                        .get()
+                        .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                            @Override
+                            public void onSuccess(QuerySnapshot documentSnapshots) {
+                                if (documentSnapshots != null && !documentSnapshots.isEmpty()) {
+                                    for (DocumentSnapshot documentSnapshot : documentSnapshots) {
+                                        if (documentSnapshot.exists()) {
+                                            DocumentReference documentReference = documentSnapshot.getReference();
+                                            batchJob.update(documentReference, "mAuthorImageUrl", downloadUrl);
+                                        }
+                                    }
+                                    batchJob.commit().addOnCompleteListener(new OnCompleteListener<Void>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<Void> task) {
+                                            Log.v(TAG, "Job Batch write completed");
+                                        }
+                                    });
+                                }
+                            }
+                        })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+
+                            }
+                        });
+            }
+
+            // write updates to the server in the user document
             mFirestore.collection(Constants.USER_COLLECTION)
                     .document(mAuth.getCurrentUser().getEmail())
                     .update(updatedMap)
@@ -306,7 +375,7 @@ public class EditMyProfileFragment extends Fragment {
                         public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                             mDownloadUri = taskSnapshot.getDownloadUrl();
                             Log.v(TAG, "Download uri is" + mDownloadUri);
-                            if ((mDownloadUri != null && !Uri.EMPTY.equals
+                            /*if ((mDownloadUri != null && !Uri.EMPTY.equals
                                     (mDownloadUri))) {
                                 final String downloadUrl = mDownloadUri.toString();
                                 String email = FirebaseAuth.getInstance().getCurrentUser().getEmail();
@@ -346,13 +415,27 @@ public class EditMyProfileFragment extends Fragment {
                                                     getActivity().invalidateOptionsMenu();
                                             }
                                         });
-                            }
+                            }*/
+
+                            if (pbEditMyProfileFragment != null)
+                                pbEditMyProfileFragment.setVisibility(View.GONE);
+                            //show done icon
+                            mEditDoneVisible = true;
+                            if (getActivity() != null)
+                                getActivity().invalidateOptionsMenu();
+
+                            //update the image on backdropEditProfileImage
+                            Picasso.with(mContext).load(mDownloadUri.toString()).fit()
+                                    .placeholder(R.drawable.loading)
+                                    .into(backdropEditProfileImage);
                         }
                     }).addOnFailureListener(new OnFailureListener() {
                         @Override
                         public void onFailure(@NonNull Exception e) {
                             e.printStackTrace();
                             Toast.makeText(mContext, "Upload failed", Toast.LENGTH_SHORT).show();
+                            if (pbEditMyProfileFragment != null)
+                                pbEditMyProfileFragment.setVisibility(View.GONE);
                             mEditDoneVisible = true;
                             if (getActivity() != null)
                                 getActivity().invalidateOptionsMenu();

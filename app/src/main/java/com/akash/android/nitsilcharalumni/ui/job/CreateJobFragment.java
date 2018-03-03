@@ -34,15 +34,17 @@ import com.akash.android.nitsilcharalumni.di.component.CreateJobFragmentComponen
 import com.akash.android.nitsilcharalumni.di.component.DaggerCreateJobFragmentComponent;
 import com.akash.android.nitsilcharalumni.di.module.CreateJobFragmentModule;
 import com.akash.android.nitsilcharalumni.model.Job;
+import com.akash.android.nitsilcharalumni.model.User;
 import com.akash.android.nitsilcharalumni.utils.Constants;
-import com.akash.android.nitsilcharalumni.utils.imageUtils.LoggedInUser;
 import com.github.jorgecastilloprz.FABProgressCircle;
 import com.github.jorgecastilloprz.listeners.FABProgressListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -128,6 +130,7 @@ public class CreateJobFragment extends Fragment implements FABProgressListener {
     private Context mContext;
     private String mNameOfFile;
     private FirebaseStorage mFirebaseStorage;
+    private String mAuthorImageUrl;
 
 
     public CreateJobFragment() {
@@ -182,6 +185,7 @@ public class CreateJobFragment extends Fragment implements FABProgressListener {
         toolbarCreateJob.setTitleTextColor(Color.WHITE);
         ((AppCompatActivity) getActivity()).setSupportActionBar(toolbarCreateJob);
         ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getLoggedInUserProfileImageUrl();
         super.onViewCreated(view, savedInstanceState);
     }
 
@@ -263,7 +267,7 @@ public class CreateJobFragment extends Fragment implements FABProgressListener {
                 //creating a job object
                 if (mAuthorName != null) {
                     Job job = new Job(mAuthorName,
-                            LoggedInUser.getLoggedInUserProfileImageUrl(),
+                            mAuthorImageUrl,
                             null,
                             TextUtils.isEmpty(editTextPostJobTitle.getText())? null: editTextPostJobTitle.getText().toString(),
                             TextUtils.isEmpty(editTextPostJobLocation.getText())? null: editTextPostJobLocation.getText().toString(),
@@ -271,7 +275,8 @@ public class CreateJobFragment extends Fragment implements FABProgressListener {
                             editTextPostJobDescription.getText().toString(),
                             (mDownloadUri != null && !Uri.EMPTY.equals(mDownloadUri)) ? mDownloadUri.toString() :
                                     null,
-                            searchKeywordMap);
+                            searchKeywordMap,
+                            mAuth.getCurrentUser().getEmail());
 
                     Toast.makeText(mContext, "Posting...", Toast.LENGTH_SHORT).show();
                     mFirebaseFirestore.collection(Constants.JOB_COLLECTION)
@@ -345,5 +350,30 @@ public class CreateJobFragment extends Fragment implements FABProgressListener {
                 }
             }
         }
+    }
+
+    private void getLoggedInUserProfileImageUrl() {
+        String email = FirebaseAuth.getInstance().getCurrentUser().getEmail();
+        FirebaseFirestore.getInstance().collection(Constants.USER_COLLECTION)
+                .whereEqualTo("mEmail", email)
+                .get()
+                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    @Override
+                    public void onSuccess(QuerySnapshot documentSnapshots) {
+                        if (documentSnapshots != null && !documentSnapshots.isEmpty()) {
+                            User currentUser = null;
+                            for (DocumentSnapshot documentSnapshot : documentSnapshots)
+                                currentUser = documentSnapshot.toObject(User.class);
+                            if (currentUser != null)
+                                mAuthorImageUrl = currentUser.getmProfileImageUrl();
+                        }
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        e.printStackTrace();
+                    }
+                });
     }
 }
