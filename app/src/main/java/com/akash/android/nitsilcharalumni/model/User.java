@@ -20,6 +20,7 @@ public class User implements Parcelable {
     private String mContact;
     private String mDesignation;
     private String mSkills;
+    private String mProfileImageUrl;
 
     public User() {}
 
@@ -118,6 +119,14 @@ public class User implements Parcelable {
         this.mSkills = mSkills;
     }
 
+    public String getmProfileImageUrl() {
+        return mProfileImageUrl;
+    }
+
+    public void setmProfileImageUrl(String mProfileImageUrl) {
+        this.mProfileImageUrl = mProfileImageUrl;
+    }
+
     public HashMap<String, Object> toMap()
     {
         HashMap<String, Object> userMap = new HashMap<>();
@@ -132,6 +141,7 @@ public class User implements Parcelable {
         userMap.put("contact", mContact);
         userMap.put("designation", mDesignation);
         userMap.put("skills", mSkills);
+        userMap.put("imageUrl", mProfileImageUrl);
         return userMap;
     }
 
@@ -147,6 +157,7 @@ public class User implements Parcelable {
         mContact= in.readString();
         mDesignation= in.readString();
         mSkills= in.readString();
+        mProfileImageUrl= in.readString();
     }
 
     @Override
@@ -167,6 +178,7 @@ public class User implements Parcelable {
         dest.writeString(mContact);
         dest.writeString(mDesignation);
         dest.writeString(mSkills);
+        dest.writeString(mProfileImageUrl);
     }
 
     @SuppressWarnings("unused")

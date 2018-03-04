@@ -12,6 +12,7 @@ import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
@@ -124,44 +125,13 @@ public class JobFragment extends Fragment implements SwipeRefreshLayout.OnRefres
         LinearLayoutManager lm = new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false);
         rvJob.setLayoutManager(lm);
         rvJob.hasFixedSize();
+        rvJob.addItemDecoration(new DividerItemDecoration(rvJob.getContext(),
+                DividerItemDecoration.VERTICAL));
         mJobAdapter = new JobAdapter(mContext);
         rvJob.setAdapter(mJobAdapter);
 
         if (savedInstanceState == null) {
-            pbJobFragment.setVisibility(View.VISIBLE);
-            mIsLoading = true;
-
-            final List<Job> newJob = new ArrayList<>();
-            mFirestore.collection(Constants.JOB_COLLECTION)
-                    .orderBy("mTimestamp", Query.Direction.DESCENDING)
-                    .limit(LIMIT)
-                    .get()
-                    .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                        @Override
-                        public void onSuccess(QuerySnapshot documentSnapshots) {
-                            if (documentSnapshots != null && !documentSnapshots.isEmpty()) {
-                                mDocumentAtFirstPosition = documentSnapshots.getDocuments().get(0);
-                                mLastVisible = documentSnapshots.getDocuments()
-                                        .get(documentSnapshots.size() - 1);
-                                mLastDocumentSnapshotSize = documentSnapshots.size();
-                                for (DocumentSnapshot documentSnapshot : documentSnapshots)
-                                    newJob.add(documentSnapshot.toObject(Job.class));
-                                mJobAdapter.addAll(newJob);
-                            }
-                            if (pbJobFragment != null)
-                                pbJobFragment.setVisibility(View.INVISIBLE);
-                            mIsLoading = false;
-                        }
-                    })
-                    .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            Toast.makeText(mContext, "Failed to Load data", Toast.LENGTH_SHORT).show();
-                            if (pbJobFragment != null)
-                                pbJobFragment.setVisibility(View.INVISIBLE);
-                            mIsLoading = false;
-                        }
-                    });
+            loadInitial();
         }
 
         rvJob.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -183,6 +153,43 @@ public class JobFragment extends Fragment implements SwipeRefreshLayout.OnRefres
                 }
             }
         });
+    }
+
+    private void loadInitial(){
+        pbJobFragment.setVisibility(View.VISIBLE);
+        mIsLoading = true;
+
+        final List<Job> newJob = new ArrayList<>();
+        mFirestore.collection(Constants.JOB_COLLECTION)
+                .orderBy("mTimestamp", Query.Direction.DESCENDING)
+                .limit(LIMIT)
+                .get()
+                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    @Override
+                    public void onSuccess(QuerySnapshot documentSnapshots) {
+                        if (documentSnapshots != null && !documentSnapshots.isEmpty()) {
+                            mDocumentAtFirstPosition = documentSnapshots.getDocuments().get(0);
+                            mLastVisible = documentSnapshots.getDocuments()
+                                    .get(documentSnapshots.size() - 1);
+                            mLastDocumentSnapshotSize = documentSnapshots.size();
+                            for (DocumentSnapshot documentSnapshot : documentSnapshots)
+                                newJob.add(documentSnapshot.toObject(Job.class));
+                            mJobAdapter.addAll(newJob);
+                        }
+                        if (pbJobFragment != null)
+                            pbJobFragment.setVisibility(View.INVISIBLE);
+                        mIsLoading = false;
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(mContext, "Failed to Load data", Toast.LENGTH_SHORT).show();
+                        if (pbJobFragment != null)
+                            pbJobFragment.setVisibility(View.INVISIBLE);
+                        mIsLoading = false;
+                    }
+                });
     }
 
     private void loadMore() {
@@ -229,9 +236,13 @@ public class JobFragment extends Fragment implements SwipeRefreshLayout.OnRefres
         super.onViewStateRestored(savedInstanceState);
         if (savedInstanceState != null) {
             List<Job> jobList = savedInstanceState.getParcelableArrayList("job");
-            mJobAdapter.addAll(jobList);
+            if(jobList != null && jobList.size() > 0)
+                mJobAdapter.addAll(jobList);
+            else
+                loadInitial();
             Parcelable savedRecyclerLayoutState = savedInstanceState.getParcelable("position");
-            rvJob.getLayoutManager().onRestoreInstanceState(savedRecyclerLayoutState);
+            if(rvJob != null)
+                rvJob.getLayoutManager().onRestoreInstanceState(savedRecyclerLayoutState);
             mSearchString= savedInstanceState.getString("searchJob");
         }
     }
@@ -240,9 +251,11 @@ public class JobFragment extends Fragment implements SwipeRefreshLayout.OnRefres
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putParcelableArrayList("job", mJobAdapter.getmJobList());
-        outState.putParcelable("position", rvJob.getLayoutManager().onSaveInstanceState());
-        if(!TextUtils.isEmpty(mSearchView.getQuery()))
+        if(getUserVisibleHint() && isVisible())
+            outState.putParcelableArrayList("job", mJobAdapter.getmJobList());
+        if(rvJob != null)
+            outState.putParcelable("position", rvJob.getLayoutManager().onSaveInstanceState());
+        if(mSearchView != null && !TextUtils.isEmpty(mSearchView.getQuery()))
             outState.putString("searchJob", mSearchView.getQuery().toString());
     }
 

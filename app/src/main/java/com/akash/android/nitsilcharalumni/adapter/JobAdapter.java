@@ -9,7 +9,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.akash.android.nitsilcharalumni.R;
-import com.akash.android.nitsilcharalumni.model.Feed;
 import com.akash.android.nitsilcharalumni.model.Job;
 import com.akash.android.nitsilcharalumni.utils.imageUtils.PicassoCircleTransformation;
 import com.squareup.picasso.Picasso;
@@ -47,6 +46,7 @@ public class JobAdapter extends RecyclerView.Adapter<JobAdapter.JobViewHolder> {
     public void onBindViewHolder(JobViewHolder holder, int position) {
         Job job = mJobList.get(position);
         if (job != null) {
+            boolean flag= false;
 
             holder.tvNameJob.setText(job.getmAuthorName());
 
@@ -56,32 +56,68 @@ public class JobAdapter extends RecyclerView.Adapter<JobAdapter.JobViewHolder> {
             holder.tvTimeStampJob.setText(strDate);
 
             holder.tvJobDescription.setText(job.getmJobDescription());
-            holder.tvJobOrganisationName.setText(job.getmJobOrganisation());
-            holder.tvJobTtitle.setText(job.getmJobTitle() + ", ");
-            holder.tvJobLocation.setText(job.getmJobLocation());
 
-            String strSearchKeyword= "";
+            String orgName = job.getmJobOrganisation();
+            if (orgName != null) {
+                holder.tvJobOrganisationName.setVisibility(View.VISIBLE);
+                holder.tvJobOrganisationName.setText(job.getmJobOrganisation());
+            } else
+                holder.tvJobOrganisationName.setVisibility(View.GONE);
+
+            String jobLocation = job.getmJobLocation();
+            if (jobLocation != null) {
+                holder.tvJobLocation.setText(job.getmJobLocation());
+                holder.tvJobLocation.setVisibility(View.VISIBLE);
+                flag= true;
+            } else
+                holder.tvJobLocation.setVisibility(View.GONE);
+
+            String jobTitle = job.getmJobTitle();
+            if (jobTitle != null) {
+                holder.tvJobTitle.setVisibility(View.VISIBLE);
+                if(flag)
+                    holder.tvJobTitle.setText(job.getmJobTitle().concat(", "));
+                else
+                    holder.tvJobTitle.setText(job.getmJobTitle());
+            } else
+                holder.tvJobTitle.setVisibility(View.GONE);
+
+            String strSearchKeyword = "";
             Map<String, Boolean> strSearchKeywordMap = job.getmJobSearchKeywordsMap();
-            for (String key: strSearchKeywordMap.keySet())
-                strSearchKeyword = strSearchKeyword.concat("#").concat(key).concat(" ");
+            if (strSearchKeywordMap != null && !strSearchKeywordMap.isEmpty()) {
+                for (String key : strSearchKeywordMap.keySet())
+                    strSearchKeyword = strSearchKeyword.concat("#").concat(key).concat(" ");
+                holder.tvJobSearchHashtag.setVisibility(View.VISIBLE);
+                holder.tvJobSearchHashtag.setText(strSearchKeyword);
+            } else {
+                holder.tvJobSearchHashtag.setVisibility(View.GONE);
+            }
 
-            holder.tvJobSearchHashtag.setText(strSearchKeyword);
-
-            loadProfileImageWithPicasso("https://www2.mmu.ac.uk/research/research-study/student-profiles/james-xu/james-xu.jpg", holder);
-            loadFeedImageWithPicasso("https://c.tadst.com/gfx/750w/world-post-day.jpg?1", holder);
+            loadProfileImageWithPicasso(job.getmAuthorImageUrl(), holder);
+            if (job.getmJobImageUrl() != null) {
+                holder.ivJobDescription.setVisibility(View.VISIBLE);
+                loadFeedImageWithPicasso(job.getmJobImageUrl(), holder);
+            } else
+                holder.ivJobDescription.setVisibility(View.GONE);
         }
     }
 
     private void loadProfileImageWithPicasso(String imageUrl, JobViewHolder holder) {
-        Picasso.with(mContext).load(imageUrl)
-                .transform(new PicassoCircleTransformation())
-                .into(holder.ivProfileIconJob);
+        if(imageUrl != null) {
+            Picasso.with(mContext).load(imageUrl)
+                    .transform(new PicassoCircleTransformation())
+                    .into(holder.ivProfileIconJob);
+        }else {
+            Picasso.with(mContext).load(R.drawable.loading)
+                    .transform(new PicassoCircleTransformation())
+                    .into(holder.ivProfileIconJob);
+        }
     }
 
     private void loadFeedImageWithPicasso(String imageUrl, JobViewHolder holder) {
         Picasso.with(mContext).load(imageUrl)
+                .placeholder(R.drawable.loading)
                 .fit()
-                .centerCrop()
                 .into(holder.ivJobDescription);
     }
 
@@ -101,7 +137,7 @@ public class JobAdapter extends RecyclerView.Adapter<JobAdapter.JobViewHolder> {
         notifyItemRangeChanged(0, newJob.size());
     }
 
-    public void addAsPerSearch(List<Job> searchedJob){
+    public void addAsPerSearch(List<Job> searchedJob) {
         //get the current items
         int currentSize = mJobList.size();
         //remove the current items
@@ -114,15 +150,15 @@ public class JobAdapter extends RecyclerView.Adapter<JobAdapter.JobViewHolder> {
         notifyItemRangeInserted(0, mJobList.size());
     }
 
-    public void replaceWithInitialList(Job[] originalArray, int currentSize){
+    public void replaceWithInitialList(Job[] originalArray, int currentSize) {
         mJobList.clear();
         mJobList.addAll(Arrays.asList(originalArray));
         notifyItemRangeRemoved(0, currentSize);
         notifyItemRangeInserted(0, mJobList.size());
     }
 
-    public void setEmptyView(){
-        int currentSize= mJobList.size();
+    public void setEmptyView() {
+        int currentSize = mJobList.size();
         mJobList.clear();
         notifyItemRangeRemoved(0, currentSize);
     }
@@ -140,7 +176,7 @@ public class JobAdapter extends RecyclerView.Adapter<JobAdapter.JobViewHolder> {
         @BindView(R.id.tvTimeStampJob)
         TextView tvTimeStampJob;
         @BindView(R.id.tvJobTtitle)
-        TextView tvJobTtitle;
+        TextView tvJobTitle;
         @BindView(R.id.tvJobLocation)
         TextView tvJobLocation;
         @BindView(R.id.tvJobOrganisationName)

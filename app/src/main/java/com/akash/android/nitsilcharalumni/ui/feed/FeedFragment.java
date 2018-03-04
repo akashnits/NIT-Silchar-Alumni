@@ -18,6 +18,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
@@ -141,44 +142,13 @@ public class FeedFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         LinearLayoutManager lm = new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false);
         rvFeed.setLayoutManager(lm);
         rvFeed.hasFixedSize();
+        rvFeed.addItemDecoration(new DividerItemDecoration(rvFeed.getContext(),
+                DividerItemDecoration.VERTICAL));
         mFeedAdapter = new FeedAdapter(mContext, this);
         rvFeed.setAdapter(mFeedAdapter);
 
         if (savedInstanceState == null) {
-            pbFeedFragment.setVisibility(View.VISIBLE);
-            mIsLoading = true;
-
-            final List<Feed> newFeed = new ArrayList<>();
-            mFirestore.collection(Constants.FEED_COLLECTION)
-                    .orderBy("mTimestamp", Query.Direction.DESCENDING)
-                    .limit(LIMIT)
-                    .get()
-                    .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                        @Override
-                        public void onSuccess(QuerySnapshot documentSnapshots) {
-                            if (documentSnapshots != null && !documentSnapshots.isEmpty()) {
-                                mDocumentAtFirstPosition = documentSnapshots.getDocuments().get(0);
-                                mLastVisible = documentSnapshots.getDocuments()
-                                        .get(documentSnapshots.size() - 1);
-                                mLastDocumentSnapshotSize = documentSnapshots.size();
-                                for (DocumentSnapshot documentSnapshot : documentSnapshots)
-                                    newFeed.add(documentSnapshot.toObject(Feed.class));
-                                mFeedAdapter.addAll(newFeed);
-                            }
-                            if (pbFeedFragment != null)
-                                pbFeedFragment.setVisibility(View.INVISIBLE);
-                            mIsLoading = false;
-                        }
-                    })
-                    .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            Toast.makeText(mContext, "Failed to Load data", Toast.LENGTH_SHORT).show();
-                            if (pbFeedFragment != null)
-                                pbFeedFragment.setVisibility(View.INVISIBLE);
-                            mIsLoading = false;
-                        }
-                    });
+            loadInitial();
         }
 
         rvFeed.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -200,6 +170,44 @@ public class FeedFragment extends Fragment implements SwipeRefreshLayout.OnRefre
                 }
             }
         });
+    }
+
+
+    private void loadInitial(){
+        pbFeedFragment.setVisibility(View.VISIBLE);
+        mIsLoading = true;
+
+        final List<Feed> newFeed = new ArrayList<>();
+        mFirestore.collection(Constants.FEED_COLLECTION)
+                .orderBy("mTimestamp", Query.Direction.DESCENDING)
+                .limit(LIMIT)
+                .get()
+                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    @Override
+                    public void onSuccess(QuerySnapshot documentSnapshots) {
+                        if (documentSnapshots != null && !documentSnapshots.isEmpty()) {
+                            mDocumentAtFirstPosition = documentSnapshots.getDocuments().get(0);
+                            mLastVisible = documentSnapshots.getDocuments()
+                                    .get(documentSnapshots.size() - 1);
+                            mLastDocumentSnapshotSize = documentSnapshots.size();
+                            for (DocumentSnapshot documentSnapshot : documentSnapshots)
+                                newFeed.add(documentSnapshot.toObject(Feed.class));
+                            mFeedAdapter.addAll(newFeed);
+                        }
+                        if (pbFeedFragment != null)
+                            pbFeedFragment.setVisibility(View.INVISIBLE);
+                        mIsLoading = false;
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(mContext, "Failed to Load data", Toast.LENGTH_SHORT).show();
+                        if (pbFeedFragment != null)
+                            pbFeedFragment.setVisibility(View.INVISIBLE);
+                        mIsLoading = false;
+                    }
+                });
     }
 
     private void loadMore() {
@@ -246,9 +254,13 @@ public class FeedFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         super.onViewStateRestored(savedInstanceState);
         if (savedInstanceState != null) {
             List<Feed> feedList = savedInstanceState.getParcelableArrayList("feed");
-            mFeedAdapter.addAll(feedList);
+            if(feedList != null && feedList.size() > 0)
+                mFeedAdapter.addAll(feedList);
+            else
+                loadInitial();
             Parcelable savedRecyclerLayoutState = savedInstanceState.getParcelable("position");
-            rvFeed.getLayoutManager().onRestoreInstanceState(savedRecyclerLayoutState);
+            if(rvFeed != null)
+                rvFeed.getLayoutManager().onRestoreInstanceState(savedRecyclerLayoutState);
             mSearchString= savedInstanceState.getString("searchFeed");
         }
     }
@@ -257,8 +269,10 @@ public class FeedFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putParcelableArrayList("feed", mFeedAdapter.getmFeedList());
-        outState.putParcelable("position", rvFeed.getLayoutManager().onSaveInstanceState());
+        if(getUserVisibleHint() && isVisible())
+            outState.putParcelableArrayList("feed", mFeedAdapter.getmFeedList());
+        if(rvFeed != null)
+            outState.putParcelable("position", rvFeed.getLayoutManager().onSaveInstanceState());
         if(mSearchView != null && !TextUtils.isEmpty(mSearchView.getQuery()))
             outState.putString("searchFeed", mSearchView.getQuery().toString());
     }
@@ -285,7 +299,6 @@ public class FeedFragment extends Fragment implements SwipeRefreshLayout.OnRefre
                 .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                     @Override
                     public void onSuccess(QuerySnapshot documentSnapshots) {
-
                         if (documentSnapshots != null && !documentSnapshots.isEmpty()) {
                             mDocumentAtFirstPosition = documentSnapshots.getDocuments().get(0);
                             for (DocumentSnapshot documentSnapshot : documentSnapshots)
@@ -308,7 +321,6 @@ public class FeedFragment extends Fragment implements SwipeRefreshLayout.OnRefre
                         mIsLoading = false;
                     }
                 });
-
     }
 
     @Override

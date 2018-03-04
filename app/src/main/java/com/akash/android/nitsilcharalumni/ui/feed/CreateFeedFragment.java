@@ -1,9 +1,13 @@
 package com.akash.android.nitsilcharalumni.ui.feed;
 
 
+import android.content.Context;
+import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Color;
-import android.os.AsyncTask;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
@@ -19,7 +23,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -28,7 +31,6 @@ import com.akash.android.nitsilcharalumni.NITSilcharAlumniApp;
 import com.akash.android.nitsilcharalumni.R;
 import com.akash.android.nitsilcharalumni.data.DataManager;
 import com.akash.android.nitsilcharalumni.di.component.CreateFeedFragmentComponent;
-import com.akash.android.nitsilcharalumni.di.component.CreateJobFragmentComponent;
 import com.akash.android.nitsilcharalumni.di.component.DaggerCreateFeedFragmentComponent;
 import com.akash.android.nitsilcharalumni.di.module.CreateFeedFragmentModule;
 import com.akash.android.nitsilcharalumni.model.Feed;
@@ -36,19 +38,18 @@ import com.akash.android.nitsilcharalumni.model.User;
 import com.akash.android.nitsilcharalumni.utils.Constants;
 import com.github.jorgecastilloprz.FABProgressCircle;
 import com.github.jorgecastilloprz.listeners.FABProgressListener;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
@@ -58,6 +59,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
+
+import static android.app.Activity.RESULT_OK;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -97,10 +100,18 @@ public class CreateFeedFragment extends Fragment implements FABProgressListener 
     @Inject
     DataManager mDatamanager;
 
+    private static final int SELECT_FEED_PICTURE = 1;
+
     private CreateFeedFragmentComponent createFeedFragmentComponent;
     private FirebaseFirestore mFirebaseFirestore;
     private FirebaseAuth mAuth;
     private String mAuthorName;
+    private FirebaseStorage mFirebaseStorage;
+    private Uri mSelectedImageUri;
+    private Uri mDownloadUri;
+    private Context mContext;
+    private String mNameOfFile;
+    private String mAuthorImageUrl;
 
     public CreateFeedFragment() {
         // Required empty public constructor
@@ -116,18 +127,25 @@ public class CreateFeedFragment extends Fragment implements FABProgressListener 
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
         mFirebaseFirestore = FirebaseFirestore.getInstance();
+        mFirebaseStorage = FirebaseStorage.getInstance();
         mAuth = FirebaseAuth.getInstance();
         getCreateFeedFragmentComponent().inject(this);
     }
 
-    public CreateFeedFragmentComponent getCreateFeedFragmentComponent(){
+    public CreateFeedFragmentComponent getCreateFeedFragmentComponent() {
         if (createFeedFragmentComponent == null) {
             createFeedFragmentComponent = DaggerCreateFeedFragmentComponent.builder()
                     .createFeedFragmentModule(new CreateFeedFragmentModule(this))
-                    .appComponent(NITSilcharAlumniApp.get(getContext()).getAppComponent())
+                    .appComponent(NITSilcharAlumniApp.get(mContext).getAppComponent())
                     .build();
         }
         return createFeedFragmentComponent;
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        mContext = context;
     }
 
     @Override
@@ -147,6 +165,7 @@ public class CreateFeedFragment extends Fragment implements FABProgressListener 
         toolbarCreateFeed.setTitleTextColor(Color.WHITE);
         ((AppCompatActivity) getActivity()).setSupportActionBar(toolbarCreateFeed);
         ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getLoggedInUserProfileImageUrl();
     }
 
     @Override
@@ -162,74 +181,94 @@ public class CreateFeedFragment extends Fragment implements FABProgressListener 
                 .show();
     }
 
-    @OnClick({R.id.uploadFab, R.id.btPost})
+    @OnClick({R.id.btSelectImage, R.id.uploadFab, R.id.btPost})
     public void onViewClicked(View view) {
         switch (view.getId()) {
+            case R.id.btSelectImage:
+                Intent intent = new Intent();
+                intent.setType("image/*");
+                intent.setAction(Intent.ACTION_GET_CONTENT);
+                startActivityForResult(Intent.createChooser(intent,
+                        "Select a picture"), SELECT_FEED_PICTURE);
+                break;
             case R.id.uploadFab:
-                new AsyncTask<Void, Void, Void>() {
-                    @Override
-                    protected void onPreExecute() {
-                        super.onPreExecute();
-                        fabProgressCircle.show();
-                    }
+                //start uploading the selected picture
+                if (mSelectedImageUri != null && !Uri.EMPTY.equals(mSelectedImageUri)) {
+                    btPost.setEnabled(false);
+                    //show animation that upload is in progress
+                    fabProgressCircle.show();
+                    StorageReference selectedFeedImagesReference = mFirebaseStorage.getReference()
+                            .child(Constants.FEED_IMAGE_COLLECTION + mSelectedImageUri.getLastPathSegment());
+                    UploadTask uploadTask = selectedFeedImagesReference.putFile(mSelectedImageUri);
 
-                    @Override
-                    protected Void doInBackground(Void... params) {
-                        try {
-                            Thread.sleep(5000);
-                        } catch (Exception e) {
-                            e.printStackTrace();
+                    uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                            mDownloadUri = taskSnapshot.getDownloadUrl();
+                            Log.v(TAG, "Download uri is" + mDownloadUri);
+                            fabProgressCircle.beginFinalAnimation();
+                            btPost.setEnabled(true);
                         }
-                        return null;
-                    }
-
-                    @Override
-                    protected void onPostExecute(Void aVoid) {
-                        super.onPostExecute(aVoid);
-                        fabProgressCircle.beginFinalAnimation();
-                    }
-                }.execute();
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            e.printStackTrace();
+                            Toast.makeText(mContext, "Upload failed", Toast.LENGTH_SHORT).show();
+                            btPost.setEnabled(true);
+                        }
+                    });
+                } else {
+                    Toast.makeText(mContext, "Please select a image to upload", Toast.LENGTH_SHORT).show();
+                }
                 break;
             case R.id.btPost:
                 if (TextUtils.isEmpty(editTextFeedDescription.getText())) {
-                    Toast.makeText(getContext(), "Please enter brief description about the post",
+                    Toast.makeText(mContext, "Please enter brief description about the post",
                             Toast.LENGTH_SHORT).show();
                     return;
                 }
+
+                //give user a warning if user forgets to upload the image after selecting it
+                if (mSelectedImageUri != null && mDownloadUri == null) {
+                    Toast.makeText(mContext, "Please upload the image", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
                 Map<String, Boolean> searchKeywordMap = new HashMap<>();
                 //getting the search keywords
                 if (!TextUtils.isEmpty(editTextFeedKeywords.getText())) {
                     String feedSearchKeywords = editTextFeedKeywords.getText().toString().trim();
                     if (!Pattern.compile("(\\w+)(,\\s*\\w+)*").matcher(feedSearchKeywords).matches()) {
-                        Toast.makeText(getContext(), "Search keywords should be alphanumeric and separated by comma",
+                        Toast.makeText(mContext, "Search keywords should be alphanumeric and separated by comma",
                                 Toast.LENGTH_SHORT).show();
                         return;
                     }
-                    String[] searchKeywordArray =feedSearchKeywords.split("\\s*,\\s*");
+                    String[] searchKeywordArray = feedSearchKeywords.split("\\s*,\\s*");
                     for (String str : searchKeywordArray)
                         searchKeywordMap.put(str, true);
                 }
 
-                mAuthorName= mDatamanager.getUserName();
+                mAuthorName = mDatamanager.getUserName();
                 //creating a Feed object
                 if (mAuthorName != null) {
-                    Feed feed = new Feed("https://www2.mmu.ac.uk/research/research-study/student-profiles/james-xu/james-xu.jpg",
+                    Feed feed = new Feed(
+                            mAuthorImageUrl,
                             mAuthorName,
                             null,
-                            "https://c.tadst.com/gfx/750w/world-post-day.jpg?1",
+                            (mDownloadUri != null && !Uri.EMPTY.equals(mDownloadUri)) ? mDownloadUri.toString() :
+                                    null,
                             editTextFeedDescription.getText().toString(),
                             searchKeywordMap,
                             mAuth.getCurrentUser().getEmail());
 
-
-
+                    Toast.makeText(mContext, "Posting...", Toast.LENGTH_SHORT).show();
                     mFirebaseFirestore.collection(Constants.FEED_COLLECTION)
                             .add(feed)
                             .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                                 @Override
                                 public void onSuccess(DocumentReference documentReference) {
                                     Log.d(TAG, "DocumentSnapshot written with ID: " + documentReference.getId());
-                                    Toast.makeText(getContext(), "Successfully posted", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(getContext(), "Updated", Toast.LENGTH_SHORT).show();
                                     if (getFragmentManager() != null)
                                         getFragmentManager().popBackStackImmediate();
                                 }
@@ -238,7 +277,7 @@ public class CreateFeedFragment extends Fragment implements FABProgressListener 
                                 @Override
                                 public void onFailure(@NonNull Exception e) {
                                     Log.w(TAG, "Error adding document", e);
-                                    Toast.makeText(getContext(),
+                                    Toast.makeText(mContext,
                                             "Internal error, please try after some time", Toast.LENGTH_SHORT).show();
                                 }
                             });
@@ -247,5 +286,77 @@ public class CreateFeedFragment extends Fragment implements FABProgressListener 
         }
     }
 
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        if (mSelectedImageUri != null) {
+            outState.putString("selectedImage", mNameOfFile);
+        }
+    }
 
+    @Override
+    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
+        super.onViewStateRestored(savedInstanceState);
+        if (savedInstanceState != null && mSelectedImageUri != null)
+            if (savedInstanceState.get("selectedImage") != null) {
+                btSelectImage.setText(savedInstanceState.get("selectedImage").toString());
+            }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK) {
+            if (requestCode == SELECT_FEED_PICTURE) {
+                mSelectedImageUri = data.getData();
+                Log.i(TAG, "Uri is " + mSelectedImageUri);
+                if (mSelectedImageUri != null) {
+                    String[] filePathColumn = {MediaStore.Images.Media.DATA};
+                    Cursor cursor = mContext.getContentResolver().query(mSelectedImageUri,
+                            filePathColumn, null, null, null);
+                    if (cursor != null) {
+                        cursor.moveToFirst();
+                        int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+                        String[] filePathElements = cursor.getString(columnIndex) != null ?
+                                cursor.getString(columnIndex).split("\\/") : null;
+                        if (filePathElements != null && filePathElements.length > 0) {
+                            mNameOfFile = filePathElements[filePathElements.length - 1];
+                            if (!TextUtils.isEmpty(mNameOfFile))
+                                btSelectImage.setText(mNameOfFile);
+                            else
+                                btSelectImage.setText("Image selected");
+                            cursor.close();
+                        } else {
+                            btSelectImage.setText("Image selected");
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private void getLoggedInUserProfileImageUrl() {
+        String email = FirebaseAuth.getInstance().getCurrentUser().getEmail();
+        FirebaseFirestore.getInstance().collection(Constants.USER_COLLECTION)
+                .whereEqualTo("mEmail", email)
+                .get()
+                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    @Override
+                    public void onSuccess(QuerySnapshot documentSnapshots) {
+                        if (documentSnapshots != null && !documentSnapshots.isEmpty()) {
+                            User currentUser = null;
+                            for (DocumentSnapshot documentSnapshot : documentSnapshots)
+                                currentUser = documentSnapshot.toObject(User.class);
+                            if (currentUser != null)
+                                mAuthorImageUrl = currentUser.getmProfileImageUrl();
+                        }
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        e.printStackTrace();
+                    }
+                });
+    }
 }

@@ -3,12 +3,19 @@ package com.akash.android.nitsilcharalumni.adapter;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.Point;
+import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.CheckBox;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.akash.android.nitsilcharalumni.R;
@@ -61,8 +68,9 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.FeedViewHolder
 
         Feed feed = mFeedList.get(position);
         if (feed != null) {
-            holder.tvName.setText(feed.getmAuthorName());
-            holder.tvFeedDescription.setText(feed.getmFeedDescription());
+            holder.tvName.setText(feed.getmAuthorName());String s= "<b>" + "Description: " + "</b> "
+                    + feed.getmFeedDescription();
+            holder.tvFeedDescription.setText(Html.fromHtml(s));
 
             SimpleDateFormat formatter = new SimpleDateFormat("dd MMMM yyyy", Locale.ENGLISH);
             String strDate = formatter.format(feed.getmTimestamp());
@@ -71,17 +79,25 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.FeedViewHolder
 
             String strSearchKeyword= "";
             Map<String, Boolean> strSearchKeywordMap = feed.getmFeedSearchKeywordsMap();
-            for (String key: strSearchKeywordMap.keySet())
-                strSearchKeyword = strSearchKeyword.concat("#").concat(key).concat(" ");
+            if(strSearchKeywordMap != null && !strSearchKeywordMap.isEmpty()) {
+                for (String key : strSearchKeywordMap.keySet())
+                    strSearchKeyword = strSearchKeyword.concat("#").concat(key).concat(" ");
 
-            holder.tvSearchHashtag.setText(strSearchKeyword);
+                holder.tvSearchHashtag.setVisibility(View.VISIBLE);
+                holder.tvSearchHashtag.setText(strSearchKeyword);
+            }else {
+                holder.tvSearchHashtag.setVisibility(View.GONE);
+            }
 
             loadProfileImageWithPicasso(feed.getmAuthorImageUrl(),
                     holder);
-            loadFeedImageWithPicasso(feed.getmFeedImageUrl(), holder);
+            if(feed.getmFeedImageUrl() != null) {
+                holder.ivFeedImage.setVisibility(View.VISIBLE);
+                loadFeedImageWithPicasso(feed.getmFeedImageUrl(), holder);
+            }else{
+                holder.ivFeedImage.setVisibility(View.GONE);
+            }
         }
-
-
         if (FeedFragment.getBookmarkStatus(FeedContract.FeedEntry.CONTENT_URI, mContentResolver,
                 position))
             holder.cbBookmark.setChecked(true);
@@ -90,15 +106,25 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.FeedViewHolder
     }
 
     private void loadProfileImageWithPicasso(String imageUrl, FeedViewHolder holder) {
-        Picasso.with(mContext).load(imageUrl)
-                .transform(new PicassoCircleTransformation())
-                .into(holder.ivProfileIcon);
+        if(imageUrl != null) {
+            Picasso.with(mContext).load(imageUrl)
+                    .transform(new PicassoCircleTransformation())
+                    .into(holder.ivProfileIcon);
+        }else {
+            Picasso.with(mContext).load(R.drawable.loading)
+                    .transform(new PicassoCircleTransformation())
+                    .into(holder.ivProfileIcon);
+        }
     }
 
     private void loadFeedImageWithPicasso(String imageUrl, FeedViewHolder holder) {
+        /*Display display =  mContext.getSystemService(WindowManager.class).getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+        int width = size.x;*/
         Picasso.with(mContext).load(imageUrl)
+                .placeholder(R.drawable.loading)
                 .fit()
-                .centerCrop()
                 .into(holder.ivFeedImage);
     }
 

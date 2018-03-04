@@ -14,14 +14,14 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="@color/colorPrimary"
-            android:theme="@style/myToolbarTheme"></android.support.v7.widget.Toolbar>
+            android:theme="@style/myToolbarTheme"/>
 
         <TextView
             android:id="@+id/tvFeedDescription"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/toolbarCreateFeed"
-            android:layout_marginLeft="8dp"
+            android:layout_marginLeft="4dp"
             android:layout_marginTop="8dp"
             android:padding="4dp"
             android:text="Description"
@@ -32,8 +32,8 @@
             android:layout_width="match_parent"
             android:layout_height="200dp"
             android:layout_below="@+id/tvFeedDescription"
-            android:layout_marginEnd="8dp"
-            android:layout_marginStart="8dp"
+            android:layout_marginEnd="4dp"
+            android:layout_marginStart="4dp"
             android:padding="4dp"
             app:hintTextAppearance="@style/HintText">
 
@@ -44,7 +44,7 @@
                 android:background="@drawable/sharp_cornors"
                 android:gravity="start"
                 android:hint="A brief description of what's this about"
-                android:inputType="text" />
+                android:inputType="textCapSentences|textMultiLine" />
         </android.support.design.widget.TextInputLayout>
 
         <TextView
@@ -52,7 +52,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/til_feed_description"
-            android:layout_marginLeft="8dp"
+            android:layout_marginLeft="4dp"
             android:layout_marginTop="8dp"
             android:padding="4dp"
             android:text="Keywords"
@@ -63,8 +63,8 @@
             android:layout_width="match_parent"
             android:layout_height="60dp"
             android:layout_below="@+id/tvFeedKeywords"
-            android:layout_marginEnd="8dp"
-            android:layout_marginStart="8dp"
+            android:layout_marginEnd="4dp"
+            android:layout_marginStart="4dp"
             android:gravity="start"
             android:padding="4dp"
             app:hintTextAppearance="@style/HintText">
@@ -76,16 +76,16 @@
                 android:background="@drawable/sharp_cornors"
                 android:gravity="start"
                 android:hint="Enter keywords separated by comma"
-                android:inputType="text" />
+                android:inputType="text|textMultiLine" />
         </android.support.design.widget.TextInputLayout>
 
         <Button
             android:id="@+id/btSelectImage"
-            android:layout_width="wrap_content"
+            android:layout_width="250dp"
             android:layout_height="wrap_content"
             android:layout_below="@+id/til_feed_keywords"
-            android:layout_marginLeft="8dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginLeft="4dp"
+            android:layout_marginTop="12dp"
             android:background="@color/colorPrimary"
             android:padding="4dp"
             android:text="Select Image"
@@ -103,8 +103,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
-                android:layout_marginRight="8dp"
-                android:layout_marginTop="8dp">
+                android:layout_marginRight="4dp"
+                android:layout_marginTop="8dp"
+                android:padding="2dp"
+                android:clipToPadding="false">
 
                 <!--Google FAB-->
                 <android.support.design.widget.FloatingActionButton
@@ -123,8 +125,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/fabLayout"
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="8dp"
             android:layout_marginTop="60dp"
             android:background="@color/colorPrimary"
             android:text="Post"

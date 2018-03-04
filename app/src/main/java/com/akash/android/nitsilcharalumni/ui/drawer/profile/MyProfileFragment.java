@@ -36,6 +36,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.squareup.picasso.Picasso;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -246,6 +247,7 @@ public class MyProfileFragment extends Fragment implements LoaderManager.LoaderC
             Object contact= null;
             Object designation= null;
             Object skills= null;
+            Object profileImage= null;
 
             if(( name= data.get("mName")) != null)
                 collapsingToolbarLayoutMyProfile.setTitle(name.toString());
@@ -265,6 +267,8 @@ public class MyProfileFragment extends Fragment implements LoaderManager.LoaderC
                 tvDesignationTextMyProfile.setText(designation.toString());
             if((skills = data.get("mSkills")) != null)
                 tvSkillsTextMyProfile.setText(skills.toString());
+            if((profileImage = data.get("mProfileImageUrl")) != null)
+                Picasso.with(mContext).load(profileImage.toString()).fit().into(backdropProfileImage);
 
             getActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
             pbMyProfileFragment.setVisibility(View.INVISIBLE);
