@@ -10,7 +10,6 @@ import android.widget.TextView;
 
 import com.akash.android.nitsilcharalumni.R;
 import com.akash.android.nitsilcharalumni.model.Job;
-import com.akash.android.nitsilcharalumni.utils.imageUtils.LoggedInUser;
 import com.akash.android.nitsilcharalumni.utils.imageUtils.PicassoCircleTransformation;
 import com.squareup.picasso.Picasso;
 

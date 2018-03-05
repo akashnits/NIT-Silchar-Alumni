@@ -187,7 +187,7 @@ public class LoginInteractor  {
                         public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                             if (task.isSuccessful()) {
                                 DocumentSnapshot document = task.getResult();
-                                if (document != null) {
+                                if (document != null && document.exists()) {
                                     User user = document.toObject(User.class);
                                     mLoginPresenter.saveLoggedInUserData(user);
                                 } else {

@@ -420,7 +420,7 @@ public class FeedFragment extends Fragment implements SwipeRefreshLayout.OnRefre
             public boolean onQueryTextChange(String newText) {
                 if (!TextUtils.isEmpty(newText)) {
                     final List<Feed> searchedFeed = new ArrayList<Feed>();
-                    String whereCondition = String.format("%s.%s", "mFeedSearchKeywordsMap", newText);
+                    String whereCondition = String.format("%s.%s", "mFeedSearchKeywordsMap", newText.toLowerCase());
                     mFirestore.collection(Constants.FEED_COLLECTION)
                             .whereEqualTo(whereCondition, true)
                             .get()

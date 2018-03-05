@@ -361,12 +361,9 @@ public class JobFragment extends Fragment implements SwipeRefreshLayout.OnRefres
             @Override
             public boolean onQueryTextChange(String newText) {
 
-                //TODO: Search for the newText in the list of job and update the list
-                //TODO: set the new list on adapter and notify
-
                 if (!TextUtils.isEmpty(newText)) {
                     final List<Job> searchedJob = new ArrayList<Job>();
-                    String whereCondition = String.format("%s.%s", "mJobSearchKeywordsMap", newText);
+                    String whereCondition = String.format("%s.%s", "mJobSearchKeywordsMap", newText.toLowerCase());
                     mFirestore.collection(Constants.JOB_COLLECTION)
                             .whereEqualTo(whereCondition, true)
                             .get()
