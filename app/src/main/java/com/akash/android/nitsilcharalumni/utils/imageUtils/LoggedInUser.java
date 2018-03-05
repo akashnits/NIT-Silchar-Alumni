@@ -19,7 +19,7 @@ public class LoggedInUser {
 
     public LoggedInUser() {
     }
-    
+
 
     public static String getLoggedInUserProfileImageUrl() {
         String email = FirebaseAuth.getInstance().getCurrentUser().getEmail();

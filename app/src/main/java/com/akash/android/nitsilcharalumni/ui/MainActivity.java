@@ -1,8 +1,11 @@
 package com.akash.android.nitsilcharalumni.ui;
 
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.BottomNavigationView;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 
@@ -24,6 +27,26 @@ import com.google.firebase.auth.FirebaseAuth;
 public class MainActivity extends AppCompatActivity implements DrawerMenuItem.DrawerCallBack {
 
     private FirebaseAuth mAuth;
+    private FragmentManager mSupportFragmentManager;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_home);
+
+        mSupportFragmentManager = getSupportFragmentManager();
+        BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
+        BottomNavigationViewHelper.disableShiftMode(navigation);
+        navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+        if(savedInstanceState == null) {
+            ActivityUtils.replaceFragmentOnActivity(mSupportFragmentManager,
+                    FeedFragment.newInstance(),
+                    R.id.content,
+                    false,
+                    "Home",R.anim.enter_from_right,
+                    R.anim.exit_to_left );
+        }
+    }
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -32,8 +55,9 @@ public class MainActivity extends AppCompatActivity implements DrawerMenuItem.Dr
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             switch (item.getItemId()) {
                 case R.id.navigation_home:
+                    popingFragmentWhileNavigating();
                     ActivityUtils.replaceFragmentOnActivity(
-                            getSupportFragmentManager(),
+                            mSupportFragmentManager,
                             FeedFragment.newInstance(),
                             R.id.content,
                             false,
@@ -42,8 +66,9 @@ public class MainActivity extends AppCompatActivity implements DrawerMenuItem.Dr
                             R.anim.exit_to_left);
                     return true;
                 case R.id.navigation_alumni:
+                    popingFragmentWhileNavigating();
                     ActivityUtils.replaceFragmentOnActivity(
-                            getSupportFragmentManager(),
+                            mSupportFragmentManager,
                             AlumniFragment.newInstance(),
                             R.id.content,
                             false,
@@ -52,8 +77,9 @@ public class MainActivity extends AppCompatActivity implements DrawerMenuItem.Dr
                             R.anim.exit_to_left );
                     return true;
                 case R.id.navigation_jobs:
+                    popingFragmentWhileNavigating();
                     ActivityUtils.replaceFragmentOnActivity(
-                            getSupportFragmentManager(),
+                            mSupportFragmentManager,
                             JobFragment.newInstance(),
                             R.id.content,
                             false,
@@ -62,8 +88,9 @@ public class MainActivity extends AppCompatActivity implements DrawerMenuItem.Dr
                             R.anim.exit_to_left );
                     return true;
                 case R.id.navigation_bookmark:
+                    popingFragmentWhileNavigating();
                     ActivityUtils.replaceFragmentOnActivity(
-                            getSupportFragmentManager(),
+                            mSupportFragmentManager,
                             BookmarkFragment.newInstance(),
                             R.id.content,
                             false,
@@ -79,18 +106,18 @@ public class MainActivity extends AppCompatActivity implements DrawerMenuItem.Dr
 
     public void commitAlumniDetailsFragment(Bundle args){
         ActivityUtils.replaceFragmentOnActivity(
-                getSupportFragmentManager(),
+                mSupportFragmentManager,
                 AlumniDetailsFragment.newInstance(args),
                 R.id.content,
                 true,
                 "AlumniDetails",
                 R.anim.enter_from_right,
-                R.anim.exit_to_left );
+                R.anim.exit_to_left);
     }
 
     public void commitFilterAlumniFragment(){
         ActivityUtils.replaceFragmentOnActivity(
-                getSupportFragmentManager(),
+                mSupportFragmentManager,
                 FilterAlumniFragment.newInstance(),
                 R.id.content,
                 true,
@@ -101,7 +128,7 @@ public class MainActivity extends AppCompatActivity implements DrawerMenuItem.Dr
 
     public void commitFilterJobFragment(){
         ActivityUtils.replaceFragmentOnActivity(
-                getSupportFragmentManager(),
+                mSupportFragmentManager,
                 FilterJobFragment.newInstance(),
                 R.id.content,
                 true,
@@ -112,7 +139,7 @@ public class MainActivity extends AppCompatActivity implements DrawerMenuItem.Dr
 
     private void commitMyProfileFragment(){
         ActivityUtils.replaceFragmentOnActivity(
-                getSupportFragmentManager(),
+                mSupportFragmentManager,
                 MyProfileFragment.newInstance(),
                 R.id.content,
                 true,
@@ -123,7 +150,7 @@ public class MainActivity extends AppCompatActivity implements DrawerMenuItem.Dr
 
     public void commitEditMyProfileFragment(Bundle args) {
         ActivityUtils.replaceFragmentOnActivity(
-                getSupportFragmentManager(),
+                mSupportFragmentManager,
                 EditMyProfileFragment.newInstance(args),
                 R.id.content,
                 true,
@@ -131,24 +158,6 @@ public class MainActivity extends AppCompatActivity implements DrawerMenuItem.Dr
                 R.anim.enter_from_right,
                 R.anim.exit_to_left
         );
-    }
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_home);
-
-        BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
-        BottomNavigationViewHelper.disableShiftMode(navigation);
-        navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
-        if(savedInstanceState == null) {
-            ActivityUtils.replaceFragmentOnActivity(getSupportFragmentManager(),
-                    FeedFragment.newInstance(),
-                    R.id.content,
-                    false,
-                    "Home",R.anim.enter_from_right,
-                    R.anim.exit_to_left );
-        }
     }
 
     @Override
@@ -178,5 +187,12 @@ public class MainActivity extends AppCompatActivity implements DrawerMenuItem.Dr
     @Override
     public void onDeveloperMenuSelected() {
         //Do nothing
+    }
+
+    private void popingFragmentWhileNavigating(){
+        if(mSupportFragmentManager.getFragments() != null
+                && !mSupportFragmentManager.getFragments().isEmpty()){
+            mSupportFragmentManager.popBackStack();
+        }
     }
 }
