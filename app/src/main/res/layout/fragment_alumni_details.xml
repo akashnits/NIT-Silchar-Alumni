@@ -265,10 +265,10 @@
     </android.support.v7.widget.Toolbar>
 
     <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/cvProfilePic"
         android:layout_width="@dimen/image_width"
         android:layout_height="@dimen/image_width"
         android:layout_gravity="center_horizontal"
-        android:src="@drawable/akash"
         app:finalHeight="@dimen/image_final_width"
         app:finalYPosition="2dp"
         app:layout_behavior="com.akash.android.nitsilcharalumni.utils.imageUtils.AvatarImageBehavior"

@@ -8,6 +8,7 @@ import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.akash.android.nitsilcharalumni.R;
 import com.akash.android.nitsilcharalumni.ui.alumni.AlumniDetailsFragment;
@@ -195,4 +196,11 @@ public class MainActivity extends AppCompatActivity implements DrawerMenuItem.Dr
             mSupportFragmentManager.popBackStack();
         }
     }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        mSupportFragmentManager.popBackStack();
+        return true;
+    }
+
 }
