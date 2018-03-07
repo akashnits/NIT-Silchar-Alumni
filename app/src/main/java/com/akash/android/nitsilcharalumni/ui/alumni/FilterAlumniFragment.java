@@ -14,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.akash.android.nitsilcharalumni.R;
+import com.akash.android.nitsilcharalumni.ui.MainActivity;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -31,13 +32,9 @@ public class FilterAlumniFragment extends Fragment {
     ImageView ivClose;
     @BindView(R.id.tvFilters)
     TextView tvFilters;
-    @BindView(R.id.btFilterName)
-    Button btFilterName;
     @BindView(R.id.btFilterClassOf)
     Button btFilterClassOf;
     @BindView(R.id.btFilterLocation)
-    Button btFilterLocation;
-    @BindView(R.id.btFilterOrganisation)
     Button btFilterOrganisation;
     @BindView(R.id.btFilterApply)
     Button btFilterApply;
@@ -80,20 +77,16 @@ public class FilterAlumniFragment extends Fragment {
         unbinder.unbind();
     }
 
-    @OnClick({R.id.ivClose, R.id.btFilterName, R.id.btFilterClassOf, R.id.btFilterLocation,
-            R.id.btFilterOrganisation, R.id.btFilterApply})
+    @OnClick({R.id.ivClose, R.id.btFilterClassOf, R.id.btFilterLocation,R.id.btFilterApply})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.ivClose:
                 getFragmentManager().popBackStackImmediate();
                 break;
-            case R.id.btFilterName:
-                break;
             case R.id.btFilterClassOf:
                 break;
             case R.id.btFilterLocation:
-                break;
-            case R.id.btFilterOrganisation:
+                ((MainActivity) getActivity()).commitAlumniLocationFragment();
                 break;
             case R.id.btFilterApply:
                 break;

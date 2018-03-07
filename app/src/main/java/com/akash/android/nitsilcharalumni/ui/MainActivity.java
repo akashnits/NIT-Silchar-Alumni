@@ -13,6 +13,8 @@ import android.widget.Toast;
 import com.akash.android.nitsilcharalumni.R;
 import com.akash.android.nitsilcharalumni.ui.alumni.AlumniDetailsFragment;
 import com.akash.android.nitsilcharalumni.ui.alumni.AlumniFragment;
+import com.akash.android.nitsilcharalumni.ui.alumni.AlumniLocationFragment;
+import com.akash.android.nitsilcharalumni.ui.alumni.AlumniLocationPrefFragment;
 import com.akash.android.nitsilcharalumni.ui.alumni.FilterAlumniFragment;
 import com.akash.android.nitsilcharalumni.ui.bookmark.BookmarkFragment;
 import com.akash.android.nitsilcharalumni.ui.drawer.DrawerMenuItem;
@@ -156,6 +158,18 @@ public class MainActivity extends AppCompatActivity implements DrawerMenuItem.Dr
                 R.id.content,
                 true,
                 "EditMyProfileFragment",
+                R.anim.enter_from_right,
+                R.anim.exit_to_left
+        );
+    }
+
+    public void commitAlumniLocationFragment(){
+        ActivityUtils.replaceFragmentOnActivity(
+                mSupportFragmentManager,
+                AlumniLocationFragment.newInstance(),
+                R.id.content,
+                true,
+                "AlumniLocationFragment",
                 R.anim.enter_from_right,
                 R.anim.exit_to_left
         );
