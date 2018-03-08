@@ -1,7 +1,10 @@
 package com.akash.android.nitsilcharalumni.ui.alumni;
 
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -28,6 +31,7 @@ import butterknife.Unbinder;
  */
 public class FilterAlumniFragment extends Fragment {
 
+
     @BindView(R.id.ivClose)
     ImageView ivClose;
     @BindView(R.id.tvFilters)
@@ -35,12 +39,18 @@ public class FilterAlumniFragment extends Fragment {
     @BindView(R.id.btFilterClassOf)
     Button btFilterClassOf;
     @BindView(R.id.btFilterLocation)
-    Button btFilterOrganisation;
+    Button btFilterLocation;
     @BindView(R.id.btFilterApply)
     Button btFilterApply;
     @BindView(R.id.cvFilterAlumni)
     CardView cvFilterAlumni;
     Unbinder unbinder;
+
+    public static final String ALUMNI_LOCATION = "alumni_location";
+
+    private Context mContext;
+    private SharedPreferences mSharedPreferences;
+    private String[] mAlumniLocationArray;
 
     public FilterAlumniFragment() {
         // Required empty public constructor
@@ -67,8 +77,33 @@ public class FilterAlumniFragment extends Fragment {
     }
 
     @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        mContext = context;
+    }
+
+    @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        mAlumniLocationArray = getResources().getStringArray(R.array.location);
+
+        btFilterApply.setEnabled(false);
+        btFilterApply.setBackground(getResources().getDrawable(R.drawable.filter_btn_backgrnd_unpressed));
+        btFilterLocation.setBackground(getResources().getDrawable(R.drawable.filter_btn_backgrnd_unpressed));
+        mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
+        for (int i = 0; i < mAlumniLocationArray.length; i++) {
+            if (mSharedPreferences.getBoolean(String.format("%s_%s", ALUMNI_LOCATION,
+                    mAlumniLocationArray[i]), false)) {
+
+                btFilterApply.setEnabled(true);
+                btFilterApply.setBackground(getResources().getDrawable(R.drawable.filter_btn_backgrnd_pressed));
+                btFilterApply.setTextColor(getResources().getColor(android.R.color.white));
+
+                btFilterLocation.setBackground(getResources().getDrawable(R.drawable.filter_btn_backgrnd_pressed));
+                btFilterLocation.setTextColor(getResources().getColor(android.R.color.white));
+                break;
+            }
+        }
     }
 
     @Override
@@ -77,10 +112,16 @@ public class FilterAlumniFragment extends Fragment {
         unbinder.unbind();
     }
 
-    @OnClick({R.id.ivClose, R.id.btFilterClassOf, R.id.btFilterLocation,R.id.btFilterApply})
+    @OnClick({R.id.ivClose, R.id.btFilterClassOf, R.id.btFilterLocation, R.id.btFilterApply})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.ivClose:
+                //TODO: Remove all filter from shared preferences
+                SharedPreferences.Editor editor = mSharedPreferences.edit();
+                for (String key : mAlumniLocationArray) {
+                    editor.remove(String.format("%s_%s", ALUMNI_LOCATION, key));
+                    editor.apply();
+                }
                 getFragmentManager().popBackStackImmediate();
                 break;
             case R.id.btFilterClassOf:
@@ -89,9 +130,9 @@ public class FilterAlumniFragment extends Fragment {
                 ((MainActivity) getActivity()).commitAlumniLocationFragment();
                 break;
             case R.id.btFilterApply:
+                AlumniFragment.setFilterApplied(true);
+                getFragmentManager().popBackStackImmediate();
                 break;
         }
     }
-
-
 }

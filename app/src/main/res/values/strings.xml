@@ -86,4 +86,14 @@
     <string name="edit">Edit</string>
     <string name="location">Location</string>
     <string name="done">Done</string>
+
+    <string-array name="location">
+        <item>Delhi</item>
+        <item>Mumbai</item>
+        <item>Bangalore</item>
+        <item>Chennai</item>
+        <item>Pune</item>
+        <item>Hyderabad</item>
+        <item>Guwahati</item>
+    </string-array>
 </resources>

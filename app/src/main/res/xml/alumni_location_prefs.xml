@@ -1,33 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
-    android:key="alumni_location"
-    >
+    android:key="alumni_location">
     <CheckBoxPreference
-        android:key="alumni_location_delhi"
+        android:key="alumni_location_Delhi"
         android:defaultValue="false"
         android:title="Delhi" />
     <CheckBoxPreference
-        android:key="alumni_location_mumbai"
+        android:key="alumni_location_Mumbai"
         android:defaultValue="false"
         android:title="Mumbai" />
     <CheckBoxPreference
-        android:key="alumni_location_bangalore"
+        android:key="alumni_location_Bangalore"
         android:defaultValue="false"
         android:title="Bangalore" />
     <CheckBoxPreference
-        android:key="alumni_location_chennai"
+        android:key="alumni_location_Chennai"
         android:defaultValue="false"
         android:title="Chennai" />
     <CheckBoxPreference
-        android:key="alumni_location_pune"
+        android:key="alumni_location_Pune"
         android:defaultValue="false"
         android:title="Pune" />
     <CheckBoxPreference
-        android:key="alumni_location_hyderabad"
+        android:key="alumni_location_Hyderabad"
         android:defaultValue="false"
         android:title="Hyderabad" />
     <CheckBoxPreference
-        android:key="alumni_location_guwahati"
+        android:key="alumni_location_Guwahati"
         android:defaultValue="false"
         android:title="Guwahati" />
 </PreferenceScreen>

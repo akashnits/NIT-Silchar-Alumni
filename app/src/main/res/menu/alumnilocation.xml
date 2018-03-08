@@ -5,6 +5,9 @@
     <item
         android:id="@+id/alumniLocation"
         android:title="@string/done"
-        app:showAsAction="always"/>
+        app:showAsAction="always"
+    />
+
+
 
 </menu>
