@@ -22,16 +22,21 @@ public class AlumniLocationPrefFragment extends PreferenceFragmentCompat {
     }
 
     @Override
+    public void onCreatePreferences (Bundle savedInstanceState, String rootKey){
+        addPreferencesFromResource(R.xml.alumni_location_prefs);
+    }
+
+    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mAlumniLocationArray= getResources().getStringArray(R.array.location);
+        mAlumniLocationArray = getResources().getStringArray(R.array.location);
 
-        for(String key: mAlumniLocationArray){
-            CheckBoxPreference checkBoxPreference= (CheckBoxPreference)
+        for (String key : mAlumniLocationArray) {
+            CheckBoxPreference checkBoxPreference = (CheckBoxPreference)
                     findPreference(String.format("%s_%s", ALUMNI_LOCATION, key));
-            checkBoxPreference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            checkBoxPreference.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
                 @Override
-                public boolean onPreferenceClick(Preference preference) {
+                public boolean onPreferenceChange(Preference preference, Object newValue) {
                     String selectedPref=  preference.getKey();
                     for(String location: mAlumniLocationArray){
                         String key= String.format("%s_%s", ALUMNI_LOCATION, location);
@@ -40,17 +45,15 @@ public class AlumniLocationPrefFragment extends PreferenceFragmentCompat {
                         if(!selectedPref.equals(key)){
                             checkBoxPreference.setChecked(false);
                         }else {
-                            checkBoxPreference.setChecked(true);
+                            if(checkBoxPreference.isChecked())
+                                checkBoxPreference.setChecked(false);
+                            else
+                                checkBoxPreference.setChecked(true);
                         }
                     }
                     return false;
                 }
             });
         }
-    }
-
-    @Override
-    public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
-        addPreferencesFromResource(R.xml.alumni_location_prefs);
     }
 }

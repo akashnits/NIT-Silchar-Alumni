@@ -94,6 +94,7 @@ public class AlumniFragment extends Fragment implements AlumniAdapter.OnAlumniCl
     private SharedPreferences mSharedPreferences;
     private String[] mAlumniLocationArray;
     private static boolean isFilterApplied;
+    private String mLocationFilter;
 
     public AlumniFragment() {
         // Required empty public constructor
@@ -172,11 +173,10 @@ public class AlumniFragment extends Fragment implements AlumniAdapter.OnAlumniCl
                             }
                         });
             } else {
-                String locationFilter= "";
-                for(String location: mAlumniLocationArray){
-                    String key= String.format("%s_%s", ALUMNI_LOCATION, location);
-                    if(mSharedPreferences.getBoolean(key, false)){
-                        locationFilter= location;
+                for (String location : mAlumniLocationArray) {
+                    String key = String.format("%s_%s", ALUMNI_LOCATION, location);
+                    if (mSharedPreferences.getBoolean(key, false)) {
+                        mLocationFilter = location;
                     }
                 }
 
@@ -184,17 +184,21 @@ public class AlumniFragment extends Fragment implements AlumniAdapter.OnAlumniCl
                         .whereEqualTo("mTypeOfUser", "Alumni")
                         .orderBy("mEmail")
                         .limit(LIMIT)
-                        .whereEqualTo("mLocation", locationFilter)
+                        .whereEqualTo("mLocation", mLocationFilter)
                         .get()
                         .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                             @Override
                             public void onSuccess(QuerySnapshot documentSnapshots) {
-                                mLastVisible = documentSnapshots.getDocuments()
-                                        .get(documentSnapshots.size() - 1);
-                                mLastDocumentSnapshotSize = documentSnapshots.size();
-                                for (DocumentSnapshot documentSnapshot : documentSnapshots)
-                                    newAlumni.add(documentSnapshot.toObject(User.class));
-                                mAlumniAdapter.addAll(newAlumni);
+                                if (documentSnapshots != null && !documentSnapshots.isEmpty()) {
+                                    mLastVisible = documentSnapshots.getDocuments()
+                                            .get(documentSnapshots.size() - 1);
+                                    mLastDocumentSnapshotSize = documentSnapshots.size();
+                                    for (DocumentSnapshot documentSnapshot : documentSnapshots)
+                                        newAlumni.add(documentSnapshot.toObject(User.class));
+                                    mAlumniAdapter.addAll(newAlumni);
+                                } else {
+                                    Toast.makeText(mContext, "Nothing found", Toast.LENGTH_SHORT).show();
+                                }
                                 if (pbAlumniFragment != null)
                                     pbAlumniFragment.setVisibility(View.INVISIBLE);
                                 isLoading = false;
@@ -203,6 +207,7 @@ public class AlumniFragment extends Fragment implements AlumniAdapter.OnAlumniCl
                         .addOnFailureListener(new OnFailureListener() {
                             @Override
                             public void onFailure(@NonNull Exception e) {
+                                e.printStackTrace();
                                 Toast.makeText(mContext, "Failed to Load data", Toast.LENGTH_SHORT).show();
                                 if (pbAlumniFragment != null)
                                     pbAlumniFragment.setVisibility(View.INVISIBLE);
@@ -225,7 +230,8 @@ public class AlumniFragment extends Fragment implements AlumniAdapter.OnAlumniCl
                     int totalItemCount = recyclerView.getLayoutManager().getItemCount();
                     int pastVisibleItem = ((LinearLayoutManager) recyclerView.getLayoutManager())
                             .findFirstVisibleItemPosition();
-                    if ((LIMIT + pastVisibleItem) >= totalItemCount && !isLoading && mLastDocumentSnapshotSize == LIMIT) {
+                    if ((LIMIT + pastVisibleItem) >= totalItemCount && !isLoading &&
+                            mLastDocumentSnapshotSize == LIMIT) {
                         loadMore();
                     }
                 }
@@ -242,6 +248,7 @@ public class AlumniFragment extends Fragment implements AlumniAdapter.OnAlumniCl
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        isFilterApplied = false;
         unbinder.unbind();
     }
 
@@ -256,39 +263,77 @@ public class AlumniFragment extends Fragment implements AlumniAdapter.OnAlumniCl
         isLoading = true;
 
         final List<User> newAlumni = new ArrayList<>();
-        mFirestore.collection(Constants.USER_COLLECTION)
-                .whereEqualTo("mTypeOfUser", "Alumni")
-                .orderBy("mEmail")
-                .startAfter(mLastVisible)
-                .limit(LIMIT)
-                .get()
-                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                    @Override
-                    public void onSuccess(QuerySnapshot documentSnapshots) {
-                        if (pbAlumniFragment != null)
-                            pbAlumniFragment.setVisibility(View.INVISIBLE);
-                        isLoading = false;
-                        if (!documentSnapshots.isEmpty()) {
-                            mLastDocumentSnapshotSize = documentSnapshots.size();
-                            mLastVisible = documentSnapshots.getDocuments()
-                                    .get(documentSnapshots.size() - 1);
-                            for (DocumentSnapshot documentSnapshot : documentSnapshots)
-                                newAlumni.add(documentSnapshot.toObject(User.class));
-                            mAlumniAdapter.addAll(newAlumni);
-                        } else {
-                            mLastDocumentSnapshotSize = 0;
+        if (!isFilterApplied) {
+            mFirestore.collection(Constants.USER_COLLECTION)
+                    .whereEqualTo("mTypeOfUser", "Alumni")
+                    .orderBy("mEmail")
+                    .startAfter(mLastVisible)
+                    .limit(LIMIT)
+                    .get()
+                    .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                        @Override
+                        public void onSuccess(QuerySnapshot documentSnapshots) {
+                            if (pbAlumniFragment != null)
+                                pbAlumniFragment.setVisibility(View.INVISIBLE);
+                            isLoading = false;
+                            if (!documentSnapshots.isEmpty()) {
+                                mLastDocumentSnapshotSize = documentSnapshots.size();
+                                mLastVisible = documentSnapshots.getDocuments()
+                                        .get(documentSnapshots.size() - 1);
+                                for (DocumentSnapshot documentSnapshot : documentSnapshots)
+                                    newAlumni.add(documentSnapshot.toObject(User.class));
+                                mAlumniAdapter.addAll(newAlumni);
+                            } else {
+                                mLastDocumentSnapshotSize = 0;
+                            }
                         }
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(mContext, "Failed to Load data", Toast.LENGTH_SHORT).show();
-                        if (pbAlumniFragment != null)
-                            pbAlumniFragment.setVisibility(View.INVISIBLE);
-                        isLoading = false;
-                    }
-                });
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Toast.makeText(mContext, "Failed to Load data", Toast.LENGTH_SHORT).show();
+                            if (pbAlumniFragment != null)
+                                pbAlumniFragment.setVisibility(View.INVISIBLE);
+                            isLoading = false;
+                        }
+                    });
+        } else {
+            mFirestore.collection(Constants.USER_COLLECTION)
+                    .whereEqualTo("mTypeOfUser", "Alumni")
+                    .whereEqualTo("mLocation", mLocationFilter)
+                    .orderBy("mEmail")
+                    .startAfter(mLastVisible)
+                    .limit(LIMIT)
+                    .get()
+                    .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                        @Override
+                        public void onSuccess(QuerySnapshot documentSnapshots) {
+                            if (pbAlumniFragment != null)
+                                pbAlumniFragment.setVisibility(View.INVISIBLE);
+                            isLoading = false;
+                            if (!documentSnapshots.isEmpty()) {
+                                mLastDocumentSnapshotSize = documentSnapshots.size();
+                                mLastVisible = documentSnapshots.getDocuments()
+                                        .get(documentSnapshots.size() - 1);
+                                for (DocumentSnapshot documentSnapshot : documentSnapshots)
+                                    newAlumni.add(documentSnapshot.toObject(User.class));
+                                mAlumniAdapter.addAll(newAlumni);
+                            } else {
+                                mLastDocumentSnapshotSize = 0;
+                                Toast.makeText(mContext, "That's all, folks!", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Toast.makeText(mContext, "Failed to Load data", Toast.LENGTH_SHORT).show();
+                            if (pbAlumniFragment != null)
+                                pbAlumniFragment.setVisibility(View.INVISIBLE);
+                            isLoading = false;
+                        }
+                    });
+        }
     }
 
     @Override
@@ -464,6 +509,7 @@ public class AlumniFragment extends Fragment implements AlumniAdapter.OnAlumniCl
             editor.apply();
         }
     }
+
 
     public static void setFilterApplied(boolean filterApplied) {
         isFilterApplied = filterApplied;
