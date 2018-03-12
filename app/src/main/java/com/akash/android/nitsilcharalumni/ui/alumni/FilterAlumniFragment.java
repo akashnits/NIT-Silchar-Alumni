@@ -125,6 +125,7 @@ public class FilterAlumniFragment extends Fragment {
                 getFragmentManager().popBackStackImmediate();
                 break;
             case R.id.btFilterClassOf:
+                ((MainActivity)getActivity()).commitAlumniClassOfFragment();
                 break;
             case R.id.btFilterLocation:
                 ((MainActivity) getActivity()).commitAlumniLocationFragment();

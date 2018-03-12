@@ -11,6 +11,7 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.akash.android.nitsilcharalumni.R;
+import com.akash.android.nitsilcharalumni.ui.alumni.AlumniClassOfFragment;
 import com.akash.android.nitsilcharalumni.ui.alumni.AlumniDetailsFragment;
 import com.akash.android.nitsilcharalumni.ui.alumni.AlumniFragment;
 import com.akash.android.nitsilcharalumni.ui.alumni.AlumniLocationFragment;
@@ -170,6 +171,18 @@ public class MainActivity extends AppCompatActivity implements DrawerMenuItem.Dr
                 R.id.content,
                 true,
                 "AlumniLocationFragment",
+                R.anim.enter_from_right,
+                R.anim.exit_to_left
+        );
+    }
+
+    public void commitAlumniClassOfFragment(){
+        ActivityUtils.replaceFragmentOnActivity(
+                mSupportFragmentManager,
+                AlumniClassOfFragment.newInstance(),
+                R.id.content,
+                true,
+                "AlumniClassOfFragment",
                 R.anim.enter_from_right,
                 R.anim.exit_to_left
         );

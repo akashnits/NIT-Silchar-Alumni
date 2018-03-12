@@ -1,0 +1,28 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.akash.android.nitsilcharalumni.ui.alumni.AlumniClassOfFragment">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbarAlumniClassOf"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/colorPrimary">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/white"
+            android:gravity="left|center"
+            android:layout_gravity="center"
+            android:textSize="18sp"
+            android:text="@string/classOf"/>
+    </android.support.v7.widget.Toolbar>
+
+    <FrameLayout
+        android:id="@+id/alumni_classOf_pref_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/toolbarAlumniClassOf"/>
+
+</RelativeLayout>
