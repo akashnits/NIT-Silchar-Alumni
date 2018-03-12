@@ -2,183 +2,183 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     android:key="classOf">
     <CheckBoxPreference
-        android:key="classOf_2017"
+        android:key="alumni_classOf_2017"
         android:defaultValue="false"
         android:title="2017" />
     <CheckBoxPreference
-        android:key="classOf_2016"
+        android:key="alumni_classOf_2016"
         android:defaultValue="false"
         android:title="2016" />
     <CheckBoxPreference
-        android:key="classOf_2015"
+        android:key="alumni_classOf_2015"
         android:defaultValue="false"
         android:title="2015" />
     <CheckBoxPreference
-        android:key="classOf_2014"
+        android:key="alumni_classOf_2014"
         android:defaultValue="false"
         android:title="2014" />
     <CheckBoxPreference
-        android:key="classOf_2013"
+        android:key="alumni_classOf_2013"
         android:defaultValue="false"
         android:title="2013" />
     <CheckBoxPreference
-        android:key="classOf_2012"
+        android:key="alumni_classOf_2012"
         android:defaultValue="false"
         android:title="2012" />
     <CheckBoxPreference
-        android:key="classOf_2011"
+        android:key="alumni_classOf_2011"
         android:defaultValue="false"
         android:title="2011" />
     <CheckBoxPreference
-        android:key="classOf_2010"
+        android:key="alumni_classOf_2010"
         android:defaultValue="false"
         android:title="2010" />
     <CheckBoxPreference
-        android:key="classOf_2009"
+        android:key="alumni_classOf_2009"
         android:defaultValue="false"
         android:title="2009" />
     <CheckBoxPreference
-        android:key="classOf_2008"
+        android:key="alumni_classOf_2008"
         android:defaultValue="false"
         android:title="2008" />
     <CheckBoxPreference
-        android:key="classOf_2007"
+        android:key="alumni_classOf_2007"
         android:defaultValue="false"
         android:title="2007" />
     <CheckBoxPreference
-        android:key="classOf_2006"
+        android:key="alumni_classOf_2006"
         android:defaultValue="false"
         android:title="2006" />
     <CheckBoxPreference
-        android:key="classOf_2005"
+        android:key="alumni_classOf_2005"
         android:defaultValue="false"
         android:title="2005" />
     <CheckBoxPreference
-        android:key="classOf_2004"
+        android:key="alumni_classOf_2004"
         android:defaultValue="false"
         android:title="2004" />
     <CheckBoxPreference
-        android:key="classOf_2003"
+        android:key="alumni_classOf_2003"
         android:defaultValue="false"
         android:title="2003" />
     <CheckBoxPreference
-        android:key="classOf_2002"
+        android:key="alumni_classOf_2002"
         android:defaultValue="false"
         android:title="2002" />
     <CheckBoxPreference
-        android:key="classOf_2001"
+        android:key="alumni_classOf_2001"
         android:defaultValue="false"
         android:title="2001" />
     <CheckBoxPreference
-        android:key="classOf_2000"
+        android:key="alumni_classOf_2000"
         android:defaultValue="false"
         android:title="2000" />
     <CheckBoxPreference
-        android:key="classOf_1999"
+        android:key="alumni_classOf_1999"
         android:defaultValue="false"
         android:title="1999" />
     <CheckBoxPreference
-        android:key="classOf_1998"
+        android:key="alumni_classOf_1998"
         android:defaultValue="false"
         android:title="1998" />
     <CheckBoxPreference
-        android:key="classOf_1997"
+        android:key="alumni_classOf_1997"
         android:defaultValue="false"
         android:title="1997" />
     <CheckBoxPreference
-        android:key="classOf_1996"
+        android:key="alumni_classOf_1996"
         android:defaultValue="false"
         android:title="1996" />
     <CheckBoxPreference
-        android:key="classOf_1995"
+        android:key="alumni_classOf_1995"
         android:defaultValue="false"
         android:title="1995" />
     <CheckBoxPreference
-        android:key="classOf_1994"
+        android:key="alumni_classOf_1994"
         android:defaultValue="false"
         android:title="1994" />
     <CheckBoxPreference
-        android:key="classOf_1993"
+        android:key="alumni_classOf_1993"
         android:defaultValue="false"
         android:title="1993" />
     <CheckBoxPreference
-        android:key="classOf_1992"
+        android:key="alumni_classOf_1992"
         android:defaultValue="false"
         android:title="1992" />
     <CheckBoxPreference
-        android:key="classOf_1991"
+        android:key="alumni_classOf_1991"
         android:defaultValue="false"
         android:title="1991" />
     <CheckBoxPreference
-        android:key="classOf_1990"
+        android:key="alumni_classOf_1990"
         android:defaultValue="false"
         android:title="1990" />
     <CheckBoxPreference
-        android:key="classOf_1989"
+        android:key="alumni_classOf_1989"
         android:defaultValue="false"
         android:title="1989" />
     <CheckBoxPreference
-        android:key="classOf_1988"
+        android:key="alumni_classOf_1988"
         android:defaultValue="false"
         android:title="1988" />
     <CheckBoxPreference
-        android:key="classOf_1987"
+        android:key="alumni_classOf_1987"
         android:defaultValue="false"
         android:title="1987" />
     <CheckBoxPreference
-        android:key="classOf_1986"
+        android:key="alumni_classOf_1986"
         android:defaultValue="false"
         android:title="1986" />
     <CheckBoxPreference
-        android:key="classOf_1985"
+        android:key="alumni_classOf_1985"
         android:defaultValue="false"
         android:title="1985" />
     <CheckBoxPreference
-        android:key="classOf_1984"
+        android:key="alumni_classOf_1984"
         android:defaultValue="false"
         android:title="1984" />
     <CheckBoxPreference
-        android:key="classOf_1983"
+        android:key="alumni_classOf_1983"
         android:defaultValue="false"
         android:title="1983" />
     <CheckBoxPreference
-        android:key="classOf_1982"
+        android:key="alumni_classOf_1982"
         android:defaultValue="false"
         android:title="1982" />
     <CheckBoxPreference
-        android:key="classOf_1981"
+        android:key="alumni_classOf_1981"
         android:defaultValue="false"
         android:title="1981" />
     <CheckBoxPreference
-        android:key="classOf_1980"
+        android:key="alumni_classOf_1980"
         android:defaultValue="false"
         android:title="1980" />
     <CheckBoxPreference
-        android:key="classOf_1979"
+        android:key="alumni_classOf_1979"
         android:defaultValue="false"
         android:title="1979" />
     <CheckBoxPreference
-        android:key="classOf_1978"
+        android:key="alumni_classOf_1978"
         android:defaultValue="false"
         android:title="1978" />
     <CheckBoxPreference
-        android:key="classOf_1977"
+        android:key="alumni_classOf_1977"
         android:defaultValue="false"
         android:title="1977" />
     <CheckBoxPreference
-        android:key="classOf_1976"
+        android:key="alumni_classOf_1976"
         android:defaultValue="false"
         android:title="1976" />
     <CheckBoxPreference
-        android:key="classOf_1975"
+        android:key="alumni_classOf_1975"
         android:defaultValue="false"
         android:title="1975" />
     <CheckBoxPreference
-        android:key="classOf_1974"
+        android:key="alumni_classOf_1974"
         android:defaultValue="false"
         android:title="1974" />
     <CheckBoxPreference
-        android:key="classOf_1973"
+        android:key="alumni_classOf_1973"
         android:defaultValue="false"
         android:title="1973" />
 </PreferenceScreen>

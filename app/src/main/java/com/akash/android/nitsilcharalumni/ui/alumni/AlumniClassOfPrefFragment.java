@@ -7,6 +7,8 @@ import android.support.v7.preference.PreferenceFragmentCompat;
 
 import com.akash.android.nitsilcharalumni.R;
 
+import static com.akash.android.nitsilcharalumni.ui.alumni.FilterAlumniFragment.ALUMNI_CLASS_OF;
+
 
 public class AlumniClassOfPrefFragment extends PreferenceFragmentCompat {
 
@@ -29,13 +31,13 @@ public class AlumniClassOfPrefFragment extends PreferenceFragmentCompat {
 
         for (String key : mAlumniClassOfArray) {
             CheckBoxPreference checkBoxPreference = (CheckBoxPreference)
-                    findPreference(String.format("%s_%s", "classOf", key));
+                    findPreference(String.format("%s_%s", ALUMNI_CLASS_OF, key));
             checkBoxPreference.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
                 @Override
                 public boolean onPreferenceChange(Preference preference, Object newValue) {
                     String selectedPref = preference.getKey();
                     for (String classOfValue : mAlumniClassOfArray) {
-                        String key = String.format("%s_%s", "classOf", classOfValue);
+                        String key = String.format("%s_%s", ALUMNI_CLASS_OF, classOfValue);
                         CheckBoxPreference checkBoxPreference = (CheckBoxPreference)
                                 findPreference(key);
                         if (!selectedPref.equals(key)) {

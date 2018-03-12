@@ -47,10 +47,12 @@ public class FilterAlumniFragment extends Fragment {
     Unbinder unbinder;
 
     public static final String ALUMNI_LOCATION = "alumni_location";
+    public static final String ALUMNI_CLASS_OF = "alumni_classOf";
 
     private Context mContext;
     private SharedPreferences mSharedPreferences;
     private String[] mAlumniLocationArray;
+    private String[] mAlumniClassOfArray;
 
     public FilterAlumniFragment() {
         // Required empty public constructor
@@ -86,10 +88,12 @@ public class FilterAlumniFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mAlumniLocationArray = getResources().getStringArray(R.array.location);
+        mAlumniClassOfArray = getResources().getStringArray(R.array.classOfFilter);
 
         btFilterApply.setEnabled(false);
         btFilterApply.setBackground(getResources().getDrawable(R.drawable.filter_btn_backgrnd_unpressed));
         btFilterLocation.setBackground(getResources().getDrawable(R.drawable.filter_btn_backgrnd_unpressed));
+        btFilterClassOf.setBackground(getResources().getDrawable(R.drawable.filter_btn_backgrnd_unpressed));
         mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
         for (int i = 0; i < mAlumniLocationArray.length; i++) {
             if (mSharedPreferences.getBoolean(String.format("%s_%s", ALUMNI_LOCATION,
@@ -101,6 +105,20 @@ public class FilterAlumniFragment extends Fragment {
 
                 btFilterLocation.setBackground(getResources().getDrawable(R.drawable.filter_btn_backgrnd_pressed));
                 btFilterLocation.setTextColor(getResources().getColor(android.R.color.white));
+                break;
+            }
+        }
+        for(int j=0; j< mAlumniClassOfArray.length; j++){
+            if(mSharedPreferences.getBoolean(String.format("%s_%s", ALUMNI_CLASS_OF,
+                    mAlumniClassOfArray[j]), false)){
+
+                if(!btFilterApply.isEnabled()){
+                    btFilterApply.setEnabled(true);
+                    btFilterApply.setBackground(getResources().getDrawable(R.drawable.filter_btn_backgrnd_pressed));
+                    btFilterApply.setTextColor(getResources().getColor(android.R.color.white));
+                }
+                btFilterClassOf.setBackground(getResources().getDrawable(R.drawable.filter_btn_backgrnd_pressed));
+                btFilterClassOf.setTextColor(getResources().getColor(android.R.color.white));
                 break;
             }
         }
@@ -116,10 +134,13 @@ public class FilterAlumniFragment extends Fragment {
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.ivClose:
-                //TODO: Remove all filter from shared preferences
                 SharedPreferences.Editor editor = mSharedPreferences.edit();
                 for (String key : mAlumniLocationArray) {
                     editor.remove(String.format("%s_%s", ALUMNI_LOCATION, key));
+                    editor.apply();
+                }
+                for(String key : mAlumniClassOfArray){
+                    editor.remove(String.format("%s_%s", ALUMNI_CLASS_OF, key));
                     editor.apply();
                 }
                 getFragmentManager().popBackStackImmediate();
