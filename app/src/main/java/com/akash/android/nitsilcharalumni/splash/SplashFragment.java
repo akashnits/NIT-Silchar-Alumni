@@ -13,6 +13,7 @@ import android.widget.ProgressBar;
 
 import com.akash.android.nitsilcharalumni.R;
 import com.akash.android.nitsilcharalumni.login.LoginActivity;
+import com.akash.android.nitsilcharalumni.services.OnClearFromRecentService;
 import com.akash.android.nitsilcharalumni.ui.MainActivity;
 import com.google.firebase.auth.FirebaseAuth;
 
@@ -70,6 +71,8 @@ public class SplashFragment extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        ((SplashScreenActivity) getActivity()).startService(
+                new Intent(getContext(), OnClearFromRecentService.class));
 
         pbSplashScreen.setVisibility(View.VISIBLE);
         new Handler().postDelayed(new Runnable() {

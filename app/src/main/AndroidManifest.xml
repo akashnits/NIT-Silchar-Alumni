@@ -63,6 +63,9 @@
             android:name=".data.FeedProvider"
             android:authorities="com.akash.android.nitsilcharalumni"
             android:exported="false" />
+
+        <service android:name=".services.OnClearFromRecentService"
+            android:stopWithTask="false"/>
     </application>
 
 </manifest>

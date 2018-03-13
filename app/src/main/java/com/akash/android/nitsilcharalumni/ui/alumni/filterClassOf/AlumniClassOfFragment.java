@@ -1,4 +1,4 @@
-package com.akash.android.nitsilcharalumni.ui.alumni;
+package com.akash.android.nitsilcharalumni.ui.alumni.filterClassOf;
 
 
 import android.content.Context;

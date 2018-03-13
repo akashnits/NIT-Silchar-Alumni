@@ -1,4 +1,4 @@
-package com.akash.android.nitsilcharalumni.ui.alumni;
+package com.akash.android.nitsilcharalumni.ui.alumni.filterClassOf;
 
 import android.os.Bundle;
 import android.support.v7.preference.CheckBoxPreference;

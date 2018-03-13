@@ -672,6 +672,10 @@ public class AlumniFragment extends Fragment implements AlumniAdapter.OnAlumniCl
             editor.remove(String.format("%s_%s", ALUMNI_LOCATION, key));
             editor.apply();
         }
+        for (String key : mAlumniClassOfArray) {
+            editor.remove(String.format("%s_%s", ALUMNI_CLASS_OF, key));
+            editor.apply();
+        }
     }
 
 

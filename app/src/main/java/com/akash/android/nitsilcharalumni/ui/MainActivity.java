@@ -1,21 +1,17 @@
 package com.akash.android.nitsilcharalumni.ui;
 
 import android.os.Bundle;
-import android.os.PersistableBundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
-import android.widget.Toast;
 
 import com.akash.android.nitsilcharalumni.R;
-import com.akash.android.nitsilcharalumni.ui.alumni.AlumniClassOfFragment;
+import com.akash.android.nitsilcharalumni.ui.alumni.filterClassOf.AlumniClassOfFragment;
 import com.akash.android.nitsilcharalumni.ui.alumni.AlumniDetailsFragment;
 import com.akash.android.nitsilcharalumni.ui.alumni.AlumniFragment;
-import com.akash.android.nitsilcharalumni.ui.alumni.AlumniLocationFragment;
-import com.akash.android.nitsilcharalumni.ui.alumni.AlumniLocationPrefFragment;
+import com.akash.android.nitsilcharalumni.ui.alumni.filterLocation.AlumniLocationFragment;
 import com.akash.android.nitsilcharalumni.ui.alumni.FilterAlumniFragment;
 import com.akash.android.nitsilcharalumni.ui.bookmark.BookmarkFragment;
 import com.akash.android.nitsilcharalumni.ui.drawer.DrawerMenuItem;
