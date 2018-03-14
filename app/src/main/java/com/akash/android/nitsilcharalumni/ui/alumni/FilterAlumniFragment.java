@@ -1,11 +1,15 @@
 package com.akash.android.nitsilcharalumni.ui.alumni;
 
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.CardView;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +18,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.akash.android.nitsilcharalumni.R;
+import com.akash.android.nitsilcharalumni.adapter.AlumniLocationAdapter;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -31,19 +36,18 @@ public class FilterAlumniFragment extends Fragment {
     ImageView ivClose;
     @BindView(R.id.tvFilters)
     TextView tvFilters;
-    @BindView(R.id.btFilterName)
-    Button btFilterName;
     @BindView(R.id.btFilterClassOf)
     Button btFilterClassOf;
     @BindView(R.id.btFilterLocation)
     Button btFilterLocation;
-    @BindView(R.id.btFilterOrganisation)
-    Button btFilterOrganisation;
     @BindView(R.id.btFilterApply)
     Button btFilterApply;
     @BindView(R.id.cvFilterAlumni)
     CardView cvFilterAlumni;
     Unbinder unbinder;
+
+
+    private Context mContext;
 
     public FilterAlumniFragment() {
         // Required empty public constructor
@@ -80,20 +84,23 @@ public class FilterAlumniFragment extends Fragment {
         unbinder.unbind();
     }
 
-    @OnClick({R.id.ivClose, R.id.btFilterName, R.id.btFilterClassOf, R.id.btFilterLocation,
-            R.id.btFilterOrganisation, R.id.btFilterApply})
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        mContext = context;
+    }
+
+    @OnClick({R.id.ivClose, R.id.btFilterClassOf, R.id.btFilterLocation,
+            R.id.btFilterApply})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.ivClose:
                 getFragmentManager().popBackStackImmediate();
                 break;
-            case R.id.btFilterName:
-                break;
             case R.id.btFilterClassOf:
                 break;
             case R.id.btFilterLocation:
-                break;
-            case R.id.btFilterOrganisation:
+                showAlumniLocationAlertDialog();
                 break;
             case R.id.btFilterApply:
                 break;
@@ -101,4 +108,19 @@ public class FilterAlumniFragment extends Fragment {
     }
 
 
+    private void showAlumniLocationAlertDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+
+        LayoutInflater inflater = LayoutInflater.from(mContext);
+        View content = inflater.inflate(R.layout.dialog_select_alumni_location, null);
+        builder.setView(content);
+
+        RecyclerView rvAlumniLocation= content.findViewById(R.id.rvAlumniLocation);
+        LinearLayoutManager lm = new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false);
+        rvAlumniLocation.setLayoutManager(lm);
+        rvAlumniLocation.hasFixedSize();
+        AlumniLocationAdapter alumniAdapter = new AlumniLocationAdapter(mContext);
+        rvAlumniLocation.setAdapter(alumniAdapter);
+        builder.show();
+    }
 }

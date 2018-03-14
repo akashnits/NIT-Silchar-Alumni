@@ -84,4 +84,14 @@
     <string name="create_job_post">Create Job Post</string>
     <string name="edit_done">Edit done</string>
     <string name="edit">Edit</string>
+
+    <string-array name="location">
+        <item>Delhi</item>
+        <item>Mumbai</item>
+        <item>Bangalore</item>
+        <item>Chennai</item>
+        <item>Pune</item>
+        <item>Hyderabad</item>
+        <item>Guwahati</item>
+    </string-array>
 </resources>
