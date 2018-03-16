@@ -21,6 +21,7 @@ public class AlumniLocationAdapter extends RecyclerView.Adapter<AlumniLocationAd
 
     private List<String> mAlumniLocationList;
     private Context mContext;
+    private int mPositionLastChecked;
 
     public AlumniLocationAdapter(Context mContext) {
         this.mContext = mContext;
@@ -51,6 +52,22 @@ public class AlumniLocationAdapter extends RecyclerView.Adapter<AlumniLocationAd
         public AlumniLocationViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
+
+            ctvAlumniLocation.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    CheckedTextView ctv= (CheckedTextView) v;
+                    if (ctv.isChecked()) {
+                        ctv.setCheckMarkDrawable(mContext.getResources()
+                                .getDrawable(R.drawable.ic_check_box_outline_blank_black_24dp));
+                    } else {
+                        ctv.setCheckMarkDrawable(mContext.getResources()
+                                .getDrawable(R.drawable.ic_check_box_black_24dp));
+                        mPositionLastChecked= getAdapterPosition();
+                    }
+                    ctv.toggle();
+                }
+            });
         }
     }
 }

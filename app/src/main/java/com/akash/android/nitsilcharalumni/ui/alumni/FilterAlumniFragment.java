@@ -2,6 +2,7 @@ package com.akash.android.nitsilcharalumni.ui.alumni;
 
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -109,11 +110,23 @@ public class FilterAlumniFragment extends Fragment {
 
 
     private void showAlumniLocationAlertDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+        final AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+        builder.setTitle("Choose a location");
 
         LayoutInflater inflater = LayoutInflater.from(mContext);
         View content = inflater.inflate(R.layout.dialog_select_alumni_location, null);
         builder.setView(content);
+        builder.setPositiveButton("DONE", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                // code to save the checked location
+            }
+        });
+
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                dialog.dismiss();
+            }
+        });
 
         RecyclerView rvAlumniLocation= content.findViewById(R.id.rvAlumniLocation);
         LinearLayoutManager lm = new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false);
