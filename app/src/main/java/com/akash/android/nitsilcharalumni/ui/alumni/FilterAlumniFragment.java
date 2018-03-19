@@ -47,7 +47,8 @@ public class FilterAlumniFragment extends Fragment {
     CardView cvFilterAlumni;
     Unbinder unbinder;
 
-
+    private int mLocationCheckedPosition;
+    private boolean isLocationPreferenceChecked;
     private Context mContext;
 
     public FilterAlumniFragment() {
@@ -78,6 +79,7 @@ public class FilterAlumniFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
     }
+
 
     @Override
     public void onDestroyView() {
@@ -118,12 +120,17 @@ public class FilterAlumniFragment extends Fragment {
         builder.setView(content);
         builder.setPositiveButton("DONE", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
-                // code to save the checked location
+                if(isLocationPreferenceChecked())
+                    btFilterLocation.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+                else
+                    btFilterLocation.setBackgroundColor(getResources().getColor(android.R.color.white));
             }
         });
 
         builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
+                if(isLocationPreferenceChecked())
+                    setLocationPreferenceChecked(false);
                 dialog.dismiss();
             }
         });
@@ -132,8 +139,31 @@ public class FilterAlumniFragment extends Fragment {
         LinearLayoutManager lm = new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false);
         rvAlumniLocation.setLayoutManager(lm);
         rvAlumniLocation.hasFixedSize();
-        AlumniLocationAdapter alumniAdapter = new AlumniLocationAdapter(mContext);
+        AlumniLocationAdapter alumniAdapter = new AlumniLocationAdapter(mContext,
+                getFragmentManager(), rvAlumniLocation);
         rvAlumniLocation.setAdapter(alumniAdapter);
         builder.show();
+    }
+
+    public int getmLocationCheckedPosition() {
+        return mLocationCheckedPosition;
+    }
+
+    public void setmLocationCheckedPosition(int mLocationCheckedPosition) {
+        this.mLocationCheckedPosition = mLocationCheckedPosition;
+    }
+
+    public boolean isLocationPreferenceChecked() {
+        return isLocationPreferenceChecked;
+    }
+
+    public void setLocationPreferenceChecked(boolean locationPreferenceChecked) {
+        isLocationPreferenceChecked = locationPreferenceChecked;
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        isLocationPreferenceChecked= false;
     }
 }

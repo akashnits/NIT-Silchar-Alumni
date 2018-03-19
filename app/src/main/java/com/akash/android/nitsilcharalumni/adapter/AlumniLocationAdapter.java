@@ -1,6 +1,7 @@
 package com.akash.android.nitsilcharalumni.adapter;
 
 import android.content.Context;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.CheckedTextView;
 
 import com.akash.android.nitsilcharalumni.R;
+import com.akash.android.nitsilcharalumni.ui.alumni.FilterAlumniFragment;
 
 import java.util.Arrays;
 import java.util.List;
@@ -22,10 +24,15 @@ public class AlumniLocationAdapter extends RecyclerView.Adapter<AlumniLocationAd
     private List<String> mAlumniLocationList;
     private Context mContext;
     private int mPositionLastChecked;
+    private RecyclerView mRecyclerView;
+    private FilterAlumniFragment mFilterAlumniFragment;
 
-    public AlumniLocationAdapter(Context mContext) {
+    public AlumniLocationAdapter(Context mContext, FragmentManager fm, RecyclerView mRecyclerView) {
         this.mContext = mContext;
         this.mAlumniLocationList = Arrays.asList(mContext.getResources().getStringArray(R.array.location));
+        this.mRecyclerView= mRecyclerView;
+        this.mFilterAlumniFragment= ((FilterAlumniFragment) fm.findFragmentByTag("FilterAlumni"));
+        this.mPositionLastChecked= mFilterAlumniFragment.getmLocationCheckedPosition();
     }
 
     @Override
@@ -38,6 +45,11 @@ public class AlumniLocationAdapter extends RecyclerView.Adapter<AlumniLocationAd
     @Override
     public void onBindViewHolder(AlumniLocationViewHolder holder, int position) {
         holder.ctvAlumniLocation.setText(mAlumniLocationList.get(position));
+        if((mFilterAlumniFragment.isLocationPreferenceChecked() && position == mPositionLastChecked)) {
+            holder.ctvAlumniLocation.setSelected(true);
+            holder.ctvAlumniLocation.setCheckMarkDrawable(mContext.getResources()
+                    .getDrawable(R.drawable.ic_check_box_black_24dp));
+        }
     }
 
     @Override
@@ -49,23 +61,36 @@ public class AlumniLocationAdapter extends RecyclerView.Adapter<AlumniLocationAd
         @BindView(R.id.ctvAlumniLocation)
         CheckedTextView ctvAlumniLocation;
 
-        public AlumniLocationViewHolder(View itemView) {
+         AlumniLocationViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
 
             ctvAlumniLocation.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    CheckedTextView ctv= (CheckedTextView) v;
-                    if (ctv.isChecked()) {
-                        ctv.setCheckMarkDrawable(mContext.getResources()
+
+                    //wherever the click be, set the last checked position false if it's there
+                    if(mFilterAlumniFragment.isLocationPreferenceChecked()) {
+                        AlumniLocationViewHolder viewHolder = (AlumniLocationViewHolder)
+                                mRecyclerView.findViewHolderForAdapterPosition(mPositionLastChecked);
+                        viewHolder.ctvAlumniLocation.setSelected(false);
+                        viewHolder.ctvAlumniLocation.setCheckMarkDrawable(mContext.getResources()
                                 .getDrawable(R.drawable.ic_check_box_outline_blank_black_24dp));
-                    } else {
+                    }
+
+                    //Clicked on  somewhere else or no checks
+                    if (!mFilterAlumniFragment.isLocationPreferenceChecked()
+                            || getAdapterPosition() != mPositionLastChecked) {
+                        CheckedTextView ctv = (CheckedTextView) v;
                         ctv.setCheckMarkDrawable(mContext.getResources()
                                 .getDrawable(R.drawable.ic_check_box_black_24dp));
-                        mPositionLastChecked= getAdapterPosition();
+                        mPositionLastChecked = getAdapterPosition();
+                        mFilterAlumniFragment.setmLocationCheckedPosition(mPositionLastChecked);
+                        mFilterAlumniFragment.setLocationPreferenceChecked(true);
+                        ctv.toggle();
+                    }else {
+                        mFilterAlumniFragment.setLocationPreferenceChecked(false);
                     }
-                    ctv.toggle();
                 }
             });
         }
