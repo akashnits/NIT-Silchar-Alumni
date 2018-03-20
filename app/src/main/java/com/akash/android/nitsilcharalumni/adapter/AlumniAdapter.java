@@ -2,11 +2,13 @@ package com.akash.android.nitsilcharalumni.adapter;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -25,6 +27,7 @@ import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.Semaphore;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -32,7 +35,7 @@ import butterknife.ButterKnife;
 import static com.akash.android.nitsilcharalumni.ui.alumni.AlumniFragment.LIMIT;
 
 
-public class AlumniAdapter extends RecyclerView.Adapter<AlumniAdapter.AlumniViewHolder> {
+public class AlumniAdapter extends RecyclerView.Adapter<AlumniAdapter.AlumniViewHolder> implements Filterable {
 
     private Context mContext;
     private OnAlumniClickHandler mHandler;
@@ -40,9 +43,16 @@ public class AlumniAdapter extends RecyclerView.Adapter<AlumniAdapter.AlumniView
     private FirebaseFirestore mFirestore;
     private DocumentSnapshot mLastVisible= null;
     private int mLastDocumentSnapshotSize;
+    private AlumniLocationFilter mAlumniLocationFilter;
 
     public interface OnAlumniClickHandler{
         void onAlumniClicked(String email, View view);
+    }
+
+    public AlumniAdapter(Context mContext) {
+        this.mContext = mContext;
+        mAlumniList = new ArrayList<>();
+        mFirestore= FirebaseFirestore.getInstance();
     }
 
     public AlumniAdapter(Context mContext, OnAlumniClickHandler mHandler) {
@@ -146,10 +156,19 @@ public class AlumniAdapter extends RecyclerView.Adapter<AlumniAdapter.AlumniView
         return mAlumniList;
     }
 
+    @Override
+    public Filter getFilter() {
+        if (mAlumniLocationFilter == null) {
+            mAlumniLocationFilter = new AlumniLocationFilter();
+        }
+        return mAlumniLocationFilter;
+    }
+
     class AlumniLocationFilter extends Filter {
         @Override
-        protected FilterResults performFiltering(CharSequence constraint) {
-            FilterResults filterResults= new FilterResults();
+        protected FilterResults performFiltering(final CharSequence constraint) {
+            final FilterResults filterResults= new FilterResults();
+            final Semaphore s = new Semaphore(0);
 
             if(constraint != null && constraint.length() > 0){
                 final ArrayList<User> filterList= new ArrayList<User>();
@@ -168,6 +187,7 @@ public class AlumniAdapter extends RecyclerView.Adapter<AlumniAdapter.AlumniView
                                     mLastDocumentSnapshotSize = documentSnapshots.size();
                                     for (DocumentSnapshot documentSnapshot : documentSnapshots)
                                         filterList.add(documentSnapshot.toObject(User.class));
+                                    s.release();
                                 } else {
                                     Toast.makeText(mContext, "Nothing found", Toast.LENGTH_SHORT).show();
                                 }
@@ -178,21 +198,24 @@ public class AlumniAdapter extends RecyclerView.Adapter<AlumniAdapter.AlumniView
                             public void onFailure(@NonNull Exception e) {
                                 e.printStackTrace();
                                 Toast.makeText(mContext, "Failed to Load data", Toast.LENGTH_SHORT).show();
+                                s.release();
                             }
                         });
-                filterResults.count = filterList.size();
-                filterResults.values = filterList;
-
-            }else {
-                filterResults.count= mAlumniList.size();
-                filterResults.values= mAlumniList;
+            }
+            try {
+                s.acquire();
+            }catch (Exception e){
+                e.printStackTrace();
             }
             return filterResults;
         }
 
         @Override
         protected void publishResults(CharSequence constraint, FilterResults results) {
-            addAll((ArrayList<User>) results.values);
+            if(results != null && results.count != 0) {
+                mAlumniList = ((ArrayList<User>) results.values);
+                notifyDataSetChanged();
+            }
         }
     }
 }

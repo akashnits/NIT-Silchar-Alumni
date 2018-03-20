@@ -19,6 +19,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.akash.android.nitsilcharalumni.R;
+import com.akash.android.nitsilcharalumni.adapter.AlumniAdapter;
 import com.akash.android.nitsilcharalumni.adapter.AlumniLocationAdapter;
 
 import butterknife.BindView;
@@ -106,6 +107,16 @@ public class FilterAlumniFragment extends Fragment {
                 showAlumniLocationAlertDialog();
                 break;
             case R.id.btFilterApply:
+                String[] array;
+                String constraint = null;
+                if (isLocationPreferenceChecked()) {
+                    array = getResources().getStringArray(R.array.location);
+                    constraint = array[mLocationCheckedPosition];
+                }
+                AlumniAdapter alumniAdapter = new AlumniAdapter(getContext());
+                alumniAdapter.getFilter().filter(constraint);
+                AlumniFragment.isFilterApplied = true;
+                getFragmentManager().popBackStackImmediate();
                 break;
         }
     }
@@ -120,22 +131,25 @@ public class FilterAlumniFragment extends Fragment {
         builder.setView(content);
         builder.setPositiveButton("DONE", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
-                if(isLocationPreferenceChecked())
+                if (isLocationPreferenceChecked()) {
                     btFilterLocation.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
-                else
+                    btFilterApply.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+                } else {
                     btFilterLocation.setBackgroundColor(getResources().getColor(android.R.color.white));
+                    btFilterApply.setBackgroundColor(getResources().getColor(android.R.color.white));
+                }
             }
         });
 
         builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
-                if(isLocationPreferenceChecked())
+                if (isLocationPreferenceChecked())
                     setLocationPreferenceChecked(false);
                 dialog.dismiss();
             }
         });
 
-        RecyclerView rvAlumniLocation= content.findViewById(R.id.rvAlumniLocation);
+        RecyclerView rvAlumniLocation = content.findViewById(R.id.rvAlumniLocation);
         LinearLayoutManager lm = new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false);
         rvAlumniLocation.setLayoutManager(lm);
         rvAlumniLocation.hasFixedSize();
@@ -164,6 +178,6 @@ public class FilterAlumniFragment extends Fragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        isLocationPreferenceChecked= false;
+        isLocationPreferenceChecked = false;
     }
 }

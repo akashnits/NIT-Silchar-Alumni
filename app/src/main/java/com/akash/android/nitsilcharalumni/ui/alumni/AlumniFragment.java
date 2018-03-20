@@ -86,6 +86,7 @@ public class AlumniFragment extends Fragment implements AlumniAdapter.OnAlumniCl
     private User[] mInitialArray;
     private SearchView mSearchView;
     private String mSearchString;
+    public static boolean isFilterApplied;
 
     public AlumniFragment() {
         // Required empty public constructor
@@ -119,47 +120,47 @@ public class AlumniFragment extends Fragment implements AlumniAdapter.OnAlumniCl
 
         ((AppCompatActivity) getActivity()).setSupportActionBar(toolbarAlumni);
         setupDrawer();
+        if (!isFilterApplied) {
+            initializeRecyclerView();
+            if (savedInstanceState == null) {
+                pbAlumniFragment.setVisibility(View.VISIBLE);
+                isLoading = true;
 
-        //first time load
-        LinearLayoutManager lm = new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false);
-        rvAlumni.setLayoutManager(lm);
-        rvAlumni.hasFixedSize();
-        mAlumniAdapter = new AlumniAdapter(mContext, this);
-        rvAlumni.setAdapter(mAlumniAdapter);
-
-        if (savedInstanceState == null) {
-            pbAlumniFragment.setVisibility(View.VISIBLE);
-            isLoading = true;
-
-            final List<User> newAlumni = new ArrayList<>();
-            mFirestore.collection(Constants.USER_COLLECTION)
-                    .whereEqualTo("mTypeOfUser", "Alumni")
-                    .orderBy("mEmail")
-                    .limit(LIMIT)
-                    .get()
-                    .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                        @Override
-                        public void onSuccess(QuerySnapshot documentSnapshots) {
-                            mLastVisible = documentSnapshots.getDocuments()
-                                    .get(documentSnapshots.size() - 1);
-                            mLastDocumentSnapshotSize = documentSnapshots.size();
-                            for (DocumentSnapshot documentSnapshot : documentSnapshots)
-                                newAlumni.add(documentSnapshot.toObject(User.class));
-                            mAlumniAdapter.addAll(newAlumni);
-                            if (pbAlumniFragment != null)
-                                pbAlumniFragment.setVisibility(View.INVISIBLE);
-                            isLoading = false;
-                        }
-                    })
-                    .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            Toast.makeText(mContext, "Failed to Load data", Toast.LENGTH_SHORT).show();
-                            if (pbAlumniFragment != null)
-                                pbAlumniFragment.setVisibility(View.INVISIBLE);
-                            isLoading = false;
-                        }
-                    });
+                final List<User> newAlumni = new ArrayList<>();
+                mFirestore.collection(Constants.USER_COLLECTION)
+                        .whereEqualTo("mTypeOfUser", "Alumni")
+                        .orderBy("mEmail")
+                        .limit(LIMIT)
+                        .get()
+                        .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                            @Override
+                            public void onSuccess(QuerySnapshot documentSnapshots) {
+                                mLastVisible = documentSnapshots.getDocuments()
+                                        .get(documentSnapshots.size() - 1);
+                                mLastDocumentSnapshotSize = documentSnapshots.size();
+                                for (DocumentSnapshot documentSnapshot : documentSnapshots)
+                                    newAlumni.add(documentSnapshot.toObject(User.class));
+                                mAlumniAdapter.addAll(newAlumni);
+                                if (pbAlumniFragment != null)
+                                    pbAlumniFragment.setVisibility(View.INVISIBLE);
+                                isLoading = false;
+                            }
+                        })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Toast.makeText(mContext, "Failed to Load data", Toast.LENGTH_SHORT).show();
+                                if (pbAlumniFragment != null)
+                                    pbAlumniFragment.setVisibility(View.INVISIBLE);
+                                isLoading = false;
+                            }
+                        });
+            }
+        }else {
+            isFilterApplied= false;
+            LinearLayoutManager lm = new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false);
+            rvAlumni.setLayoutManager(lm);
+            rvAlumni.hasFixedSize();
         }
 
         rvAlumni.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -196,7 +197,7 @@ public class AlumniFragment extends Fragment implements AlumniAdapter.OnAlumniCl
     }
 
     public void onAlumniClicked(String email, View view) {
-        Bundle b= new Bundle();
+        Bundle b = new Bundle();
         b.putString("email", email);
         ((MainActivity) getActivity()).commitAlumniDetailsFragment(b);
     }
@@ -215,7 +216,7 @@ public class AlumniFragment extends Fragment implements AlumniAdapter.OnAlumniCl
                 .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                     @Override
                     public void onSuccess(QuerySnapshot documentSnapshots) {
-                        if(pbAlumniFragment != null)
+                        if (pbAlumniFragment != null)
                             pbAlumniFragment.setVisibility(View.INVISIBLE);
                         isLoading = false;
                         if (!documentSnapshots.isEmpty()) {
@@ -234,7 +235,7 @@ public class AlumniFragment extends Fragment implements AlumniAdapter.OnAlumniCl
                     @Override
                     public void onFailure(@NonNull Exception e) {
                         Toast.makeText(mContext, "Failed to Load data", Toast.LENGTH_SHORT).show();
-                        if(pbAlumniFragment != null)
+                        if (pbAlumniFragment != null)
                             pbAlumniFragment.setVisibility(View.INVISIBLE);
                         isLoading = false;
                     }
@@ -248,9 +249,9 @@ public class AlumniFragment extends Fragment implements AlumniAdapter.OnAlumniCl
             List<User> alumniList = savedInstanceState.getParcelableArrayList("alumni");
             mAlumniAdapter.addAll(alumniList);
             Parcelable savedRecyclerLayoutState = savedInstanceState.getParcelable("position");
-            if(rvAlumni != null)
+            if (rvAlumni != null)
                 rvAlumni.getLayoutManager().onRestoreInstanceState(savedRecyclerLayoutState);
-            mSearchString= savedInstanceState.getString("searchAlumni");
+            mSearchString = savedInstanceState.getString("searchAlumni");
         }
     }
 
@@ -259,9 +260,9 @@ public class AlumniFragment extends Fragment implements AlumniAdapter.OnAlumniCl
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putParcelableArrayList("alumni", mAlumniAdapter.getmAlumniList());
-        if(rvAlumni != null)
+        if (rvAlumni != null)
             outState.putParcelable("position", rvAlumni.getLayoutManager().onSaveInstanceState());
-        if(!TextUtils.isEmpty(mSearchView.getQuery()))
+        if (!TextUtils.isEmpty(mSearchView.getQuery()))
             outState.putString("searchAlumni", mSearchView.getQuery().toString());
     }
 
@@ -281,7 +282,7 @@ public class AlumniFragment extends Fragment implements AlumniAdapter.OnAlumniCl
             searchItem.expandActionView();
             mSearchView.setQuery(mSearchString, true);
             mSearchView.clearFocus();
-            mSearchView.setMaxWidth( Integer.MAX_VALUE );
+            mSearchView.setMaxWidth(Integer.MAX_VALUE);
             menu.findItem(R.id.filter).setVisible(false);
         }
 
@@ -302,11 +303,11 @@ public class AlumniFragment extends Fragment implements AlumniAdapter.OnAlumniCl
                                 @Override
                                 public void onSuccess(QuerySnapshot documentSnapshots) {
                                     if (documentSnapshots != null) {
-                                        for (DocumentSnapshot documentSnapshot : documentSnapshots){
-                                            User alumni= documentSnapshot.toObject(User.class);
-                                            String name= alumni.getmName();
+                                        for (DocumentSnapshot documentSnapshot : documentSnapshots) {
+                                            User alumni = documentSnapshot.toObject(User.class);
+                                            String name = alumni.getmName();
 
-                                            if(name.toLowerCase().contains(newText.toLowerCase())){
+                                            if (name.toLowerCase().contains(newText.toLowerCase())) {
                                                 searchedAlumni.add(alumni);
                                             }
                                         }
@@ -334,7 +335,7 @@ public class AlumniFragment extends Fragment implements AlumniAdapter.OnAlumniCl
             public boolean onMenuItemActionExpand(MenuItem item) {
                 setItemsVisibility(menu, searchItem, false);
                 //save the current list
-                List<User> initialAlumniList= mAlumniAdapter.getmAlumniList();
+                List<User> initialAlumniList = mAlumniAdapter.getmAlumniList();
                 mInitialArray = initialAlumniList.toArray(new User[initialAlumniList.size()]);
                 return true;
             }
@@ -342,8 +343,8 @@ public class AlumniFragment extends Fragment implements AlumniAdapter.OnAlumniCl
             @Override
             public boolean onMenuItemActionCollapse(MenuItem item) {
                 setItemsVisibility(menu, searchItem, true);
-                List<User> alumniList= mAlumniAdapter.getmAlumniList();
-                int currentSize = alumniList != null ? alumniList.size():0;
+                List<User> alumniList = mAlumniAdapter.getmAlumniList();
+                int currentSize = alumniList != null ? alumniList.size() : 0;
                 //remove the current items
                 mAlumniAdapter.replaceWithInitialList(mInitialArray, currentSize);
                 return true;
@@ -403,5 +404,29 @@ public class AlumniFragment extends Fragment implements AlumniAdapter.OnAlumniCl
     @Override
     public void onClickMenuItemListener() {
         drawerLayoutAlumni.closeDrawers();
+    }
+
+    private void initializeRecyclerView() {
+        LinearLayoutManager lm = new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false);
+        rvAlumni.setLayoutManager(lm);
+        rvAlumni.hasFixedSize();
+        mAlumniAdapter = new AlumniAdapter(mContext, this);
+        rvAlumni.setAdapter(mAlumniAdapter);
+    }
+
+    public boolean isFilterApplied() {
+        return isFilterApplied;
+    }
+
+    public void setFilterApplied(boolean filterApplied) {
+        isFilterApplied = filterApplied;
+    }
+
+    public RecyclerView getRvAlumni() {
+        return rvAlumni;
+    }
+
+    public void setRvAlumni(RecyclerView rvAlumni) {
+        this.rvAlumni = rvAlumni;
     }
 }
