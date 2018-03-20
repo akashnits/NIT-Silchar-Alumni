@@ -1,16 +1,25 @@
 package com.akash.android.nitsilcharalumni.adapter;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Filter;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.akash.android.nitsilcharalumni.R;
 import com.akash.android.nitsilcharalumni.model.User;
+import com.akash.android.nitsilcharalumni.utils.Constants;
 import com.akash.android.nitsilcharalumni.utils.imageUtils.PicassoCircleTransformation;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -20,12 +29,17 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static com.akash.android.nitsilcharalumni.ui.alumni.AlumniFragment.LIMIT;
+
 
 public class AlumniAdapter extends RecyclerView.Adapter<AlumniAdapter.AlumniViewHolder> {
 
     private Context mContext;
     private OnAlumniClickHandler mHandler;
     private ArrayList<User> mAlumniList;
+    private FirebaseFirestore mFirestore;
+    private DocumentSnapshot mLastVisible= null;
+    private int mLastDocumentSnapshotSize;
 
     public interface OnAlumniClickHandler{
         void onAlumniClicked(String email, View view);
@@ -35,6 +49,7 @@ public class AlumniAdapter extends RecyclerView.Adapter<AlumniAdapter.AlumniView
         this.mContext = mContext;
         this.mHandler = mHandler;
         mAlumniList = new ArrayList<>();
+        mFirestore= FirebaseFirestore.getInstance();
     }
 
     @Override
@@ -129,5 +144,55 @@ public class AlumniAdapter extends RecyclerView.Adapter<AlumniAdapter.AlumniView
 
     public ArrayList<User> getmAlumniList() {
         return mAlumniList;
+    }
+
+    class AlumniLocationFilter extends Filter {
+        @Override
+        protected FilterResults performFiltering(CharSequence constraint) {
+            FilterResults filterResults= new FilterResults();
+
+            if(constraint != null && constraint.length() > 0){
+                final ArrayList<User> filterList= new ArrayList<User>();
+                mFirestore.collection(Constants.USER_COLLECTION)
+                        .whereEqualTo("mTypeOfUser", "Alumni")
+                        .orderBy("mEmail")
+                        .limit(LIMIT)
+                        .whereEqualTo("mLocation", constraint.toString())
+                        .get()
+                        .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                            @Override
+                            public void onSuccess(QuerySnapshot documentSnapshots) {
+                                if (documentSnapshots != null && !documentSnapshots.isEmpty()) {
+                                    mLastVisible = documentSnapshots.getDocuments()
+                                            .get(documentSnapshots.size() - 1);
+                                    mLastDocumentSnapshotSize = documentSnapshots.size();
+                                    for (DocumentSnapshot documentSnapshot : documentSnapshots)
+                                        filterList.add(documentSnapshot.toObject(User.class));
+                                } else {
+                                    Toast.makeText(mContext, "Nothing found", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                e.printStackTrace();
+                                Toast.makeText(mContext, "Failed to Load data", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                filterResults.count = filterList.size();
+                filterResults.values = filterList;
+
+            }else {
+                filterResults.count= mAlumniList.size();
+                filterResults.values= mAlumniList;
+            }
+            return filterResults;
+        }
+
+        @Override
+        protected void publishResults(CharSequence constraint, FilterResults results) {
+            addAll((ArrayList<User>) results.values);
+        }
     }
 }

@@ -79,7 +79,7 @@ public class AlumniFragment extends Fragment implements AlumniAdapter.OnAlumniCl
     private Context mContext;
     private FirebaseFirestore mFirestore;
     private DocumentSnapshot mLastVisible = null;
-    private static final long LIMIT = 8;
+    public static final long LIMIT = 8;
     private AlumniAdapter mAlumniAdapter;
     private boolean isLoading;
     private int mLastDocumentSnapshotSize;
