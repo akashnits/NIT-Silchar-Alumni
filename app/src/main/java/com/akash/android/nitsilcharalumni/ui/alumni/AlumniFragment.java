@@ -158,9 +158,6 @@ public class AlumniFragment extends Fragment implements AlumniAdapter.OnAlumniCl
             }
         }else {
             isFilterApplied= false;
-            LinearLayoutManager lm = new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false);
-            rvAlumni.setLayoutManager(lm);
-            rvAlumni.hasFixedSize();
         }
 
         rvAlumni.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -420,13 +417,5 @@ public class AlumniFragment extends Fragment implements AlumniAdapter.OnAlumniCl
 
     public void setFilterApplied(boolean filterApplied) {
         isFilterApplied = filterApplied;
-    }
-
-    public RecyclerView getRvAlumni() {
-        return rvAlumni;
-    }
-
-    public void setRvAlumni(RecyclerView rvAlumni) {
-        this.rvAlumni = rvAlumni;
     }
 }

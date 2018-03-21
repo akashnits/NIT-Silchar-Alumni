@@ -41,25 +41,25 @@ public class AlumniAdapter extends RecyclerView.Adapter<AlumniAdapter.AlumniView
     private OnAlumniClickHandler mHandler;
     private ArrayList<User> mAlumniList;
     private FirebaseFirestore mFirestore;
-    private DocumentSnapshot mLastVisible= null;
+    private DocumentSnapshot mLastVisible = null;
     private int mLastDocumentSnapshotSize;
     private AlumniLocationFilter mAlumniLocationFilter;
 
-    public interface OnAlumniClickHandler{
+    public interface OnAlumniClickHandler {
         void onAlumniClicked(String email, View view);
     }
 
     public AlumniAdapter(Context mContext) {
         this.mContext = mContext;
         mAlumniList = new ArrayList<>();
-        mFirestore= FirebaseFirestore.getInstance();
+        mFirestore = FirebaseFirestore.getInstance();
     }
 
     public AlumniAdapter(Context mContext, OnAlumniClickHandler mHandler) {
         this.mContext = mContext;
         this.mHandler = mHandler;
         mAlumniList = new ArrayList<>();
-        mFirestore= FirebaseFirestore.getInstance();
+        mFirestore = FirebaseFirestore.getInstance();
     }
 
     @Override
@@ -72,8 +72,8 @@ public class AlumniAdapter extends RecyclerView.Adapter<AlumniAdapter.AlumniView
     @Override
     public void onBindViewHolder(AlumniViewHolder holder, int position) {
 
-        User alumni= mAlumniList.get(position);
-        if(alumni != null) {
+        User alumni = mAlumniList.get(position);
+        if (alumni != null) {
             holder.tvName.setText(alumni.getmName());
             holder.tvOrganisationName.setText(alumni.getmOrganisation());
             holder.tvClassOf.setText(String.format("Class of %s,", alumni.getmClassOf()));
@@ -81,12 +81,12 @@ public class AlumniAdapter extends RecyclerView.Adapter<AlumniAdapter.AlumniView
         }
     }
 
-    private void loadProfileImageWithPicasso(String imageUrl, AlumniViewHolder holder){
-        if(imageUrl != null) {
+    private void loadProfileImageWithPicasso(String imageUrl, AlumniViewHolder holder) {
+        if (imageUrl != null) {
             Picasso.with(mContext).load(imageUrl)
                     .transform(new PicassoCircleTransformation())
                     .into(holder.ivAlumniProfileIcon);
-        }else {
+        } else {
             Picasso.with(mContext).load(R.drawable.loading)
                     .transform(new PicassoCircleTransformation())
                     .into(holder.ivAlumniProfileIcon);
@@ -104,7 +104,7 @@ public class AlumniAdapter extends RecyclerView.Adapter<AlumniAdapter.AlumniView
         notifyItemRangeInserted(initialSize, newAlumni.size());
     }
 
-    public void addAsPerSearch(List<User> searchedFeed){
+    public void addAsPerSearch(List<User> searchedFeed) {
         //get the current items
         int currentSize = mAlumniList.size();
         //remove the current items
@@ -117,18 +117,19 @@ public class AlumniAdapter extends RecyclerView.Adapter<AlumniAdapter.AlumniView
         notifyItemRangeInserted(0, mAlumniList.size());
     }
 
-    public void replaceWithInitialList(User[] originalArray, int currentSize){
+    public void replaceWithInitialList(User[] originalArray, int currentSize) {
         mAlumniList.clear();
         mAlumniList.addAll(Arrays.asList(originalArray));
         notifyItemRangeRemoved(0, currentSize);
         notifyItemRangeInserted(0, mAlumniList.size());
     }
 
-    public void setEmptyView(){
-        int currentSize= mAlumniList.size();
+    public void setEmptyView() {
+        int currentSize = mAlumniList.size();
         mAlumniList.clear();
         notifyItemRangeRemoved(0, currentSize);
     }
+
     class AlumniViewHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.ivAlumniProfileIcon)
         ImageView ivAlumniProfileIcon;
@@ -145,7 +146,7 @@ public class AlumniAdapter extends RecyclerView.Adapter<AlumniAdapter.AlumniView
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    String email= mAlumniList.get(getAdapterPosition()).getmEmail();
+                    String email = mAlumniList.get(getAdapterPosition()).getmEmail();
                     mHandler.onAlumniClicked(email, view);
                 }
             });
@@ -167,11 +168,15 @@ public class AlumniAdapter extends RecyclerView.Adapter<AlumniAdapter.AlumniView
     class AlumniLocationFilter extends Filter {
         @Override
         protected FilterResults performFiltering(final CharSequence constraint) {
-            final FilterResults filterResults= new FilterResults();
-            final Semaphore s = new Semaphore(0);
+            //do nothing
+            return null;
+        }
 
-            if(constraint != null && constraint.length() > 0){
-                final ArrayList<User> filterList= new ArrayList<User>();
+        @Override
+        protected void publishResults(CharSequence constraint, FilterResults results) {
+
+            if (constraint != null && constraint.length() > 0) {
+                final ArrayList<User> filterList = new ArrayList<>();
                 mFirestore.collection(Constants.USER_COLLECTION)
                         .whereEqualTo("mTypeOfUser", "Alumni")
                         .orderBy("mEmail")
@@ -187,7 +192,10 @@ public class AlumniAdapter extends RecyclerView.Adapter<AlumniAdapter.AlumniView
                                     mLastDocumentSnapshotSize = documentSnapshots.size();
                                     for (DocumentSnapshot documentSnapshot : documentSnapshots)
                                         filterList.add(documentSnapshot.toObject(User.class));
-                                    s.release();
+                                    if (filterList.size() > 0) {
+                                        mAlumniList = filterList;
+                                        notifyDataSetChanged();
+                                    }
                                 } else {
                                     Toast.makeText(mContext, "Nothing found", Toast.LENGTH_SHORT).show();
                                 }
@@ -198,23 +206,8 @@ public class AlumniAdapter extends RecyclerView.Adapter<AlumniAdapter.AlumniView
                             public void onFailure(@NonNull Exception e) {
                                 e.printStackTrace();
                                 Toast.makeText(mContext, "Failed to Load data", Toast.LENGTH_SHORT).show();
-                                s.release();
                             }
                         });
-            }
-            try {
-                s.acquire();
-            }catch (Exception e){
-                e.printStackTrace();
-            }
-            return filterResults;
-        }
-
-        @Override
-        protected void publishResults(CharSequence constraint, FilterResults results) {
-            if(results != null && results.count != 0) {
-                mAlumniList = ((ArrayList<User>) results.values);
-                notifyDataSetChanged();
             }
         }
     }
