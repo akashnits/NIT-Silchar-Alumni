@@ -193,8 +193,7 @@ public class AlumniAdapter extends RecyclerView.Adapter<AlumniAdapter.AlumniView
                                     for (DocumentSnapshot documentSnapshot : documentSnapshots)
                                         filterList.add(documentSnapshot.toObject(User.class));
                                     if (filterList.size() > 0) {
-                                        mAlumniList = filterList;
-                                        notifyDataSetChanged();
+                                        addAll(filterList);
                                     }
                                 } else {
                                     Toast.makeText(mContext, "Nothing found", Toast.LENGTH_SHORT).show();

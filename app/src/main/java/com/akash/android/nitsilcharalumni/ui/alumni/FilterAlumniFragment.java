@@ -52,6 +52,7 @@ public class FilterAlumniFragment extends Fragment {
     private int mLocationCheckedPosition;
     private boolean isLocationPreferenceChecked;
     private Context mContext;
+    public static String constraint;
 
     public FilterAlumniFragment() {
         // Required empty public constructor
@@ -109,13 +110,10 @@ public class FilterAlumniFragment extends Fragment {
                 break;
             case R.id.btFilterApply:
                 String[] array;
-                String constraint = null;
                 if (isLocationPreferenceChecked()) {
                     array = getResources().getStringArray(R.array.location);
                     constraint = array[mLocationCheckedPosition];
                 }
-                AlumniAdapter alumniAdapter = new AlumniAdapter(getContext());
-                alumniAdapter.getFilter().filter(constraint);
                 AlumniFragment.isFilterApplied = true;
                 getFragmentManager().popBackStackImmediate();
                 break;
@@ -159,6 +157,7 @@ public class FilterAlumniFragment extends Fragment {
         rvAlumniLocation.setAdapter(alumniAdapter);
         builder.show();
     }
+    
 
     public int getmLocationCheckedPosition() {
         return mLocationCheckedPosition;
