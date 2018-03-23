@@ -17,10 +17,9 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.akash.android.nitsilcharalumni.R;
-import com.akash.android.nitsilcharalumni.adapter.AlumniAdapter;
+import com.akash.android.nitsilcharalumni.adapter.AlumniClassOfAdapter;
 import com.akash.android.nitsilcharalumni.adapter.AlumniLocationAdapter;
 
 import butterknife.BindView;
@@ -51,8 +50,10 @@ public class FilterAlumniFragment extends Fragment {
 
     private int mLocationCheckedPosition;
     private boolean isLocationPreferenceChecked;
+    private boolean isClassOfPreferenceChecked;
     private Context mContext;
-    public static String constraint;
+    public static String locationConstraint;
+    public static String classOfConstraint;
 
     public FilterAlumniFragment() {
         // Required empty public constructor
@@ -104,15 +105,17 @@ public class FilterAlumniFragment extends Fragment {
                 getFragmentManager().popBackStackImmediate();
                 break;
             case R.id.btFilterClassOf:
+                showClassOfAlertDialog();
                 break;
             case R.id.btFilterLocation:
                 showAlumniLocationAlertDialog();
                 break;
             case R.id.btFilterApply:
-                String[] array;
                 if (isLocationPreferenceChecked()) {
-                    array = getResources().getStringArray(R.array.location);
-                    constraint = array[mLocationCheckedPosition];
+                    locationConstraint= getResources().getStringArray(R.array.location)[mLocationCheckedPosition];
+                }
+                if(isClassOfPreferenceChecked()){
+
                 }
                 AlumniFragment.isFilterApplied = true;
                 getFragmentManager().popBackStackImmediate();
@@ -135,7 +138,8 @@ public class FilterAlumniFragment extends Fragment {
                     btFilterApply.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
                 } else {
                     btFilterLocation.setBackgroundColor(getResources().getColor(android.R.color.white));
-                    btFilterApply.setBackgroundColor(getResources().getColor(android.R.color.white));
+                    if (!isClassOfPreferenceChecked())
+                        btFilterApply.setBackgroundColor(getResources().getColor(android.R.color.white));
                 }
             }
         });
@@ -157,7 +161,46 @@ public class FilterAlumniFragment extends Fragment {
         rvAlumniLocation.setAdapter(alumniAdapter);
         builder.show();
     }
-    
+
+    private void showClassOfAlertDialog() {
+        final AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+        builder.setTitle("Choose a graduation year");
+
+        LayoutInflater inflater = LayoutInflater.from(mContext);
+        View content = inflater.inflate(R.layout.dialog_select_alumni_classof, null);
+
+        builder.setView(content);
+        builder.setPositiveButton("DONE", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                if (isClassOfPreferenceChecked()) {
+                    btFilterClassOf.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+                    btFilterApply.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+                } else {
+                    btFilterClassOf.setBackgroundColor(getResources().getColor(android.R.color.white));
+                    if (!isLocationPreferenceChecked())
+                        btFilterApply.setBackgroundColor(getResources().getColor(android.R.color.white));
+                }
+            }
+        });
+
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                if (isClassOfPreferenceChecked())
+                    setClassOfPreferenceChecked(false);
+                dialog.dismiss();
+            }
+        });
+
+        RecyclerView rvAlumniClassOf = content.findViewById(R.id.rvAlumniClassOf);
+        LinearLayoutManager lm = new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false);
+        rvAlumniClassOf.setLayoutManager(lm);
+        rvAlumniClassOf.hasFixedSize();
+        AlumniClassOfAdapter alumniClassOfAdapter = new AlumniClassOfAdapter(mContext,
+                getFragmentManager(), rvAlumniClassOf);
+        rvAlumniClassOf.setAdapter(alumniClassOfAdapter);
+        builder.show();
+    }
+
 
     public int getmLocationCheckedPosition() {
         return mLocationCheckedPosition;
@@ -173,6 +216,14 @@ public class FilterAlumniFragment extends Fragment {
 
     public void setLocationPreferenceChecked(boolean locationPreferenceChecked) {
         isLocationPreferenceChecked = locationPreferenceChecked;
+    }
+
+    public boolean isClassOfPreferenceChecked() {
+        return isClassOfPreferenceChecked;
+    }
+
+    public void setClassOfPreferenceChecked(boolean classOfPreferenceChecked) {
+        isClassOfPreferenceChecked = classOfPreferenceChecked;
     }
 
     @Override

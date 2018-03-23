@@ -50,7 +50,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
-import static com.akash.android.nitsilcharalumni.ui.alumni.FilterAlumniFragment.constraint;
+import static com.akash.android.nitsilcharalumni.ui.alumni.FilterAlumniFragment.locationConstraint;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -161,7 +161,7 @@ public class AlumniFragment extends Fragment implements AlumniAdapter.OnAlumniCl
             }
         } else {
             isFilterApplied = false;
-            mAlumniAdapter.getFilter().filter(constraint);
+            mAlumniAdapter.getFilter().filter(locationConstraint);
         }
 
         rvAlumni.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -243,7 +243,7 @@ public class AlumniFragment extends Fragment implements AlumniAdapter.OnAlumniCl
                         }
                     });
         } else {
-            mAlumniAdapter.getFilter().filter(constraint);
+            mAlumniAdapter.getFilter().filter(locationConstraint);
         }
     }
 
