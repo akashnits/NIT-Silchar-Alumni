@@ -49,6 +49,7 @@ public class FilterAlumniFragment extends Fragment {
     Unbinder unbinder;
 
     private int mLocationCheckedPosition;
+    private int mAlumniClassOfCheckedPoistion;
     private boolean isLocationPreferenceChecked;
     private boolean isClassOfPreferenceChecked;
     private Context mContext;
@@ -68,6 +69,8 @@ public class FilterAlumniFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
+        locationConstraint= null;
+        classOfConstraint= null;
     }
 
     @Override
@@ -115,9 +118,12 @@ public class FilterAlumniFragment extends Fragment {
                     locationConstraint= getResources().getStringArray(R.array.location)[mLocationCheckedPosition];
                 }
                 if(isClassOfPreferenceChecked()){
-
+                    classOfConstraint= getResources().getStringArray(R.array.alumniClassOf)[mAlumniClassOfCheckedPoistion];
                 }
-                AlumniFragment.isFilterApplied = true;
+                if(isLocationPreferenceChecked() || isClassOfPreferenceChecked())
+                    AlumniFragment.isFilterApplied = true;
+                else
+                    AlumniFragment.isFilterApplied = false;
                 getFragmentManager().popBackStackImmediate();
                 break;
         }
@@ -226,9 +232,18 @@ public class FilterAlumniFragment extends Fragment {
         isClassOfPreferenceChecked = classOfPreferenceChecked;
     }
 
+    public int getmAlumniClassOfCheckedPoistion() {
+        return mAlumniClassOfCheckedPoistion;
+    }
+
+    public void setmAlumniClassOfCheckedPoistion(int mAlumniClassOfCheckedPoistion) {
+        this.mAlumniClassOfCheckedPoistion = mAlumniClassOfCheckedPoistion;
+    }
+
     @Override
     public void onDestroy() {
         super.onDestroy();
         isLocationPreferenceChecked = false;
+        isClassOfPreferenceChecked = false;
     }
 }

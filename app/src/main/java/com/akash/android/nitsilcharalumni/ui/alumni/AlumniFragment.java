@@ -16,6 +16,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -50,6 +51,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
+import static com.akash.android.nitsilcharalumni.ui.alumni.FilterAlumniFragment.classOfConstraint;
 import static com.akash.android.nitsilcharalumni.ui.alumni.FilterAlumniFragment.locationConstraint;
 
 /**
@@ -78,6 +80,7 @@ public class AlumniFragment extends Fragment implements AlumniAdapter.OnAlumniCl
     ProgressBar pbAlumniFragment;
 
 
+    public static final String TAG= AlumniFragment.class.getSimpleName();
     private Context mContext;
     private FirebaseFirestore mFirestore;
     private DocumentSnapshot mLastVisible = null;
@@ -160,8 +163,19 @@ public class AlumniFragment extends Fragment implements AlumniAdapter.OnAlumniCl
                         });
             }
         } else {
-            isFilterApplied = false;
-            mAlumniAdapter.getFilter().filter(locationConstraint);
+            if(locationConstraint != null && classOfConstraint!= null)
+            {
+                //apply both the filters
+                List<String> constraintList= new ArrayList<>();
+                constraintList.add(locationConstraint);
+                constraintList.add(classOfConstraint);
+                String combinedFilter= TextUtils.join(",",  constraintList);
+                mAlumniAdapter.getFilter().filter(combinedFilter);
+            }else if(locationConstraint != null){
+                mAlumniAdapter.getFilter().filter(locationConstraint);
+            }else if(classOfConstraint != null){
+                mAlumniAdapter.getFilter().filter(classOfConstraint);
+            }
         }
 
         rvAlumni.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -243,7 +257,19 @@ public class AlumniFragment extends Fragment implements AlumniAdapter.OnAlumniCl
                         }
                     });
         } else {
-            mAlumniAdapter.getFilter().filter(locationConstraint);
+            if(locationConstraint != null && classOfConstraint!= null)
+            {
+                //apply both the filters
+                List<String> constraintList= new ArrayList<>();
+                constraintList.add(locationConstraint);
+                constraintList.add(classOfConstraint);
+                String combinedFilter= TextUtils.join(",",  constraintList);
+                mAlumniAdapter.getFilter().filter(combinedFilter);
+            }else if(locationConstraint != null){
+                mAlumniAdapter.getFilter().filter(locationConstraint);
+            }else if(classOfConstraint != null){
+                mAlumniAdapter.getFilter().filter(classOfConstraint);
+            }
         }
     }
 

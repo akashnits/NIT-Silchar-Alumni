@@ -87,7 +87,7 @@ public class AlumniClassOfAdapter extends RecyclerView.Adapter<AlumniClassOfAdap
                         ctv.setCheckMarkDrawable(mContext.getResources()
                                 .getDrawable(R.drawable.ic_check_box_black_24dp));
                         mPositionLastChecked = getAdapterPosition();
-                        mFilterAlumniFragment.setmLocationCheckedPosition(mPositionLastChecked);
+                        mFilterAlumniFragment.setmAlumniClassOfCheckedPoistion(mPositionLastChecked);
                         mFilterAlumniFragment.setClassOfPreferenceChecked(true);
                         ctv.toggle();
                     }else {

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,6 +34,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import static com.akash.android.nitsilcharalumni.ui.alumni.AlumniFragment.LIMIT;
+import static com.akash.android.nitsilcharalumni.ui.alumni.FilterAlumniFragment.classOfConstraint;
+import static com.akash.android.nitsilcharalumni.ui.alumni.FilterAlumniFragment.locationConstraint;
 
 
 public class AlumniAdapter extends RecyclerView.Adapter<AlumniAdapter.AlumniViewHolder> implements Filterable {
@@ -177,37 +180,107 @@ public class AlumniAdapter extends RecyclerView.Adapter<AlumniAdapter.AlumniView
 
             if (constraint != null && constraint.length() > 0) {
                 final ArrayList<User> filterList = new ArrayList<>();
-                mFirestore.collection(Constants.USER_COLLECTION)
-                        .whereEqualTo("mTypeOfUser", "Alumni")
-                        .orderBy("mEmail")
-                        .limit(LIMIT)
-                        .whereEqualTo("mLocation", constraint.toString())
-                        .get()
-                        .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                            @Override
-                            public void onSuccess(QuerySnapshot documentSnapshots) {
-                                if (documentSnapshots != null && !documentSnapshots.isEmpty()) {
-                                    mLastVisible = documentSnapshots.getDocuments()
-                                            .get(documentSnapshots.size() - 1);
-                                    mLastDocumentSnapshotSize = documentSnapshots.size();
-                                    for (DocumentSnapshot documentSnapshot : documentSnapshots)
-                                        filterList.add(documentSnapshot.toObject(User.class));
-                                    if (filterList.size() > 0) {
-                                        addAll(filterList);
+                if (locationConstraint != null && classOfConstraint != null) {
+                    String[] constraints= constraint.toString().split(",");
+                    mFirestore.collection(Constants.USER_COLLECTION)
+                            .whereEqualTo("mTypeOfUser", "Alumni")
+                            .orderBy("mEmail")
+                            .startAfter(mLastVisible)
+                            .limit(LIMIT)
+                            .whereEqualTo("mLocation", constraints[0])
+                            .whereEqualTo("mClassOf", constraints[1])
+                            .get()
+                            .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                                @Override
+                                public void onSuccess(QuerySnapshot documentSnapshots) {
+                                    if (documentSnapshots != null && !documentSnapshots.isEmpty()) {
+                                        mLastVisible = documentSnapshots.getDocuments()
+                                                .get(documentSnapshots.size() - 1);
+                                        mLastDocumentSnapshotSize = documentSnapshots.size();
+                                        for (DocumentSnapshot documentSnapshot : documentSnapshots)
+                                            filterList.add(documentSnapshot.toObject(User.class));
+                                        if (filterList.size() > 0) {
+                                            addAll(filterList);
+                                        }
+                                    } else {
+                                        Toast.makeText(mContext, "Nothing found", Toast.LENGTH_SHORT).show();
                                     }
-                                } else {
-                                    Toast.makeText(mContext, "Nothing found", Toast.LENGTH_SHORT).show();
                                 }
-                            }
-                        })
-                        .addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                e.printStackTrace();
-                                Toast.makeText(mContext, "Failed to Load data", Toast.LENGTH_SHORT).show();
-                            }
-                        });
+                            })
+                            .addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    e.printStackTrace();
+                                    Toast.makeText(mContext, "Failed to Load data", Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                }
+                else if (locationConstraint != null) {
+                        mFirestore.collection(Constants.USER_COLLECTION)
+                                .whereEqualTo("mTypeOfUser", "Alumni")
+                                .orderBy("mEmail")
+                                .startAfter(mLastVisible)
+                                .limit(LIMIT)
+                                .whereEqualTo("mLocation", constraint.toString())
+                                .get()
+                                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                                    @Override
+                                    public void onSuccess(QuerySnapshot documentSnapshots) {
+                                        if (documentSnapshots != null && !documentSnapshots.isEmpty()) {
+                                            mLastVisible = documentSnapshots.getDocuments()
+                                                    .get(documentSnapshots.size() - 1);
+                                            mLastDocumentSnapshotSize = documentSnapshots.size();
+                                            for (DocumentSnapshot documentSnapshot : documentSnapshots)
+                                                filterList.add(documentSnapshot.toObject(User.class));
+                                            if (filterList.size() > 0) {
+                                                addAll(filterList);
+                                            }
+                                        } else {
+                                            Toast.makeText(mContext, "Nothing found", Toast.LENGTH_SHORT).show();
+                                        }
+                                    }
+                                })
+                                .addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        e.printStackTrace();
+                                        Toast.makeText(mContext, "Failed to Load data", Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+                    } else if (classOfConstraint != null) {
+                        mFirestore.collection(Constants.USER_COLLECTION)
+                                .whereEqualTo("mTypeOfUser", "Alumni")
+                                .orderBy("mEmail")
+                                .startAfter(mLastVisible)
+                                .limit(LIMIT)
+                                .whereEqualTo("mClassOf", constraint.toString())
+                                .get()
+                                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                                    @Override
+                                    public void onSuccess(QuerySnapshot documentSnapshots) {
+                                        if (documentSnapshots != null && !documentSnapshots.isEmpty()) {
+                                            mLastVisible = documentSnapshots.getDocuments()
+                                                    .get(documentSnapshots.size() - 1);
+                                            mLastDocumentSnapshotSize = documentSnapshots.size();
+                                            for (DocumentSnapshot documentSnapshot : documentSnapshots)
+                                                filterList.add(documentSnapshot.toObject(User.class));
+                                            if (filterList.size() > 0) {
+                                                addAll(filterList);
+                                            }
+                                        } else {
+                                            Toast.makeText(mContext, "Nothing found", Toast.LENGTH_SHORT).show();
+                                        }
+                                    }
+                                })
+                                .addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        e.printStackTrace();
+                                        Toast.makeText(mContext, "Failed to Load data", Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+                    }
+                }
             }
         }
     }
-}
