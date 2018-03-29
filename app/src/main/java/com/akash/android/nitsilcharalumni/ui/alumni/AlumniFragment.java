@@ -162,20 +162,19 @@ public class AlumniFragment extends Fragment implements AlumniAdapter.OnAlumniCl
                             }
                         });
             }
-        } else {
-            if(locationConstraint != null && classOfConstraint!= null)
-            {
-                //apply both the filters
-                List<String> constraintList= new ArrayList<>();
-                constraintList.add(locationConstraint);
-                constraintList.add(classOfConstraint);
-                String combinedFilter= TextUtils.join(",",  constraintList);
-                mAlumniAdapter.getFilter().filter(combinedFilter);
-            }else if(locationConstraint != null){
-                mAlumniAdapter.getFilter().filter(locationConstraint);
-            }else if(classOfConstraint != null){
-                mAlumniAdapter.getFilter().filter(classOfConstraint);
-            }
+        } else if(savedInstanceState == null){
+                if (locationConstraint != null && classOfConstraint != null) {
+                    //apply both the filters
+                    List<String> constraintList = new ArrayList<>();
+                    constraintList.add(locationConstraint);
+                    constraintList.add(classOfConstraint);
+                    String combinedFilter = TextUtils.join(",", constraintList);
+                    mAlumniAdapter.getFilter().filter(combinedFilter);
+                } else if (locationConstraint != null) {
+                    mAlumniAdapter.getFilter().filter(locationConstraint);
+                } else if (classOfConstraint != null) {
+                    mAlumniAdapter.getFilter().filter(classOfConstraint);
+                }
         }
 
         rvAlumni.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -441,7 +440,7 @@ public class AlumniFragment extends Fragment implements AlumniAdapter.OnAlumniCl
         LinearLayoutManager lm = new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false);
         rvAlumni.setLayoutManager(lm);
         rvAlumni.hasFixedSize();
-        mAlumniAdapter = new AlumniAdapter(mContext, this);
+        mAlumniAdapter = new AlumniAdapter(mContext, this, this);
         rvAlumni.setAdapter(mAlumniAdapter);
     }
 
@@ -451,5 +450,29 @@ public class AlumniFragment extends Fragment implements AlumniAdapter.OnAlumniCl
 
     public void setFilterApplied(boolean filterApplied) {
         isFilterApplied = filterApplied;
+    }
+
+    public int getmLastDocumentSnapshotSize() {
+        return mLastDocumentSnapshotSize;
+    }
+
+    public void setmLastDocumentSnapshotSize(int mLastDocumentSnapshotSize) {
+        this.mLastDocumentSnapshotSize = mLastDocumentSnapshotSize;
+    }
+
+    public boolean isLoading() {
+        return isLoading;
+    }
+
+    public void setLoading(boolean loading) {
+        isLoading = loading;
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        isFilterApplied= false;
+        locationConstraint= null;
+        classOfConstraint= null;
     }
 }

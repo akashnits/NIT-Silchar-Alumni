@@ -69,8 +69,6 @@ public class FilterAlumniFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
-        locationConstraint= null;
-        classOfConstraint= null;
     }
 
     @Override
