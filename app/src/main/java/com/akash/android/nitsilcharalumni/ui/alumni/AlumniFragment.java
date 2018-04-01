@@ -51,8 +51,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
-import static com.akash.android.nitsilcharalumni.ui.alumni.FilterAlumniFragment.classOfConstraint;
-import static com.akash.android.nitsilcharalumni.ui.alumni.FilterAlumniFragment.locationConstraint;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -80,7 +78,7 @@ public class AlumniFragment extends Fragment implements AlumniAdapter.OnAlumniCl
     ProgressBar pbAlumniFragment;
 
 
-    public static final String TAG= AlumniFragment.class.getSimpleName();
+    public static final String TAG = AlumniFragment.class.getSimpleName();
     private Context mContext;
     private FirebaseFirestore mFirestore;
     private DocumentSnapshot mLastVisible = null;
@@ -92,6 +90,9 @@ public class AlumniFragment extends Fragment implements AlumniAdapter.OnAlumniCl
     private SearchView mSearchView;
     private String mSearchString;
     public static boolean isFilterApplied;
+    private String mLocationConstraint;
+    private String mClassConstraint;
+    private MainActivity mMainActivity;
 
     public AlumniFragment() {
         // Required empty public constructor
@@ -122,6 +123,8 @@ public class AlumniFragment extends Fragment implements AlumniAdapter.OnAlumniCl
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        mLocationConstraint= mMainActivity.getmAlumniLocationConstraint();
+        mClassConstraint= mMainActivity.getmAlumniClassOfConstraint();
 
         ((AppCompatActivity) getActivity()).setSupportActionBar(toolbarAlumni);
         setupDrawer();
@@ -162,19 +165,19 @@ public class AlumniFragment extends Fragment implements AlumniAdapter.OnAlumniCl
                             }
                         });
             }
-        } else if(savedInstanceState == null){
-                if (locationConstraint != null && classOfConstraint != null) {
-                    //apply both the filters
-                    List<String> constraintList = new ArrayList<>();
-                    constraintList.add(locationConstraint);
-                    constraintList.add(classOfConstraint);
-                    String combinedFilter = TextUtils.join(",", constraintList);
-                    mAlumniAdapter.getFilter().filter(combinedFilter);
-                } else if (locationConstraint != null) {
-                    mAlumniAdapter.getFilter().filter(locationConstraint);
-                } else if (classOfConstraint != null) {
-                    mAlumniAdapter.getFilter().filter(classOfConstraint);
-                }
+        } else if (savedInstanceState == null) {
+            if (mLocationConstraint != null && mClassConstraint != null) {
+                //apply both the filters
+                List<String> constraintList = new ArrayList<>();
+                constraintList.add(mLocationConstraint);
+                constraintList.add(mClassConstraint);
+                String combinedFilter = TextUtils.join(",", constraintList);
+                mAlumniAdapter.getFilter().filter(combinedFilter);
+            } else if (mLocationConstraint != null) {
+                mAlumniAdapter.getFilter().filter(mLocationConstraint);
+            } else if (mClassConstraint != null) {
+                mAlumniAdapter.getFilter().filter(mClassConstraint);
+            }
         }
 
         rvAlumni.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -202,6 +205,7 @@ public class AlumniFragment extends Fragment implements AlumniAdapter.OnAlumniCl
     public void onAttach(Context context) {
         super.onAttach(context);
         mContext = context;
+        mMainActivity= (MainActivity) getActivity();
     }
 
     @Override
@@ -256,18 +260,17 @@ public class AlumniFragment extends Fragment implements AlumniAdapter.OnAlumniCl
                         }
                     });
         } else {
-            if(locationConstraint != null && classOfConstraint!= null)
-            {
+            if (mLocationConstraint != null && mClassConstraint != null) {
                 //apply both the filters
-                List<String> constraintList= new ArrayList<>();
-                constraintList.add(locationConstraint);
-                constraintList.add(classOfConstraint);
-                String combinedFilter= TextUtils.join(",",  constraintList);
+                List<String> constraintList = new ArrayList<>();
+                constraintList.add(mLocationConstraint);
+                constraintList.add(mClassConstraint);
+                String combinedFilter = TextUtils.join(",", constraintList);
                 mAlumniAdapter.getFilter().filter(combinedFilter);
-            }else if(locationConstraint != null){
-                mAlumniAdapter.getFilter().filter(locationConstraint);
-            }else if(classOfConstraint != null){
-                mAlumniAdapter.getFilter().filter(classOfConstraint);
+            } else if (mLocationConstraint != null) {
+                mAlumniAdapter.getFilter().filter(mLocationConstraint);
+            } else if (mClassConstraint != null) {
+                mAlumniAdapter.getFilter().filter(mClassConstraint);
             }
         }
     }
@@ -275,7 +278,7 @@ public class AlumniFragment extends Fragment implements AlumniAdapter.OnAlumniCl
     @Override
     public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
         super.onViewStateRestored(savedInstanceState);
-        if (savedInstanceState != null) {
+        if (savedInstanceState != null && (AlumniFragment)getFragmentManager().findFragmentByTag("Alumni") != null) {
             List<User> alumniList = savedInstanceState.getParcelableArrayList("alumni");
             mAlumniAdapter.addAll(alumniList);
             Parcelable savedRecyclerLayoutState = savedInstanceState.getParcelable("position");
@@ -289,11 +292,13 @@ public class AlumniFragment extends Fragment implements AlumniAdapter.OnAlumniCl
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putParcelableArrayList("alumni", mAlumniAdapter.getmAlumniList());
-        if (rvAlumni != null)
-            outState.putParcelable("position", rvAlumni.getLayoutManager().onSaveInstanceState());
-        if (!TextUtils.isEmpty(mSearchView.getQuery()))
-            outState.putString("searchAlumni", mSearchView.getQuery().toString());
+        if((AlumniFragment)getFragmentManager().findFragmentByTag("Alumni") != null) {
+            outState.putParcelableArrayList("alumni", mAlumniAdapter.getmAlumniList());
+            if (rvAlumni != null)
+                outState.putParcelable("position", rvAlumni.getLayoutManager().onSaveInstanceState());
+            if (!TextUtils.isEmpty(mSearchView.getQuery()))
+                outState.putString("searchAlumni", mSearchView.getQuery().toString());
+        }
     }
 
 
@@ -471,8 +476,10 @@ public class AlumniFragment extends Fragment implements AlumniAdapter.OnAlumniCl
     @Override
     public void onDestroy() {
         super.onDestroy();
-        isFilterApplied= false;
-        locationConstraint= null;
-        classOfConstraint= null;
+        isFilterApplied = false;
+        mMainActivity.setClassOfPreferenceChecked(false);
+        mMainActivity.setLocationPreferenceChecked(false);
+        mMainActivity.setmAlumniLocationConstraint(null);
+        mMainActivity.setmAlumniClassOfConstraint(null);
     }
 }

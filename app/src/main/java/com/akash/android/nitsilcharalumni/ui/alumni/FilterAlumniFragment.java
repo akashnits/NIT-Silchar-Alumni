@@ -21,6 +21,7 @@ import android.widget.TextView;
 import com.akash.android.nitsilcharalumni.R;
 import com.akash.android.nitsilcharalumni.adapter.AlumniClassOfAdapter;
 import com.akash.android.nitsilcharalumni.adapter.AlumniLocationAdapter;
+import com.akash.android.nitsilcharalumni.ui.MainActivity;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -50,11 +51,8 @@ public class FilterAlumniFragment extends Fragment {
 
     private int mLocationCheckedPosition;
     private int mAlumniClassOfCheckedPoistion;
-    private boolean isLocationPreferenceChecked;
-    private boolean isClassOfPreferenceChecked;
     private Context mContext;
-    public static String locationConstraint;
-    public static String classOfConstraint;
+    private MainActivity mMainActivity;
 
     public FilterAlumniFragment() {
         // Required empty public constructor
@@ -83,6 +81,60 @@ public class FilterAlumniFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+
+        if(savedInstanceState == null) {
+            String locationConstraint= null;
+            String classOfConstraint= null;
+            if (mMainActivity.getmAlumniLocationConstraint() != null) {
+                locationConstraint = mMainActivity.getmAlumniLocationConstraint();
+                mMainActivity.setLocationPreferenceChecked(true);
+                //find the position of location constraint
+                String[] locations = getResources().getStringArray(R.array.location);
+                for (int i = 0; i < locations.length; i++) {
+                    if (locations[i].equals(locationConstraint)) {
+                        mLocationCheckedPosition = i;
+                        break;
+                    }
+                }
+                btFilterLocation.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+            } else {
+                btFilterLocation.setBackgroundColor(getResources().getColor(R.color.white));
+            }
+
+            if (mMainActivity.getmAlumniClassOfConstraint() != null) {
+                classOfConstraint = mMainActivity.getmAlumniClassOfConstraint();
+                mMainActivity.setClassOfPreferenceChecked(true);
+                //find the position of classOf constraint
+                String[] classOf = getResources().getStringArray(R.array.alumniClassOf);
+                for (int j = 0; j < classOf.length; j++) {
+                    if (classOf[j].equals(classOfConstraint)) {
+                        mAlumniClassOfCheckedPoistion = j;
+                        break;
+                    }
+                }
+                btFilterClassOf.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+            } else {
+                btFilterClassOf.setBackgroundColor(getResources().getColor(R.color.white));
+            }
+            if (locationConstraint != null || classOfConstraint != null)
+                btFilterApply.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+            else
+                btFilterApply.setBackgroundColor(getResources().getColor(R.color.white));
+        }else {
+            boolean isLocationPrefChecked= savedInstanceState.getBoolean("isLocationChecked");
+            boolean isClassOfPrefChecked= savedInstanceState.getBoolean("isClassOfChecked");
+
+            if(isLocationPrefChecked){
+                btFilterLocation.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+            }
+            if(isClassOfPrefChecked){
+                btFilterClassOf.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+            }
+
+            if(isLocationPrefChecked  || isClassOfPrefChecked)
+                btFilterApply.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+        }
     }
 
 
@@ -96,13 +148,20 @@ public class FilterAlumniFragment extends Fragment {
     public void onAttach(Context context) {
         super.onAttach(context);
         mContext = context;
+        mMainActivity= (MainActivity) getActivity();
     }
+
 
     @OnClick({R.id.ivClose, R.id.btFilterClassOf, R.id.btFilterLocation,
             R.id.btFilterApply})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.ivClose:
+                AlumniFragment.isFilterApplied= false;
+                mMainActivity.setClassOfPreferenceChecked(false);
+                mMainActivity.setLocationPreferenceChecked(false);
+                mMainActivity.setmAlumniLocationConstraint(null);
+                mMainActivity.setmAlumniClassOfConstraint(null);
                 getFragmentManager().popBackStackImmediate();
                 break;
             case R.id.btFilterClassOf:
@@ -112,13 +171,15 @@ public class FilterAlumniFragment extends Fragment {
                 showAlumniLocationAlertDialog();
                 break;
             case R.id.btFilterApply:
-                if (isLocationPreferenceChecked()) {
-                    locationConstraint= getResources().getStringArray(R.array.location)[mLocationCheckedPosition];
+                if (mMainActivity.isLocationPreferenceChecked()) {
+                    mMainActivity.setmAlumniLocationConstraint(getResources().getStringArray
+                            (R.array.location)[mLocationCheckedPosition]);
                 }
-                if(isClassOfPreferenceChecked()){
-                    classOfConstraint= getResources().getStringArray(R.array.alumniClassOf)[mAlumniClassOfCheckedPoistion];
+                if(mMainActivity.isClassOfPreferenceChecked()){
+                    mMainActivity.setmAlumniClassOfConstraint(getResources().getStringArray
+                            (R.array.alumniClassOf)[mAlumniClassOfCheckedPoistion]);
                 }
-                if(isLocationPreferenceChecked() || isClassOfPreferenceChecked())
+                if(mMainActivity.isLocationPreferenceChecked() || mMainActivity.isClassOfPreferenceChecked())
                     AlumniFragment.isFilterApplied = true;
                 else
                     AlumniFragment.isFilterApplied = false;
@@ -137,12 +198,12 @@ public class FilterAlumniFragment extends Fragment {
         builder.setView(content);
         builder.setPositiveButton("DONE", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
-                if (isLocationPreferenceChecked()) {
+                if (mMainActivity.isLocationPreferenceChecked()) {
                     btFilterLocation.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
                     btFilterApply.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
                 } else {
                     btFilterLocation.setBackgroundColor(getResources().getColor(android.R.color.white));
-                    if (!isClassOfPreferenceChecked())
+                    if (!mMainActivity.isClassOfPreferenceChecked())
                         btFilterApply.setBackgroundColor(getResources().getColor(android.R.color.white));
                 }
             }
@@ -150,8 +211,9 @@ public class FilterAlumniFragment extends Fragment {
 
         builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
-                if (isLocationPreferenceChecked())
-                    setLocationPreferenceChecked(false);
+                if (mMainActivity.isLocationPreferenceChecked())
+                    mMainActivity.setLocationPreferenceChecked(false);
+                btFilterLocation.setBackgroundColor(getResources().getColor(R.color.white));
                 dialog.dismiss();
             }
         });
@@ -176,12 +238,12 @@ public class FilterAlumniFragment extends Fragment {
         builder.setView(content);
         builder.setPositiveButton("DONE", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
-                if (isClassOfPreferenceChecked()) {
+                if (mMainActivity.isClassOfPreferenceChecked()) {
                     btFilterClassOf.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
                     btFilterApply.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
                 } else {
                     btFilterClassOf.setBackgroundColor(getResources().getColor(android.R.color.white));
-                    if (!isLocationPreferenceChecked())
+                    if (!mMainActivity.isLocationPreferenceChecked())
                         btFilterApply.setBackgroundColor(getResources().getColor(android.R.color.white));
                 }
             }
@@ -189,8 +251,9 @@ public class FilterAlumniFragment extends Fragment {
 
         builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
-                if (isClassOfPreferenceChecked())
-                    setClassOfPreferenceChecked(false);
+                if (mMainActivity.isClassOfPreferenceChecked())
+                    mMainActivity.setClassOfPreferenceChecked(false);
+                btFilterClassOf.setBackgroundColor(getResources().getColor(R.color.white));
                 dialog.dismiss();
             }
         });
@@ -214,34 +277,31 @@ public class FilterAlumniFragment extends Fragment {
         this.mLocationCheckedPosition = mLocationCheckedPosition;
     }
 
-    public boolean isLocationPreferenceChecked() {
-        return isLocationPreferenceChecked;
-    }
-
-    public void setLocationPreferenceChecked(boolean locationPreferenceChecked) {
-        isLocationPreferenceChecked = locationPreferenceChecked;
-    }
-
-    public boolean isClassOfPreferenceChecked() {
-        return isClassOfPreferenceChecked;
-    }
-
-    public void setClassOfPreferenceChecked(boolean classOfPreferenceChecked) {
-        isClassOfPreferenceChecked = classOfPreferenceChecked;
+    public void setmAlumniClassOfCheckedPoistion(int mAlumniClassOfCheckedPoistion) {
+        this.mAlumniClassOfCheckedPoistion = mAlumniClassOfCheckedPoistion;
     }
 
     public int getmAlumniClassOfCheckedPoistion() {
         return mAlumniClassOfCheckedPoistion;
     }
 
-    public void setmAlumniClassOfCheckedPoistion(int mAlumniClassOfCheckedPoistion) {
-        this.mAlumniClassOfCheckedPoistion = mAlumniClassOfCheckedPoistion;
+    public MainActivity getmMainActivity() {
+        return mMainActivity;
+    }
+
+    public void setmMainActivity(MainActivity mMainActivity) {
+        this.mMainActivity = mMainActivity;
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        isLocationPreferenceChecked = false;
-        isClassOfPreferenceChecked = false;
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putBoolean("isLocationChecked", mMainActivity.isLocationPreferenceChecked());
+        outState.putBoolean("isClassOfChecked", mMainActivity.isClassOfPreferenceChecked());
     }
 }

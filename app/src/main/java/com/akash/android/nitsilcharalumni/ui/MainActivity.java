@@ -29,6 +29,10 @@ public class MainActivity extends AppCompatActivity implements DrawerMenuItem.Dr
 
     private FirebaseAuth mAuth;
     private FragmentManager mSupportFragmentManager;
+    private boolean isLocationPreferenceChecked;
+    private boolean isClassOfPreferenceChecked;
+    private String mAlumniLocationConstraint;
+    private String mAlumniClassOfConstraint;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -203,4 +207,53 @@ public class MainActivity extends AppCompatActivity implements DrawerMenuItem.Dr
         return true;
     }
 
+    public boolean isLocationPreferenceChecked() {
+        return isLocationPreferenceChecked;
+    }
+
+    public void setLocationPreferenceChecked(boolean locationPreferenceChecked) {
+        isLocationPreferenceChecked = locationPreferenceChecked;
+    }
+
+    public boolean isClassOfPreferenceChecked() {
+        return isClassOfPreferenceChecked;
+    }
+
+    public void setClassOfPreferenceChecked(boolean classOfPreferenceChecked) {
+        isClassOfPreferenceChecked = classOfPreferenceChecked;
+    }
+
+    public String getmAlumniLocationConstraint() {
+        return mAlumniLocationConstraint;
+    }
+
+    public void setmAlumniLocationConstraint(String mAlumniLocationConstraint) {
+        this.mAlumniLocationConstraint = mAlumniLocationConstraint;
+    }
+
+    public String getmAlumniClassOfConstraint() {
+        return mAlumniClassOfConstraint;
+    }
+
+    public void setmAlumniClassOfConstraint(String mAlumniClassOfConstraint) {
+        this.mAlumniClassOfConstraint = mAlumniClassOfConstraint;
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString("alumniLocationConstraint", mAlumniLocationConstraint);
+        outState.putString("alumniClassOfConstraint", mAlumniClassOfConstraint);
+        outState.putBoolean("alumniLocationPrefChecked", isLocationPreferenceChecked);
+        outState.putBoolean("alumniClassOfPrefChecked", isClassOfPreferenceChecked);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        mAlumniLocationConstraint= savedInstanceState.getString("alumniLocationConstraint");
+        mAlumniClassOfConstraint= savedInstanceState.getString("alumniClassOfConstraint");
+        isLocationPreferenceChecked= savedInstanceState.getBoolean("alumniLocationPrefChecked");
+        isClassOfPreferenceChecked= savedInstanceState.getBoolean("alumniClassOfPrefChecked");
+    }
 }

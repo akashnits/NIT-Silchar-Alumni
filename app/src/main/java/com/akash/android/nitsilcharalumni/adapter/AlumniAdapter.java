@@ -17,6 +17,7 @@ import android.widget.Toast;
 
 import com.akash.android.nitsilcharalumni.R;
 import com.akash.android.nitsilcharalumni.model.User;
+import com.akash.android.nitsilcharalumni.ui.MainActivity;
 import com.akash.android.nitsilcharalumni.ui.alumni.AlumniFragment;
 import com.akash.android.nitsilcharalumni.utils.Constants;
 import com.akash.android.nitsilcharalumni.utils.imageUtils.PicassoCircleTransformation;
@@ -37,8 +38,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import static com.akash.android.nitsilcharalumni.ui.alumni.AlumniFragment.LIMIT;
-import static com.akash.android.nitsilcharalumni.ui.alumni.FilterAlumniFragment.classOfConstraint;
-import static com.akash.android.nitsilcharalumni.ui.alumni.FilterAlumniFragment.locationConstraint;
 
 
 public class AlumniAdapter extends RecyclerView.Adapter<AlumniAdapter.AlumniViewHolder> implements Filterable {
@@ -50,6 +49,7 @@ public class AlumniAdapter extends RecyclerView.Adapter<AlumniAdapter.AlumniView
     private DocumentSnapshot mLastVisible = null;
     private AlumniLocationFilter mAlumniLocationFilter;
     private AlumniFragment mAlumniFragment;
+    private MainActivity mMainActivity;
 
     public interface OnAlumniClickHandler {
         void onAlumniClicked(String email, View view);
@@ -67,6 +67,7 @@ public class AlumniAdapter extends RecyclerView.Adapter<AlumniAdapter.AlumniView
         mAlumniList = new ArrayList<>();
         mFirestore = FirebaseFirestore.getInstance();
         mAlumniFragment = alumniFragment;
+        this.mMainActivity= (MainActivity) mAlumniFragment.getActivity();
     }
 
     @Override
@@ -184,7 +185,7 @@ public class AlumniAdapter extends RecyclerView.Adapter<AlumniAdapter.AlumniView
 
             if (constraint != null && constraint.length() > 0) {
                 final ArrayList<User> filterList = new ArrayList<>();
-                if (locationConstraint != null && classOfConstraint != null) {
+                if (mMainActivity.getmAlumniLocationConstraint() != null && mMainActivity.getmAlumniClassOfConstraint() != null) {
                     mAlumniFragment.setLoading(true);
                     String[] constraints = constraint.toString().split(",");
                     Query query;
@@ -237,7 +238,7 @@ public class AlumniAdapter extends RecyclerView.Adapter<AlumniAdapter.AlumniView
                                     mAlumniFragment.setLoading(false);
                                 }
                             });
-                } else if (locationConstraint != null) {
+                } else if (mMainActivity.getmAlumniLocationConstraint() != null) {
                     mAlumniFragment.setLoading(true);
                     Query query;
                     if (mLastVisible != null) {
@@ -287,7 +288,7 @@ public class AlumniAdapter extends RecyclerView.Adapter<AlumniAdapter.AlumniView
                                     mAlumniFragment.setLoading(false);
                                 }
                             });
-                } else if (classOfConstraint != null) {
+                } else if (mMainActivity.getmAlumniClassOfConstraint() != null) {
                     mAlumniFragment.setLoading(true);
                     Query query;
                     if (mLastVisible != null) {
