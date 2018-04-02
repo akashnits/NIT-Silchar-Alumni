@@ -375,47 +375,6 @@ public class EditMyProfileFragment extends Fragment {
                         public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                             mDownloadUri = taskSnapshot.getDownloadUrl();
                             Log.v(TAG, "Download uri is" + mDownloadUri);
-                            /*if ((mDownloadUri != null && !Uri.EMPTY.equals
-                                    (mDownloadUri))) {
-                                final String downloadUrl = mDownloadUri.toString();
-                                String email = FirebaseAuth.getInstance().getCurrentUser().getEmail();
-
-                                //update the document of current user
-                                DocumentReference userRef = mFirestore.collection(Constants.USER_COLLECTION)
-                                        .document(email);
-
-                                userRef.update("mProfileImageUrl", downloadUrl)
-                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                            @Override
-                                            public void onSuccess(Void aVoid) {
-                                                Log.d(TAG, "DocumentSnapshot successfully updated!");
-                                                if (pbEditMyProfileFragment != null)
-                                                    pbEditMyProfileFragment.setVisibility(View.GONE);
-                                                //show done icon
-                                                mEditDoneVisible = true;
-                                                if (getActivity() != null)
-                                                    getActivity().invalidateOptionsMenu();
-
-                                                //update the image on backdropEditProfileImage
-                                                Picasso.with(mContext).load(downloadUrl).fit()
-                                                        .placeholder(R.drawable.loading)
-                                                        .into(backdropEditProfileImage);
-                                            }
-                                        })
-                                        .addOnFailureListener(new OnFailureListener() {
-                                            @Override
-                                            public void onFailure(@NonNull Exception e) {
-                                                Log.w(TAG, "Error updating document", e);
-                                                if (pbEditMyProfileFragment != null)
-                                                    pbEditMyProfileFragment.setVisibility(View.GONE);
-
-                                                //show done icon
-                                                mEditDoneVisible = true;
-                                                if (getActivity() != null)
-                                                    getActivity().invalidateOptionsMenu();
-                                            }
-                                        });
-                            }*/
 
                             if (pbEditMyProfileFragment != null)
                                 pbEditMyProfileFragment.setVisibility(View.GONE);

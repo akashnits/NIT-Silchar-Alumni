@@ -260,7 +260,7 @@ public class CreateJobFragment extends Fragment implements FABProgressListener {
                     }
                     String[] searchKeywordArray = jobSearchKeywords.split("\\s*,\\s*");
                     for (String str : searchKeywordArray)
-                        searchKeywordMap.put(str, true);
+                        searchKeywordMap.put(str.toLowerCase(), true);
                 }
 
                 mAuthorName = mDataManager.getUserName();

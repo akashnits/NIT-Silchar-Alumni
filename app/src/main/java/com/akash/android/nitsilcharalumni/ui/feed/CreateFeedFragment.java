@@ -245,7 +245,7 @@ public class CreateFeedFragment extends Fragment implements FABProgressListener 
                     }
                     String[] searchKeywordArray = feedSearchKeywords.split("\\s*,\\s*");
                     for (String str : searchKeywordArray)
-                        searchKeywordMap.put(str, true);
+                        searchKeywordMap.put(str.toLowerCase(), true);
                 }
 
                 mAuthorName = mDatamanager.getUserName();

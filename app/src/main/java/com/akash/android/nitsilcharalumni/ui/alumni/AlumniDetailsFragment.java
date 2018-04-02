@@ -16,7 +16,6 @@ import android.view.animation.AlphaAnimation;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.akash.android.nitsilcharalumni.R;
@@ -27,10 +26,12 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.squareup.picasso.Picasso;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+import de.hdodenhof.circleimageview.CircleImageView;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -91,7 +92,8 @@ public class AlumniDetailsFragment extends Fragment implements AppBarLayout.OnOf
     Toolbar toolbarAlumniDetails;
     @BindView(R.id.tvAlumniDetailsNameBelowDp)
     TextView tvAlumniDetailsNameBelowDp;
-
+    @BindView(R.id.cvProfilePic)
+    CircleImageView cvProfilePic;
 
 
     private Context mContext;
@@ -168,13 +170,13 @@ public class AlumniDetailsFragment extends Fragment implements AppBarLayout.OnOf
         super.onViewCreated(view, savedInstanceState);
         appBarLayout.addOnOffsetChangedListener(this);
         startAlphaAnimation(tvTitle, 0, View.INVISIBLE);
-        if(savedInstanceState != null)
+        if (savedInstanceState != null)
             updateUI();
     }
 
 
-    private void updateUI(){
-        if(mAlumni != null) {
+    private void updateUI() {
+        if (mAlumni != null) {
             tvTitle.setText(mAlumni.getmName());
             tvAlumniDetailsNameBelowDp.setText(mAlumni.getmName());
             tvAboutYouText.setText(mAlumni.getmAboutYou());
@@ -185,6 +187,8 @@ public class AlumniDetailsFragment extends Fragment implements AppBarLayout.OnOf
             tvOrganisationText.setText(mAlumni.getmOrganisation());
             tvDesignationText.setText(mAlumni.getmDesignation());
             tvSkillsText.setText(mAlumni.getmSkills());
+            if(mAlumni != null && mAlumni.getmProfileImageUrl() != null)
+                Picasso.with(mContext).load(mAlumni.getmProfileImageUrl()).fit().into(cvProfilePic);
         }
     }
 
