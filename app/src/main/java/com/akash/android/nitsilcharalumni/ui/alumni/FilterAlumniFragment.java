@@ -81,12 +81,10 @@ public class FilterAlumniFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
-
         if(savedInstanceState == null) {
             String locationConstraint= null;
             String classOfConstraint= null;
-            if (mMainActivity.getmAlumniLocationConstraint() != null) {
+            if (mMainActivity.isLocationPreferenceChecked()) {
                 locationConstraint = mMainActivity.getmAlumniLocationConstraint();
                 mMainActivity.setLocationPreferenceChecked(true);
                 //find the position of location constraint
@@ -102,7 +100,7 @@ public class FilterAlumniFragment extends Fragment {
                 btFilterLocation.setBackgroundColor(getResources().getColor(R.color.white));
             }
 
-            if (mMainActivity.getmAlumniClassOfConstraint() != null) {
+            if (mMainActivity.isClassOfPreferenceChecked()) {
                 classOfConstraint = mMainActivity.getmAlumniClassOfConstraint();
                 mMainActivity.setClassOfPreferenceChecked(true);
                 //find the position of classOf constraint

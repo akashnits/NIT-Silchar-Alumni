@@ -123,8 +123,8 @@ public class AlumniFragment extends Fragment implements AlumniAdapter.OnAlumniCl
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        mLocationConstraint= mMainActivity.getmAlumniLocationConstraint();
-        mClassConstraint= mMainActivity.getmAlumniClassOfConstraint();
+        mLocationConstraint = mMainActivity.getmAlumniLocationConstraint();
+        mClassConstraint = mMainActivity.getmAlumniClassOfConstraint();
 
         ((AppCompatActivity) getActivity()).setSupportActionBar(toolbarAlumni);
         setupDrawer();
@@ -205,7 +205,7 @@ public class AlumniFragment extends Fragment implements AlumniAdapter.OnAlumniCl
     public void onAttach(Context context) {
         super.onAttach(context);
         mContext = context;
-        mMainActivity= (MainActivity) getActivity();
+        mMainActivity = (MainActivity) getActivity();
     }
 
     @Override
@@ -278,13 +278,35 @@ public class AlumniFragment extends Fragment implements AlumniAdapter.OnAlumniCl
     @Override
     public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
         super.onViewStateRestored(savedInstanceState);
-        if (savedInstanceState != null && (AlumniFragment)getFragmentManager().findFragmentByTag("Alumni") != null) {
+
+        if (savedInstanceState != null) {
             List<User> alumniList = savedInstanceState.getParcelableArrayList("alumni");
-            mAlumniAdapter.addAll(alumniList);
-            Parcelable savedRecyclerLayoutState = savedInstanceState.getParcelable("position");
-            if (rvAlumni != null)
-                rvAlumni.getLayoutManager().onRestoreInstanceState(savedRecyclerLayoutState);
-            mSearchString = savedInstanceState.getString("searchAlumni");
+            if (!isFilterApplied) {
+                mAlumniAdapter.addAll(alumniList);
+                Parcelable savedRecyclerLayoutState = savedInstanceState.getParcelable("position");
+                if (rvAlumni != null)
+                    rvAlumni.getLayoutManager().onRestoreInstanceState(savedRecyclerLayoutState);
+                mSearchString = savedInstanceState.getString("searchAlumni");
+            } else {
+                if (mLocationConstraint != null && mClassConstraint != null) {
+                    //apply both the filters
+                    List<String> constraintList = new ArrayList<>();
+                    constraintList.add(mLocationConstraint);
+                    constraintList.add(mClassConstraint);
+                    String combinedFilter = TextUtils.join(",", constraintList);
+                    mAlumniAdapter.getFilter().filter(combinedFilter);
+                } else if (mLocationConstraint != null) {
+                    mAlumniAdapter.getFilter().filter(mLocationConstraint);
+                } else if (mClassConstraint != null) {
+                    mAlumniAdapter.getFilter().filter(mClassConstraint);
+                }else{
+                    mAlumniAdapter.addAll(alumniList);
+                    Parcelable savedRecyclerLayoutState = savedInstanceState.getParcelable("position");
+                    if (rvAlumni != null)
+                        rvAlumni.getLayoutManager().onRestoreInstanceState(savedRecyclerLayoutState);
+                    mSearchString = savedInstanceState.getString("searchAlumni");
+                }
+            }
         }
     }
 
@@ -292,13 +314,11 @@ public class AlumniFragment extends Fragment implements AlumniAdapter.OnAlumniCl
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        if((AlumniFragment)getFragmentManager().findFragmentByTag("Alumni") != null) {
-            outState.putParcelableArrayList("alumni", mAlumniAdapter.getmAlumniList());
-            if (rvAlumni != null)
-                outState.putParcelable("position", rvAlumni.getLayoutManager().onSaveInstanceState());
-            if (!TextUtils.isEmpty(mSearchView.getQuery()))
-                outState.putString("searchAlumni", mSearchView.getQuery().toString());
-        }
+        outState.putParcelableArrayList("alumni", mAlumniAdapter.getmAlumniList());
+        if (rvAlumni != null)
+            outState.putParcelable("position", rvAlumni.getLayoutManager().onSaveInstanceState());
+        if (!TextUtils.isEmpty(mSearchView.getQuery()))
+            outState.putString("searchAlumni", mSearchView.getQuery().toString());
     }
 
 
@@ -331,34 +351,130 @@ public class AlumniFragment extends Fragment implements AlumniAdapter.OnAlumniCl
             public boolean onQueryTextChange(final String newText) {
                 if (newText != null) {
                     final List<User> searchedAlumni = new ArrayList<User>();
-                    mFirestore.collection(Constants.USER_COLLECTION)
-                            .whereEqualTo("mTypeOfUser", "Alumni")
-                            .get()
-                            .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                                @Override
-                                public void onSuccess(QuerySnapshot documentSnapshots) {
-                                    if (documentSnapshots != null) {
-                                        for (DocumentSnapshot documentSnapshot : documentSnapshots) {
-                                            User alumni = documentSnapshot.toObject(User.class);
-                                            String name = alumni.getmName();
+                    if (!isFilterApplied) {
+                        mFirestore.collection(Constants.USER_COLLECTION)
+                                .whereEqualTo("mTypeOfUser", "Alumni")
+                                .get()
+                                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                                    @Override
+                                    public void onSuccess(QuerySnapshot documentSnapshots) {
+                                        if (documentSnapshots != null) {
+                                            for (DocumentSnapshot documentSnapshot : documentSnapshots) {
+                                                User alumni = documentSnapshot.toObject(User.class);
+                                                String name = alumni.getmName();
 
-                                            if (name.toLowerCase().contains(newText.toLowerCase())) {
-                                                searchedAlumni.add(alumni);
+                                                if (name.toLowerCase().contains(newText.toLowerCase())) {
+                                                    searchedAlumni.add(alumni);
+                                                }
+                                            }
+                                            mAlumniAdapter.addAsPerSearch(searchedAlumni);
+                                        } else {
+                                            mAlumniAdapter.setEmptyView();
+                                        }
+                                    }
+                                })
+                                .addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        e.printStackTrace();
+                                        Toast.makeText(mContext, "Failed to search", Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+                    }else {
+                        //show the filtered list
+                        if(mLocationConstraint != null && mClassConstraint != null){
+                            mFirestore.collection(Constants.USER_COLLECTION)
+                                    .whereEqualTo("mTypeOfUser", "Alumni")
+                                    .whereEqualTo("mLocation", mLocationConstraint)
+                                    .whereEqualTo("mClassOf", mClassConstraint)
+                                    .get()
+                                    .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                                        @Override
+                                        public void onSuccess(QuerySnapshot documentSnapshots) {
+                                            if (documentSnapshots != null) {
+                                                for (DocumentSnapshot documentSnapshot : documentSnapshots) {
+                                                    User alumni = documentSnapshot.toObject(User.class);
+                                                    String name = alumni.getmName();
+
+                                                    if (name.toLowerCase().contains(newText.toLowerCase())) {
+                                                        searchedAlumni.add(alumni);
+                                                    }
+                                                }
+                                                mAlumniAdapter.addAsPerSearch(searchedAlumni);
+                                            } else {
+                                                mAlumniAdapter.setEmptyView();
                                             }
                                         }
-                                        mAlumniAdapter.addAsPerSearch(searchedAlumni);
-                                    } else {
-                                        mAlumniAdapter.setEmptyView();
-                                    }
-                                }
-                            })
-                            .addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception e) {
-                                    e.printStackTrace();
-                                    Toast.makeText(mContext, "Failed to search", Toast.LENGTH_SHORT).show();
-                                }
-                            });
+                                    })
+                                    .addOnFailureListener(new OnFailureListener() {
+                                        @Override
+                                        public void onFailure(@NonNull Exception e) {
+                                            e.printStackTrace();
+                                            Toast.makeText(mContext, "Failed to search", Toast.LENGTH_SHORT).show();
+                                        }
+                                    });
+                        }else if(mLocationConstraint != null){
+                            mFirestore.collection(Constants.USER_COLLECTION)
+                                    .whereEqualTo("mTypeOfUser", "Alumni")
+                                    .whereEqualTo("mLocation", mLocationConstraint)
+                                    .get()
+                                    .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                                        @Override
+                                        public void onSuccess(QuerySnapshot documentSnapshots) {
+                                            if (documentSnapshots != null) {
+                                                for (DocumentSnapshot documentSnapshot : documentSnapshots) {
+                                                    User alumni = documentSnapshot.toObject(User.class);
+                                                    String name = alumni.getmName();
+
+                                                    if (name.toLowerCase().contains(newText.toLowerCase())) {
+                                                        searchedAlumni.add(alumni);
+                                                    }
+                                                }
+                                                mAlumniAdapter.addAsPerSearch(searchedAlumni);
+                                            } else {
+                                                mAlumniAdapter.setEmptyView();
+                                            }
+                                        }
+                                    })
+                                    .addOnFailureListener(new OnFailureListener() {
+                                        @Override
+                                        public void onFailure(@NonNull Exception e) {
+                                            e.printStackTrace();
+                                            Toast.makeText(mContext, "Failed to search", Toast.LENGTH_SHORT).show();
+                                        }
+                                    });
+                        }else if(mClassConstraint != null){
+                            mFirestore.collection(Constants.USER_COLLECTION)
+                                    .whereEqualTo("mTypeOfUser", "Alumni")
+                                    .whereEqualTo("mClassOf", mClassConstraint)
+                                    .get()
+                                    .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                                        @Override
+                                        public void onSuccess(QuerySnapshot documentSnapshots) {
+                                            if (documentSnapshots != null) {
+                                                for (DocumentSnapshot documentSnapshot : documentSnapshots) {
+                                                    User alumni = documentSnapshot.toObject(User.class);
+                                                    String name = alumni.getmName();
+
+                                                    if (name.toLowerCase().contains(newText.toLowerCase())) {
+                                                        searchedAlumni.add(alumni);
+                                                    }
+                                                }
+                                                mAlumniAdapter.addAsPerSearch(searchedAlumni);
+                                            } else {
+                                                mAlumniAdapter.setEmptyView();
+                                            }
+                                        }
+                                    })
+                                    .addOnFailureListener(new OnFailureListener() {
+                                        @Override
+                                        public void onFailure(@NonNull Exception e) {
+                                            e.printStackTrace();
+                                            Toast.makeText(mContext, "Failed to search", Toast.LENGTH_SHORT).show();
+                                        }
+                                    });
+                        }
+                    }
                 }
                 return true;
             }
