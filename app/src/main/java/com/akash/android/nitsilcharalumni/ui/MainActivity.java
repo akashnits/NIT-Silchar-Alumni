@@ -50,6 +50,11 @@ public class MainActivity extends AppCompatActivity implements DrawerMenuItem.Dr
                     false,
                     "Home",R.anim.enter_from_right,
                     R.anim.exit_to_left );
+        }else {
+            mAlumniLocationConstraint= savedInstanceState.getString("alumniLocationConstraint");
+            mAlumniClassOfConstraint= savedInstanceState.getString("alumniClassOfConstraint");
+            isLocationPreferenceChecked= savedInstanceState.getBoolean("alumniLocationPrefChecked");
+            isClassOfPreferenceChecked= savedInstanceState.getBoolean("alumniClassOfPrefChecked");
         }
     }
 
@@ -248,12 +253,12 @@ public class MainActivity extends AppCompatActivity implements DrawerMenuItem.Dr
         outState.putBoolean("alumniClassOfPrefChecked", isClassOfPreferenceChecked);
     }
 
-    @Override
+    /*@Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
         mAlumniLocationConstraint= savedInstanceState.getString("alumniLocationConstraint");
         mAlumniClassOfConstraint= savedInstanceState.getString("alumniClassOfConstraint");
         isLocationPreferenceChecked= savedInstanceState.getBoolean("alumniLocationPrefChecked");
         isClassOfPreferenceChecked= savedInstanceState.getBoolean("alumniClassOfPrefChecked");
-    }
+    }*/
 }

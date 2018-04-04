@@ -288,18 +288,21 @@ public class AlumniFragment extends Fragment implements AlumniAdapter.OnAlumniCl
                     rvAlumni.getLayoutManager().onRestoreInstanceState(savedRecyclerLayoutState);
                 mSearchString = savedInstanceState.getString("searchAlumni");
             } else {
-                if (mLocationConstraint != null && mClassConstraint != null) {
-                    //apply both the filters
-                    List<String> constraintList = new ArrayList<>();
-                    constraintList.add(mLocationConstraint);
-                    constraintList.add(mClassConstraint);
-                    String combinedFilter = TextUtils.join(",", constraintList);
-                    mAlumniAdapter.getFilter().filter(combinedFilter);
-                } else if (mLocationConstraint != null) {
-                    mAlumniAdapter.getFilter().filter(mLocationConstraint);
-                } else if (mClassConstraint != null) {
-                    mAlumniAdapter.getFilter().filter(mClassConstraint);
-                }else{
+                if(savedInstanceState.getParcelable("position") == null) {
+                    if (mLocationConstraint != null && mClassConstraint != null) {
+                        //apply both the filters
+                        List<String> constraintList = new ArrayList<>();
+                        constraintList.add(mLocationConstraint);
+                        constraintList.add(mClassConstraint);
+                        String combinedFilter = TextUtils.join(",", constraintList);
+                        mAlumniAdapter.getFilter().filter(combinedFilter);
+                    } else if (mLocationConstraint != null) {
+                        mAlumniAdapter.getFilter().filter(mLocationConstraint);
+                    } else if (mClassConstraint != null) {
+                        mAlumniAdapter.getFilter().filter(mClassConstraint);
+                    }
+                }
+                else{
                     mAlumniAdapter.addAll(alumniList);
                     Parcelable savedRecyclerLayoutState = savedInstanceState.getParcelable("position");
                     if (rvAlumni != null)
@@ -307,6 +310,8 @@ public class AlumniFragment extends Fragment implements AlumniAdapter.OnAlumniCl
                     mSearchString = savedInstanceState.getString("searchAlumni");
                 }
             }
+            mLocationConstraint= mMainActivity.getmAlumniLocationConstraint();
+            mClassConstraint= mMainActivity.getmAlumniClassOfConstraint();
         }
     }
 
@@ -481,7 +486,6 @@ public class AlumniFragment extends Fragment implements AlumniAdapter.OnAlumniCl
         });
 
         searchItem.setOnActionExpandListener(new MenuItem.OnActionExpandListener() {
-
             @Override
             public boolean onMenuItemActionExpand(MenuItem item) {
                 setItemsVisibility(menu, searchItem, false);
