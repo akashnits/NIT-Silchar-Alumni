@@ -87,6 +87,10 @@ public class JobFragment extends Fragment implements SwipeRefreshLayout.OnRefres
     private Job[] mInitialArray;
     private SearchView mSearchView;
     private String mSearchString;
+    public static boolean isJobFilterApplied;
+    private String mLocationConstraint;
+    private String mOrganisationConstraint;
+    private MainActivity mMainActivity;
 
     public JobFragment() {
         // Required empty public constructor
@@ -117,6 +121,9 @@ public class JobFragment extends Fragment implements SwipeRefreshLayout.OnRefres
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        mLocationConstraint = mMainActivity.getmAlumniLocationConstraint();
+        mOrganisationConstraint = mMainActivity.getmJobOrganisationConstraint();
+
         ((AppCompatActivity) getActivity()).setSupportActionBar(toolbarJob);
 
         setupDrawer();

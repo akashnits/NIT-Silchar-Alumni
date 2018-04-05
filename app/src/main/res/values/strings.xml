@@ -146,4 +146,10 @@
         <item>1974</item>
         <item>1973</item>
     </string-array>
+    
+    <string-array name="organisation">
+        <item>L n T</item>
+        <item>Harman</item>
+        <item>Samsung</item>
+    </string-array>
 </resources>

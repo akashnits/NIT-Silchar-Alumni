@@ -33,6 +33,10 @@ public class MainActivity extends AppCompatActivity implements DrawerMenuItem.Dr
     private boolean isClassOfPreferenceChecked;
     private String mAlumniLocationConstraint;
     private String mAlumniClassOfConstraint;
+    private boolean isJobLocationPreferenceChecked;
+    private boolean isOrganisationPreferenceChecked;
+    private String mJobLocationConstraint;
+    private String mJobOrganisationConstraint;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +59,10 @@ public class MainActivity extends AppCompatActivity implements DrawerMenuItem.Dr
             mAlumniClassOfConstraint= savedInstanceState.getString("alumniClassOfConstraint");
             isLocationPreferenceChecked= savedInstanceState.getBoolean("alumniLocationPrefChecked");
             isClassOfPreferenceChecked= savedInstanceState.getBoolean("alumniClassOfPrefChecked");
+            mJobLocationConstraint= savedInstanceState.getString("jobLocationConstraint");
+            mJobOrganisationConstraint= savedInstanceState.getString("jobOrganisationConstraint");
+            isJobLocationPreferenceChecked= savedInstanceState.getBoolean("jobLocationPrefChecked");
+            isOrganisationPreferenceChecked= savedInstanceState.getBoolean("jobOrganisationPrefChecked");
         }
     }
 
@@ -244,6 +252,38 @@ public class MainActivity extends AppCompatActivity implements DrawerMenuItem.Dr
         this.mAlumniClassOfConstraint = mAlumniClassOfConstraint;
     }
 
+    public boolean isJobLocationPreferenceChecked() {
+        return isJobLocationPreferenceChecked;
+    }
+
+    public void setJobLocationPreferenceChecked(boolean jobLocationPreferenceChecked) {
+        isJobLocationPreferenceChecked = jobLocationPreferenceChecked;
+    }
+
+    public boolean isOrganisationPreferenceChecked() {
+        return isOrganisationPreferenceChecked;
+    }
+
+    public void setOrganisationPreferenceChecked(boolean organisationPreferenceChecked) {
+        isOrganisationPreferenceChecked = organisationPreferenceChecked;
+    }
+
+    public String getmJobLocationConstraint() {
+        return mJobLocationConstraint;
+    }
+
+    public void setmJobLocationConstraint(String mJobLocationConstraint) {
+        this.mJobLocationConstraint = mJobLocationConstraint;
+    }
+
+    public String getmJobOrganisationConstraint() {
+        return mJobOrganisationConstraint;
+    }
+
+    public void setmJobOrganisationConstraint(String mJobOrganisationConstraint) {
+        this.mJobOrganisationConstraint = mJobOrganisationConstraint;
+    }
+
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
@@ -251,14 +291,9 @@ public class MainActivity extends AppCompatActivity implements DrawerMenuItem.Dr
         outState.putString("alumniClassOfConstraint", mAlumniClassOfConstraint);
         outState.putBoolean("alumniLocationPrefChecked", isLocationPreferenceChecked);
         outState.putBoolean("alumniClassOfPrefChecked", isClassOfPreferenceChecked);
+        outState.putString("jobLocationConstraint", mJobLocationConstraint);
+        outState.putString("jobOrganisationConstraint", mJobOrganisationConstraint);
+        outState.putBoolean("jobLocationPrefChecked", isJobLocationPreferenceChecked);
+        outState.putBoolean("jobOrganisationPrefChecked", isOrganisationPreferenceChecked);
     }
-
-    /*@Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
-        mAlumniLocationConstraint= savedInstanceState.getString("alumniLocationConstraint");
-        mAlumniClassOfConstraint= savedInstanceState.getString("alumniClassOfConstraint");
-        isLocationPreferenceChecked= savedInstanceState.getBoolean("alumniLocationPrefChecked");
-        isClassOfPreferenceChecked= savedInstanceState.getBoolean("alumniClassOfPrefChecked");
-    }*/
 }

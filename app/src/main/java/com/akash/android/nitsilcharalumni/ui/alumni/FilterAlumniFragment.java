@@ -155,7 +155,7 @@ public class FilterAlumniFragment extends Fragment {
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.ivClose:
-                AlumniFragment.isFilterApplied= false;
+                AlumniFragment.isAlumniFilterApplied = false;
                 mMainActivity.setClassOfPreferenceChecked(false);
                 mMainActivity.setLocationPreferenceChecked(false);
                 mMainActivity.setmAlumniLocationConstraint(null);
@@ -178,9 +178,9 @@ public class FilterAlumniFragment extends Fragment {
                             (R.array.alumniClassOf)[mAlumniClassOfCheckedPoistion]);
                 }
                 if(mMainActivity.isLocationPreferenceChecked() || mMainActivity.isClassOfPreferenceChecked())
-                    AlumniFragment.isFilterApplied = true;
+                    AlumniFragment.isAlumniFilterApplied = true;
                 else
-                    AlumniFragment.isFilterApplied = false;
+                    AlumniFragment.isAlumniFilterApplied = false;
                 getFragmentManager().popBackStackImmediate();
                 break;
         }
