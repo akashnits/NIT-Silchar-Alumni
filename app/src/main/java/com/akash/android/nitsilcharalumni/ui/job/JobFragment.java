@@ -32,6 +32,7 @@ import android.widget.Toast;
 import com.akash.android.nitsilcharalumni.R;
 import com.akash.android.nitsilcharalumni.adapter.JobAdapter;
 import com.akash.android.nitsilcharalumni.model.Job;
+import com.akash.android.nitsilcharalumni.model.User;
 import com.akash.android.nitsilcharalumni.ui.MainActivity;
 import com.akash.android.nitsilcharalumni.ui.drawer.DrawerHeader;
 import com.akash.android.nitsilcharalumni.ui.drawer.DrawerMenuItem;
@@ -80,7 +81,7 @@ public class JobFragment extends Fragment implements SwipeRefreshLayout.OnRefres
     private JobAdapter mJobAdapter;
     private FirebaseFirestore mFirestore;
     private boolean mIsLoading;
-    private static final long LIMIT = 4;
+    public static final long LIMIT = 4;
     private DocumentSnapshot mDocumentAtFirstPosition= null;
     private DocumentSnapshot mLastVisible = null;
     private int mLastDocumentSnapshotSize;
@@ -121,24 +122,72 @@ public class JobFragment extends Fragment implements SwipeRefreshLayout.OnRefres
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        mLocationConstraint = mMainActivity.getmAlumniLocationConstraint();
+        mLocationConstraint = mMainActivity.getmJobLocationConstraint();
         mOrganisationConstraint = mMainActivity.getmJobOrganisationConstraint();
 
         ((AppCompatActivity) getActivity()).setSupportActionBar(toolbarJob);
 
         setupDrawer();
+        initializeRecyclerView();
         swipeRefreshLayoutJob.setOnRefreshListener(this);
 
-        LinearLayoutManager lm = new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false);
-        rvJob.setLayoutManager(lm);
-        rvJob.hasFixedSize();
-        rvJob.addItemDecoration(new DividerItemDecoration(rvJob.getContext(),
-                DividerItemDecoration.VERTICAL));
-        mJobAdapter = new JobAdapter(mContext);
-        rvJob.setAdapter(mJobAdapter);
-
-        if (savedInstanceState == null) {
-            loadInitial();
+        final List<Job> newJob = new ArrayList<>();
+        if (!isJobFilterApplied) {
+            if (savedInstanceState == null) {
+                if (TextUtils.isEmpty(mSearchString)) {
+                    pbJobFragment.setVisibility(View.VISIBLE);
+                    mIsLoading = true;
+                    mFirestore.collection(Constants.JOB_COLLECTION)
+                            .orderBy("mTimestamp", Query.Direction.DESCENDING)
+                            .limit(LIMIT)
+                            .get()
+                            .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                                @Override
+                                public void onSuccess(QuerySnapshot documentSnapshots) {
+                                    if (documentSnapshots != null && !documentSnapshots.isEmpty()) {
+                                        mDocumentAtFirstPosition = documentSnapshots.getDocuments().get(0);
+                                        mLastVisible = documentSnapshots.getDocuments()
+                                                .get(documentSnapshots.size() - 1);
+                                        mLastDocumentSnapshotSize = documentSnapshots.size();
+                                        for (DocumentSnapshot documentSnapshot : documentSnapshots)
+                                            newJob.add(documentSnapshot.toObject(Job.class));
+                                        mJobAdapter.addAll(newJob);
+                                    }
+                                    if (pbJobFragment != null)
+                                        pbJobFragment.setVisibility(View.INVISIBLE);
+                                    mIsLoading = false;
+                                }
+                            })
+                            .addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    Toast.makeText(mContext, "Failed to Load data", Toast.LENGTH_SHORT).show();
+                                    if (pbJobFragment != null)
+                                        pbJobFragment.setVisibility(View.INVISIBLE);
+                                    mIsLoading = false;
+                                }
+                            });
+                } else {
+                    updateAdapterAsPerSearch(newAlumni, mSearchString);
+                }
+            }
+        } else if (savedInstanceState == null) {
+            if (TextUtils.isEmpty(mSearchString)) {
+                if (mLocationConstraint != null && mOrganisationConstraint != null) {
+                    //apply both the filters
+                    List<String> constraintList = new ArrayList<>();
+                    constraintList.add(mLocationConstraint);
+                    constraintList.add(mOrganisationConstraint);
+                    String combinedFilter = TextUtils.join(",", constraintList);
+                    mJobAdapter.getFilter().filter(combinedFilter);
+                } else if (mLocationConstraint != null) {
+                    mJobAdapter.getFilter().filter(mLocationConstraint);
+                } else if (mOrganisationConstraint != null) {
+                    mJobAdapter.getFilter().filter(mOrganisationConstraint);
+                }
+            } else {
+                updateAdapterAsPerSearchWithFilter(newAlumni, mSearchString);
+            }
         }
 
         rvJob.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -473,5 +522,31 @@ public class JobFragment extends Fragment implements SwipeRefreshLayout.OnRefres
     @Override
     public void onClickMenuItemListener() {
         drawerLayoutJob.closeDrawers();
+    }
+
+    private void initializeRecyclerView(){
+        LinearLayoutManager lm = new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false);
+        rvJob.setLayoutManager(lm);
+        rvJob.hasFixedSize();
+        rvJob.addItemDecoration(new DividerItemDecoration(rvJob.getContext(),
+                DividerItemDecoration.VERTICAL));
+        mJobAdapter = new JobAdapter(mContext, this);
+        rvJob.setAdapter(mJobAdapter);
+    }
+
+    public boolean ismIsLoading() {
+        return mIsLoading;
+    }
+
+    public void setmIsLoading(boolean mIsLoading) {
+        this.mIsLoading = mIsLoading;
+    }
+
+    public int getmLastDocumentSnapshotSize() {
+        return mLastDocumentSnapshotSize;
+    }
+
+    public void setmLastDocumentSnapshotSize(int mLastDocumentSnapshotSize) {
+        this.mLastDocumentSnapshotSize = mLastDocumentSnapshotSize;
     }
 }

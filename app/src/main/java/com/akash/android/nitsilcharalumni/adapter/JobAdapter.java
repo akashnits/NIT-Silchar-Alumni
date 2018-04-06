@@ -1,16 +1,29 @@
 package com.akash.android.nitsilcharalumni.adapter;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.akash.android.nitsilcharalumni.R;
 import com.akash.android.nitsilcharalumni.model.Job;
+import com.akash.android.nitsilcharalumni.ui.MainActivity;
+import com.akash.android.nitsilcharalumni.ui.job.JobFragment;
+import com.akash.android.nitsilcharalumni.utils.Constants;
 import com.akash.android.nitsilcharalumni.utils.imageUtils.PicassoCircleTransformation;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.squareup.picasso.Picasso;
 
 import java.text.SimpleDateFormat;
@@ -23,17 +36,26 @@ import java.util.Map;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static com.akash.android.nitsilcharalumni.ui.job.JobFragment.LIMIT;
 
-public class JobAdapter extends RecyclerView.Adapter<JobAdapter.JobViewHolder> {
+
+public class JobAdapter extends RecyclerView.Adapter<JobAdapter.JobViewHolder> implements Filterable {
 
 
     private Context mContext;
     private ArrayList<Job> mJobList;
+    private FirebaseFirestore mFirestore;
+    private DocumentSnapshot mLastVisible = null;
+    private JobFilter mJobFilter;
+    private JobFragment mJobFragment;
+    private MainActivity mMainActivity;
 
-
-    public JobAdapter(Context mContext) {
+    public JobAdapter(Context mContext,JobFragment jobFragment) {
         this.mContext = mContext;
-        this.mJobList = new ArrayList<>();
+        mJobList = new ArrayList<>();
+        mFirestore = FirebaseFirestore.getInstance();
+        mJobFragment = jobFragment;
+        this.mMainActivity= (MainActivity) mJobFragment.getActivity();
     }
 
     @Override
@@ -195,4 +217,176 @@ public class JobAdapter extends RecyclerView.Adapter<JobAdapter.JobViewHolder> {
             ButterKnife.bind(this, itemView);
         }
     }
+
+    @Override
+    public Filter getFilter() {
+        if (mJobFilter == null) {
+            mJobFilter = new JobFilter();
+        }
+        return mJobFilter;
+    }
+
+    class JobFilter extends Filter{
+        @Override
+        protected FilterResults performFiltering(CharSequence constraint) {
+            return null;
+        }
+
+        @Override
+        protected void publishResults(CharSequence constraint, FilterResults results) {
+            if (constraint != null && constraint.length() > 0) {
+                final ArrayList<Job> filterList = new ArrayList<>();
+                if (mMainActivity.getmJobLocationConstraint() != null &&
+                        mMainActivity.getmJobOrganisationConstraint() != null) {
+                    mJobFragment.setmIsLoading(true);
+                    String[] constraints = constraint.toString().split(",");
+                    Query query;
+                    if (mLastVisible != null) {
+                        query = mFirestore.collection(Constants.JOB_COLLECTION)
+                                .orderBy("mTimestamp", Query.Direction.DESCENDING)
+                                .startAfter(mLastVisible)
+                                .limit(LIMIT)
+                                .whereEqualTo("mJobLocation", constraints[0])
+                                .whereEqualTo("mJobOrganisation", constraints[1]);
+                    } else {
+                        query = mFirestore.collection(Constants.JOB_COLLECTION)
+                                .orderBy("mTimestamp", Query.Direction.DESCENDING)
+                                .limit(LIMIT)
+                                .whereEqualTo("mJobLocation", constraints[0])
+                                .whereEqualTo("mJobOrganisation", constraints[1]);
+                    }
+                    query
+                            .get()
+                            .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                                @Override
+                                public void onSuccess(QuerySnapshot documentSnapshots) {
+                                    if (documentSnapshots != null && !documentSnapshots.isEmpty()) {
+                                        mLastVisible = documentSnapshots.getDocuments()
+                                                .get(documentSnapshots.size() - 1);
+                                        if (mJobFragment != null) {
+                                            mJobFragment.setmLastDocumentSnapshotSize(documentSnapshots.size());
+                                        }
+                                        for (DocumentSnapshot documentSnapshot : documentSnapshots)
+                                            filterList.add(documentSnapshot.toObject(Job.class));
+                                        if (filterList.size() > 0) {
+                                            addAll(filterList);
+                                        }
+                                    } else {
+                                        if (mJobFragment != null) {
+                                            mJobFragment.setmLastDocumentSnapshotSize(0);
+                                        }
+                                        Toast.makeText(mContext, "That's all, folks!", Toast.LENGTH_SHORT).show();
+                                    }
+                                    mJobFragment.setmIsLoading(false);
+                                }
+                            })
+                            .addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    e.printStackTrace();
+                                    Toast.makeText(mContext, "Failed to Load data", Toast.LENGTH_SHORT).show();
+                                    mJobFragment.setmIsLoading(false);
+                                }
+                            });
+                } else if (mMainActivity.getmJobLocationConstraint() != null) {
+                    mJobFragment.setmIsLoading(true);
+                    Query query;
+                    if (mLastVisible != null) {
+                        query = mFirestore.collection(Constants.JOB_COLLECTION)
+                                .orderBy("mTimestamp", Query.Direction.DESCENDING)
+                                .startAfter(mLastVisible)
+                                .limit(LIMIT)
+                                .whereEqualTo("mJobLocation", constraint.toString());
+                    } else {
+                        query = mFirestore.collection(Constants.JOB_COLLECTION)
+                                .orderBy("mTimestamp", Query.Direction.DESCENDING)
+                                .limit(LIMIT)
+                                .whereEqualTo("mJobLocation", constraint.toString());
+                    }
+                    query
+                            .get()
+                            .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                                @Override
+                                public void onSuccess(QuerySnapshot documentSnapshots) {
+                                    if (documentSnapshots != null && !documentSnapshots.isEmpty()) {
+                                        mLastVisible = documentSnapshots.getDocuments()
+                                                .get(documentSnapshots.size() - 1);
+                                        if (mJobFragment != null) {
+                                            mJobFragment.setmLastDocumentSnapshotSize(documentSnapshots.size());
+                                        }
+                                        for (DocumentSnapshot documentSnapshot : documentSnapshots)
+                                            filterList.add(documentSnapshot.toObject(Job.class));
+                                        if (filterList.size() > 0) {
+                                            addAll(filterList);
+                                        }
+                                    } else {
+                                        if (mJobFragment != null) {
+                                            mJobFragment.setmLastDocumentSnapshotSize(0);
+                                        }
+                                        Toast.makeText(mContext, "That's all, folks!", Toast.LENGTH_SHORT).show();
+                                    }
+                                    mJobFragment.setmIsLoading(false);
+                                }
+                            })
+                            .addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    e.printStackTrace();
+                                    Toast.makeText(mContext, "Failed to Load data", Toast.LENGTH_SHORT).show();
+                                    mJobFragment.setmIsLoading(false);
+                                }
+                            });
+                } else if (mMainActivity.getmJobOrganisationConstraint() != null) {
+                    mJobFragment.setmIsLoading(true);
+                    Query query;
+                    if (mLastVisible != null) {
+                        query = mFirestore.collection(Constants.JOB_COLLECTION)
+                                .orderBy("mTimestamp", Query.Direction.DESCENDING)
+                                .startAfter(mLastVisible)
+                                .limit(LIMIT)
+                                .whereEqualTo("mJobOrganisation", constraint.toString());
+                    } else {
+                        query = mFirestore.collection(Constants.JOB_COLLECTION)
+                                .orderBy("mTimestamp", Query.Direction.DESCENDING)
+                                .limit(LIMIT)
+                                .whereEqualTo("mJobOrganisation", constraint.toString());
+                    }
+                    query
+                            .get()
+                            .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                                @Override
+                                public void onSuccess(QuerySnapshot documentSnapshots) {
+                                    if (documentSnapshots != null && !documentSnapshots.isEmpty()) {
+                                        mLastVisible = documentSnapshots.getDocuments()
+                                                .get(documentSnapshots.size() - 1);
+                                        if (mJobFragment != null) {
+                                            mJobFragment.setmLastDocumentSnapshotSize(documentSnapshots.size());
+                                        }
+                                        for (DocumentSnapshot documentSnapshot : documentSnapshots)
+                                            filterList.add(documentSnapshot.toObject(Job.class));
+                                        if (filterList.size() > 0) {
+                                            addAll(filterList);
+                                        }
+                                    } else {
+                                        if (mJobFragment != null) {
+                                            mJobFragment.setmLastDocumentSnapshotSize(0);
+                                        }
+                                        Toast.makeText(mContext, "That's all, folks!", Toast.LENGTH_SHORT).show();
+                                    }
+                                    mJobFragment.setmIsLoading(false);
+                                }
+                            })
+                            .addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    e.printStackTrace();
+                                    Toast.makeText(mContext, "Failed to Load data", Toast.LENGTH_SHORT).show();
+                                    mJobFragment.setmIsLoading(false);
+                                }
+                            });
+                }
+            }
+        }
+    }
+
 }
