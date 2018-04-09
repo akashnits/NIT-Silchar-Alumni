@@ -199,7 +199,8 @@ public class AlumniFragment extends Fragment implements AlumniAdapter.OnAlumniCl
                     int totalItemCount = recyclerView.getLayoutManager().getItemCount();
                     int pastVisibleItem = ((LinearLayoutManager) recyclerView.getLayoutManager())
                             .findFirstVisibleItemPosition();
-                    if ((LIMIT + pastVisibleItem) >= totalItemCount && !isLoading && mLastDocumentSnapshotSize == LIMIT) {
+                    if ((LIMIT + pastVisibleItem) >= totalItemCount &&
+                            !isLoading && mLastDocumentSnapshotSize == LIMIT) {
                         loadMore();
                     }
                 }
@@ -221,6 +222,8 @@ public class AlumniFragment extends Fragment implements AlumniAdapter.OnAlumniCl
     }
 
     public void onAlumniClicked(String email, View view) {
+        if(mSearchString != null)
+            mSearchString= null;
         Bundle b = new Bundle();
         b.putString("email", email);
         ((MainActivity) getActivity()).commitAlumniDetailsFragment(b);
@@ -401,6 +404,8 @@ public class AlumniFragment extends Fragment implements AlumniAdapter.OnAlumniCl
         int id = item.getItemId();
         switch (id) {
             case R.id.filter:
+                if(mSearchString != null)
+                    mSearchString= null;
                 ((MainActivity) getActivity()).commitFilterAlumniFragment();
                 break;
             default:

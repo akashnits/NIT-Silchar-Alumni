@@ -1,14 +1,11 @@
 package com.akash.android.nitsilcharalumni.ui;
 
 import android.os.Bundle;
-import android.os.PersistableBundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
-import android.widget.Toast;
 
 import com.akash.android.nitsilcharalumni.R;
 import com.akash.android.nitsilcharalumni.ui.alumni.AlumniDetailsFragment;
@@ -34,7 +31,7 @@ public class MainActivity extends AppCompatActivity implements DrawerMenuItem.Dr
     private String mAlumniLocationConstraint;
     private String mAlumniClassOfConstraint;
     private boolean isJobLocationPreferenceChecked;
-    private boolean isOrganisationPreferenceChecked;
+    private boolean isJobOrganisationPreferenceChecked;
     private String mJobLocationConstraint;
     private String mJobOrganisationConstraint;
 
@@ -62,7 +59,7 @@ public class MainActivity extends AppCompatActivity implements DrawerMenuItem.Dr
             mJobLocationConstraint= savedInstanceState.getString("jobLocationConstraint");
             mJobOrganisationConstraint= savedInstanceState.getString("jobOrganisationConstraint");
             isJobLocationPreferenceChecked= savedInstanceState.getBoolean("jobLocationPrefChecked");
-            isOrganisationPreferenceChecked= savedInstanceState.getBoolean("jobOrganisationPrefChecked");
+            isJobOrganisationPreferenceChecked = savedInstanceState.getBoolean("jobOrganisationPrefChecked");
         }
     }
 
@@ -260,12 +257,12 @@ public class MainActivity extends AppCompatActivity implements DrawerMenuItem.Dr
         isJobLocationPreferenceChecked = jobLocationPreferenceChecked;
     }
 
-    public boolean isOrganisationPreferenceChecked() {
-        return isOrganisationPreferenceChecked;
+    public boolean isJobOrganisationPreferenceChecked() {
+        return isJobOrganisationPreferenceChecked;
     }
 
-    public void setOrganisationPreferenceChecked(boolean organisationPreferenceChecked) {
-        isOrganisationPreferenceChecked = organisationPreferenceChecked;
+    public void setJobOrganisationPreferenceChecked(boolean jobOrganisationPreferenceChecked) {
+        isJobOrganisationPreferenceChecked = jobOrganisationPreferenceChecked;
     }
 
     public String getmJobLocationConstraint() {
@@ -294,6 +291,6 @@ public class MainActivity extends AppCompatActivity implements DrawerMenuItem.Dr
         outState.putString("jobLocationConstraint", mJobLocationConstraint);
         outState.putString("jobOrganisationConstraint", mJobOrganisationConstraint);
         outState.putBoolean("jobLocationPrefChecked", isJobLocationPreferenceChecked);
-        outState.putBoolean("jobOrganisationPrefChecked", isOrganisationPreferenceChecked);
+        outState.putBoolean("jobOrganisationPrefChecked", isJobOrganisationPreferenceChecked);
     }
 }

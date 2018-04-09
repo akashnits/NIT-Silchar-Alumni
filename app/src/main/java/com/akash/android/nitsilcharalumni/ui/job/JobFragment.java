@@ -32,7 +32,6 @@ import android.widget.Toast;
 import com.akash.android.nitsilcharalumni.R;
 import com.akash.android.nitsilcharalumni.adapter.JobAdapter;
 import com.akash.android.nitsilcharalumni.model.Job;
-import com.akash.android.nitsilcharalumni.model.User;
 import com.akash.android.nitsilcharalumni.ui.MainActivity;
 import com.akash.android.nitsilcharalumni.ui.drawer.DrawerHeader;
 import com.akash.android.nitsilcharalumni.ui.drawer.DrawerMenuItem;
@@ -82,7 +81,7 @@ public class JobFragment extends Fragment implements SwipeRefreshLayout.OnRefres
     private FirebaseFirestore mFirestore;
     private boolean mIsLoading;
     public static final long LIMIT = 4;
-    private DocumentSnapshot mDocumentAtFirstPosition= null;
+    private DocumentSnapshot mDocumentAtFirstPosition = null;
     private DocumentSnapshot mLastVisible = null;
     private int mLastDocumentSnapshotSize;
     private Job[] mInitialArray;
@@ -168,7 +167,7 @@ public class JobFragment extends Fragment implements SwipeRefreshLayout.OnRefres
                                 }
                             });
                 } else {
-                    updateAdapterAsPerSearch(newAlumni, mSearchString);
+                    updateAdapterAsPerSearch(newJob, mSearchString);
                 }
             }
         } else if (savedInstanceState == null) {
@@ -186,7 +185,7 @@ public class JobFragment extends Fragment implements SwipeRefreshLayout.OnRefres
                     mJobAdapter.getFilter().filter(mOrganisationConstraint);
                 }
             } else {
-                updateAdapterAsPerSearchWithFilter(newAlumni, mSearchString);
+                updateAdapterAsPerSearchWithFilter(newJob, mSearchString);
             }
         }
 
@@ -203,7 +202,8 @@ public class JobFragment extends Fragment implements SwipeRefreshLayout.OnRefres
                     int totalItemCount = recyclerView.getLayoutManager().getItemCount();
                     int pastVisibleItem = ((LinearLayoutManager) recyclerView.getLayoutManager())
                             .findFirstVisibleItemPosition();
-                    if ((LIMIT + pastVisibleItem) >= totalItemCount && !mIsLoading && mLastDocumentSnapshotSize == LIMIT) {
+                    if ((LIMIT + pastVisibleItem) >= totalItemCount && !mIsLoading
+                            && mLastDocumentSnapshotSize == LIMIT) {
                         loadMore();
                     }
                 }
@@ -211,80 +211,61 @@ public class JobFragment extends Fragment implements SwipeRefreshLayout.OnRefres
         });
     }
 
-    private void loadInitial(){
-        pbJobFragment.setVisibility(View.VISIBLE);
-        mIsLoading = true;
-
-        final List<Job> newJob = new ArrayList<>();
-        mFirestore.collection(Constants.JOB_COLLECTION)
-                .orderBy("mTimestamp", Query.Direction.DESCENDING)
-                .limit(LIMIT)
-                .get()
-                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                    @Override
-                    public void onSuccess(QuerySnapshot documentSnapshots) {
-                        if (documentSnapshots != null && !documentSnapshots.isEmpty()) {
-                            mDocumentAtFirstPosition = documentSnapshots.getDocuments().get(0);
-                            mLastVisible = documentSnapshots.getDocuments()
-                                    .get(documentSnapshots.size() - 1);
-                            mLastDocumentSnapshotSize = documentSnapshots.size();
-                            for (DocumentSnapshot documentSnapshot : documentSnapshots)
-                                newJob.add(documentSnapshot.toObject(Job.class));
-                            mJobAdapter.addAll(newJob);
-                        }
-                        if (pbJobFragment != null)
-                            pbJobFragment.setVisibility(View.INVISIBLE);
-                        mIsLoading = false;
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(mContext, "Failed to Load data", Toast.LENGTH_SHORT).show();
-                        if (pbJobFragment != null)
-                            pbJobFragment.setVisibility(View.INVISIBLE);
-                        mIsLoading = false;
-                    }
-                });
-    }
-
     private void loadMore() {
-        pbJobFragment.setVisibility(View.VISIBLE);
-        mIsLoading = true;
+        if (TextUtils.isEmpty(((EditText)
+                mSearchView.findViewById(android.support.v7.appcompat.R.id.search_src_text)).getText())) {
+            if (!isJobFilterApplied) {
+                pbJobFragment.setVisibility(View.VISIBLE);
+                mIsLoading = true;
 
-        final List<Job> newJob = new ArrayList<>();
-        mFirestore.collection(Constants.JOB_COLLECTION)
-                .orderBy("mTimestamp", Query.Direction.DESCENDING)
-                .startAfter(mLastVisible)
-                .limit(LIMIT)
-                .get()
-                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                    @Override
-                    public void onSuccess(QuerySnapshot documentSnapshots) {
-                        if (!documentSnapshots.isEmpty()) {
-                            mLastDocumentSnapshotSize = documentSnapshots.size();
-                            mLastVisible = documentSnapshots.getDocuments()
-                                    .get(documentSnapshots.size() - 1);
-                            for (DocumentSnapshot documentSnapshot : documentSnapshots)
-                                newJob.add(documentSnapshot.toObject(Job.class));
-                            mJobAdapter.addAll(newJob);
-                        } else {
-                            mLastDocumentSnapshotSize = 0;
-                        }
-                        if (pbJobFragment != null)
-                            pbJobFragment.setVisibility(View.INVISIBLE);
-                        mIsLoading = false;
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(mContext, "Failed to Load data", Toast.LENGTH_SHORT).show();
-                        if (pbJobFragment != null)
-                            pbJobFragment.setVisibility(View.INVISIBLE);
-                        mIsLoading = false;
-                    }
-                });
+                final List<Job> newJob = new ArrayList<>();
+                mFirestore.collection(Constants.JOB_COLLECTION)
+                        .orderBy("mTimestamp", Query.Direction.DESCENDING)
+                        .startAfter(mLastVisible)
+                        .limit(LIMIT)
+                        .get()
+                        .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                            @Override
+                            public void onSuccess(QuerySnapshot documentSnapshots) {
+                                if (!documentSnapshots.isEmpty()) {
+                                    mLastDocumentSnapshotSize = documentSnapshots.size();
+                                    mLastVisible = documentSnapshots.getDocuments()
+                                            .get(documentSnapshots.size() - 1);
+                                    for (DocumentSnapshot documentSnapshot : documentSnapshots)
+                                        newJob.add(documentSnapshot.toObject(Job.class));
+                                    mJobAdapter.addAll(newJob);
+                                } else {
+                                    mLastDocumentSnapshotSize = 0;
+                                }
+                                if (pbJobFragment != null)
+                                    pbJobFragment.setVisibility(View.INVISIBLE);
+                                mIsLoading = false;
+                            }
+                        })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Toast.makeText(mContext, "Failed to Load data", Toast.LENGTH_SHORT).show();
+                                if (pbJobFragment != null)
+                                    pbJobFragment.setVisibility(View.INVISIBLE);
+                                mIsLoading = false;
+                            }
+                        });
+            } else {
+                if (mLocationConstraint != null && mOrganisationConstraint != null) {
+                    //apply both the filters
+                    List<String> constraintList = new ArrayList<>();
+                    constraintList.add(mLocationConstraint);
+                    constraintList.add(mOrganisationConstraint);
+                    String combinedFilter = TextUtils.join(",", constraintList);
+                    mJobAdapter.getFilter().filter(combinedFilter);
+                } else if (mLocationConstraint != null) {
+                    mJobAdapter.getFilter().filter(mLocationConstraint);
+                } else if (mOrganisationConstraint != null) {
+                    mJobAdapter.getFilter().filter(mOrganisationConstraint);
+                }
+            }
+        }
     }
 
     @Override
@@ -292,14 +273,36 @@ public class JobFragment extends Fragment implements SwipeRefreshLayout.OnRefres
         super.onViewStateRestored(savedInstanceState);
         if (savedInstanceState != null) {
             List<Job> jobList = savedInstanceState.getParcelableArrayList("job");
-            if(jobList != null && jobList.size() > 0)
+            if (!isJobFilterApplied) {
                 mJobAdapter.addAll(jobList);
-            else
-                loadInitial();
-            Parcelable savedRecyclerLayoutState = savedInstanceState.getParcelable("position");
-            if(rvJob != null)
-                rvJob.getLayoutManager().onRestoreInstanceState(savedRecyclerLayoutState);
-            mSearchString= savedInstanceState.getString("searchJob");
+                Parcelable savedRecyclerLayoutState = savedInstanceState.getParcelable("position");
+                if (rvJob != null)
+                    rvJob.getLayoutManager().onRestoreInstanceState(savedRecyclerLayoutState);
+                mSearchString = savedInstanceState.getString("searchJob");
+            } else {
+                if (savedInstanceState.getParcelable("position") == null) {
+                    if (mLocationConstraint != null && mOrganisationConstraint != null) {
+                        //apply both the filters
+                        List<String> constraintList = new ArrayList<>();
+                        constraintList.add(mLocationConstraint);
+                        constraintList.add(mOrganisationConstraint);
+                        String combinedFilter = TextUtils.join(",", constraintList);
+                        mJobAdapter.getFilter().filter(combinedFilter);
+                    } else if (mLocationConstraint != null) {
+                        mJobAdapter.getFilter().filter(mLocationConstraint);
+                    } else if (mOrganisationConstraint != null) {
+                        mJobAdapter.getFilter().filter(mOrganisationConstraint);
+                    }
+                } else {
+                    mJobAdapter.addAll(jobList);
+                    Parcelable savedRecyclerLayoutState = savedInstanceState.getParcelable("position");
+                    if (rvJob != null)
+                        rvJob.getLayoutManager().onRestoreInstanceState(savedRecyclerLayoutState);
+                    mSearchString = savedInstanceState.getString("searchJob");
+                }
+            }
+            mLocationConstraint = mMainActivity.getmJobLocationConstraint();
+            mOrganisationConstraint = mMainActivity.getmJobOrganisationConstraint();
         }
     }
 
@@ -307,11 +310,10 @@ public class JobFragment extends Fragment implements SwipeRefreshLayout.OnRefres
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        if(getUserVisibleHint() && isVisible())
-            outState.putParcelableArrayList("job", mJobAdapter.getmJobList());
-        if(rvJob != null)
+        outState.putParcelableArrayList("job", mJobAdapter.getmJobList());
+        if (rvJob != null)
             outState.putParcelable("position", rvJob.getLayoutManager().onSaveInstanceState());
-        if(mSearchView != null && !TextUtils.isEmpty(mSearchView.getQuery()))
+        if (mSearchView != null && !TextUtils.isEmpty(mSearchView.getQuery()))
             outState.putString("searchJob", mSearchView.getQuery().toString());
     }
 
@@ -319,6 +321,7 @@ public class JobFragment extends Fragment implements SwipeRefreshLayout.OnRefres
     public void onAttach(Context context) {
         super.onAttach(context);
         mContext = context;
+        mMainActivity = (MainActivity) getActivity();
     }
 
     @Override
@@ -329,43 +332,43 @@ public class JobFragment extends Fragment implements SwipeRefreshLayout.OnRefres
 
     @Override
     public void onRefresh() {
-       reload();
+        reload();
     }
 
     private void reload() {
-        mIsLoading = true;
-        final List<Job> newJob = new ArrayList<>();
-        mFirestore.collection(Constants.JOB_COLLECTION)
-                .orderBy("mTimestamp", Query.Direction.DESCENDING)
-                .endBefore(mDocumentAtFirstPosition)
-                .get()
-                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                    @Override
-                    public void onSuccess(QuerySnapshot documentSnapshots) {
+        if (!isJobFilterApplied && TextUtils.isEmpty(((EditText)
+                mSearchView.findViewById(android.support.v7.appcompat.R.id.search_src_text)).getText())) {
+            mIsLoading = true;
+            final List<Job> newJob = new ArrayList<>();
+            mFirestore.collection(Constants.JOB_COLLECTION)
+                    .orderBy("mTimestamp", Query.Direction.DESCENDING)
+                    .endBefore(mDocumentAtFirstPosition)
+                    .get()
+                    .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                        @Override
+                        public void onSuccess(QuerySnapshot documentSnapshots) {
 
-                        if (documentSnapshots != null && !documentSnapshots.isEmpty()) {
-                            mDocumentAtFirstPosition= documentSnapshots.getDocuments().get(0);
-                            for (DocumentSnapshot documentSnapshot : documentSnapshots)
-                                newJob.add(documentSnapshot.toObject(Job.class));
-                            mJobAdapter.addAllAtStart(newJob);
-                            Toast.makeText(mContext, "Refreshed", Toast.LENGTH_SHORT).show();
-                            swipeRefreshLayoutJob.setRefreshing(false);
-                        }else {
-                            Toast.makeText(mContext, "No new jobs", Toast.LENGTH_SHORT).show();
-                            swipeRefreshLayoutJob.setRefreshing(false);
+                            if (documentSnapshots != null && !documentSnapshots.isEmpty()) {
+                                mDocumentAtFirstPosition = documentSnapshots.getDocuments().get(0);
+                                for (DocumentSnapshot documentSnapshot : documentSnapshots)
+                                    newJob.add(documentSnapshot.toObject(Job.class));
+                                mJobAdapter.addAllAtStart(newJob);
+                                Toast.makeText(mContext, "Refreshed", Toast.LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(mContext, "No new jobs", Toast.LENGTH_SHORT).show();
+                            }
+                            mIsLoading = false;
                         }
-                        mIsLoading = false;
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(mContext, "Failed to Load data", Toast.LENGTH_SHORT).show();
-                        swipeRefreshLayoutJob.setRefreshing(false);
-                        mIsLoading = false;
-                    }
-                });
-
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Toast.makeText(mContext, "Failed to Load data", Toast.LENGTH_SHORT).show();
+                            mIsLoading = false;
+                        }
+                    });
+        }
+        swipeRefreshLayoutJob.setRefreshing(false);
     }
 
 
@@ -404,7 +407,7 @@ public class JobFragment extends Fragment implements SwipeRefreshLayout.OnRefres
             searchItem.expandActionView();
             mSearchView.setQuery(mSearchString, true);
             mSearchView.clearFocus();
-            mSearchView.setMaxWidth( Integer.MAX_VALUE );
+            mSearchView.setMaxWidth(Integer.MAX_VALUE);
             menu.findItem(R.id.jobFilter).setVisible(false);
         }
 
@@ -416,31 +419,13 @@ public class JobFragment extends Fragment implements SwipeRefreshLayout.OnRefres
 
             @Override
             public boolean onQueryTextChange(String newText) {
-
-                if (!TextUtils.isEmpty(newText)) {
+                if (newText != null) {
                     final List<Job> searchedJob = new ArrayList<Job>();
-                    String whereCondition = String.format("%s.%s", "mJobSearchKeywordsMap", newText.toLowerCase());
-                    mFirestore.collection(Constants.JOB_COLLECTION)
-                            .whereEqualTo(whereCondition, true)
-                            .get()
-                            .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                                @Override
-                                public void onSuccess(QuerySnapshot documentSnapshots) {
-                                    if (documentSnapshots != null && !documentSnapshots.isEmpty()) {
-                                        for (DocumentSnapshot documentSnapshot : documentSnapshots)
-                                            searchedJob.add(documentSnapshot.toObject(Job.class));
-                                        mJobAdapter.addAsPerSearch(searchedJob);
-                                    }else {
-                                        mJobAdapter.setEmptyView();
-                                    }
-                                }
-                            })
-                            .addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception e) {
-                                    Toast.makeText(mContext, "Failed to search", Toast.LENGTH_SHORT).show();
-                                }
-                            });
+                    if (!isJobFilterApplied) {
+                        updateAdapterAsPerSearch(searchedJob, newText);
+                    } else {
+                        updateAdapterAsPerSearchWithFilter(searchedJob, newText);
+                    }
                 }
                 return true;
             }
@@ -451,7 +436,7 @@ public class JobFragment extends Fragment implements SwipeRefreshLayout.OnRefres
             @Override
             public boolean onMenuItemActionExpand(MenuItem item) {
                 setItemsVisibility(menu, searchItem, false);
-                List<Job> initialJobList= mJobAdapter.getmJobList();
+                List<Job> initialJobList = mJobAdapter.getmJobList();
                 mInitialArray = initialJobList.toArray(new Job[initialJobList.size()]);
                 return true;
             }
@@ -459,9 +444,8 @@ public class JobFragment extends Fragment implements SwipeRefreshLayout.OnRefres
             @Override
             public boolean onMenuItemActionCollapse(MenuItem item) {
                 setItemsVisibility(menu, searchItem, true);
-                //TODO: set the whole list (without any filter) on adapter and notify
-                List<Job> jobList=  mJobAdapter.getmJobList();
-                int currentSize = jobList != null ? jobList.size():0;
+                List<Job> jobList = mJobAdapter.getmJobList();
+                int currentSize = jobList != null ? jobList.size() : 0;
                 //remove the current items
                 mJobAdapter.replaceWithInitialList(mInitialArray, currentSize);
                 return true;
@@ -475,6 +459,8 @@ public class JobFragment extends Fragment implements SwipeRefreshLayout.OnRefres
         int id = item.getItemId();
         switch (id) {
             case R.id.jobFilter:
+                if(mSearchString != null)
+                    mSearchString= null;
                 ((MainActivity) getActivity()).commitFilterJobFragment();
                 break;
             default:
@@ -524,7 +510,7 @@ public class JobFragment extends Fragment implements SwipeRefreshLayout.OnRefres
         drawerLayoutJob.closeDrawers();
     }
 
-    private void initializeRecyclerView(){
+    private void initializeRecyclerView() {
         LinearLayoutManager lm = new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false);
         rvJob.setLayoutManager(lm);
         rvJob.hasFixedSize();
@@ -548,5 +534,123 @@ public class JobFragment extends Fragment implements SwipeRefreshLayout.OnRefres
 
     public void setmLastDocumentSnapshotSize(int mLastDocumentSnapshotSize) {
         this.mLastDocumentSnapshotSize = mLastDocumentSnapshotSize;
+    }
+
+    private void updateAdapterAsPerSearch(final List<Job> searchedJob, final String newText) {
+        if (!TextUtils.isEmpty(newText)) {
+            String whereCondition = String.format("%s.%s", "mJobSearchKeywordsMap", newText.toLowerCase());
+            mFirestore.collection(Constants.JOB_COLLECTION)
+                    .whereEqualTo(whereCondition, true)
+                    .get()
+                    .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                        @Override
+                        public void onSuccess(QuerySnapshot documentSnapshots) {
+                            if (documentSnapshots != null && !documentSnapshots.isEmpty()) {
+                                for (DocumentSnapshot documentSnapshot : documentSnapshots)
+                                    searchedJob.add(documentSnapshot.toObject(Job.class));
+                                mJobAdapter.addAsPerSearch(searchedJob);
+                            } else {
+                                mJobAdapter.setEmptyView();
+                            }
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            e.printStackTrace();
+                            Toast.makeText(mContext, "Failed to search", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+        }
+    }
+
+    private void updateAdapterAsPerSearchWithFilter(final List<Job> searchedJob, final String newText) {
+        if (!TextUtils.isEmpty(newText)) {
+            String whereCondition = String.format("%s.%s", "mJobSearchKeywordsMap", newText.toLowerCase());
+            if (mLocationConstraint != null && mOrganisationConstraint != null) {
+                mFirestore.collection(Constants.JOB_COLLECTION)
+                        .whereEqualTo("mJobLocation", mLocationConstraint)
+                        .whereEqualTo("mJobOrganisation", mOrganisationConstraint)
+                        .whereEqualTo(whereCondition, true)
+                        .get()
+                        .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                            @Override
+                            public void onSuccess(QuerySnapshot documentSnapshots) {
+                                if (documentSnapshots != null && !documentSnapshots.isEmpty()) {
+                                    for (DocumentSnapshot documentSnapshot : documentSnapshots)
+                                        searchedJob.add(documentSnapshot.toObject(Job.class));
+                                    mJobAdapter.addAsPerSearch(searchedJob);
+                                } else {
+                                    mJobAdapter.setEmptyView();
+                                }
+                            }
+                        })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                e.printStackTrace();
+                                Toast.makeText(mContext, "Failed to search", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+            } else if (mLocationConstraint != null) {
+                mFirestore.collection(Constants.JOB_COLLECTION)
+                        .whereEqualTo(whereCondition, true)
+                        .whereEqualTo("mJobLocation", mLocationConstraint)
+                        .get()
+                        .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                            @Override
+                            public void onSuccess(QuerySnapshot documentSnapshots) {
+                                if (documentSnapshots != null && !documentSnapshots.isEmpty()) {
+                                    for (DocumentSnapshot documentSnapshot : documentSnapshots)
+                                        searchedJob.add(documentSnapshot.toObject(Job.class));
+                                    mJobAdapter.addAsPerSearch(searchedJob);
+                                } else {
+                                    mJobAdapter.setEmptyView();
+                                }
+                            }
+                        })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                e.printStackTrace();
+                                Toast.makeText(mContext, "Failed to search", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+            } else if (mOrganisationConstraint != null) {
+                mFirestore.collection(Constants.JOB_COLLECTION)
+                        .whereEqualTo(whereCondition, true)
+                        .whereEqualTo("mJobOrganisation", mOrganisationConstraint)
+                        .get()
+                        .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                            @Override
+                            public void onSuccess(QuerySnapshot documentSnapshots) {
+                                if (documentSnapshots != null && !documentSnapshots.isEmpty()) {
+                                    for (DocumentSnapshot documentSnapshot : documentSnapshots)
+                                        searchedJob.add(documentSnapshot.toObject(Job.class));
+                                    mJobAdapter.addAsPerSearch(searchedJob);
+                                } else {
+                                    mJobAdapter.setEmptyView();
+                                }
+                            }
+                        })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                e.printStackTrace();
+                                Toast.makeText(mContext, "Failed to search", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+            }
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        isJobFilterApplied = false;
+        mMainActivity.setJobOrganisationPreferenceChecked(false);
+        mMainActivity.setJobLocationPreferenceChecked(false);
+        mMainActivity.setmJobLocationConstraint(null);
+        mMainActivity.setmJobOrganisationConstraint(null);
     }
 }

@@ -32,7 +32,7 @@ public class JobLocationAdapter extends RecyclerView.Adapter<JobLocationAdapter.
         this.mJobLocationList = Arrays.asList(mContext.getResources().getStringArray(R.array.location));
         this.mRecyclerView = mRecyclerView;
         this.mFilterJobFragment = ((FilterJobFragment) fm.findFragmentByTag("FilterJob"));
-        this.mPositionLastChecked = mFilterJobFragment.getmLocationCheckedPosition();
+        this.mPositionLastChecked = mFilterJobFragment.getmJobLocationCheckedPosition();
     }
 
     @Override
@@ -85,11 +85,11 @@ public class JobLocationAdapter extends RecyclerView.Adapter<JobLocationAdapter.
                         ctv.setCheckMarkDrawable(mContext.getResources()
                                 .getDrawable(R.drawable.ic_check_box_black_24dp));
                         mPositionLastChecked = getAdapterPosition();
-                        mFilterJobFragment.setmLocationCheckedPosition(mPositionLastChecked);
-                        mFilterJobFragment.getmMainActivity().setLocationPreferenceChecked(true);
+                        mFilterJobFragment.setmJobLocationCheckedPosition(mPositionLastChecked);
+                        mFilterJobFragment.getmMainActivity().setJobLocationPreferenceChecked(true);
                         ctv.toggle();
                     } else {
-                        mFilterJobFragment.getmMainActivity().setLocationPreferenceChecked(false);
+                        mFilterJobFragment.getmMainActivity().setJobLocationPreferenceChecked(false);
                     }
                 }
             });

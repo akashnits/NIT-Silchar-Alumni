@@ -8,7 +8,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -50,8 +49,8 @@ public class FilterJobFragment extends Fragment {
     CardView cvFilterJob;
     Unbinder unbinder;
 
-    private int mLocationCheckedPosition;
-    private int mOrganisationCheckedPoistion;
+    private int mJobLocationCheckedPosition;
+    private int mJobOrganisationCheckedPoistion;
     private Context mContext;
     private MainActivity mMainActivity;
 
@@ -81,6 +80,13 @@ public class FilterJobFragment extends Fragment {
     }
 
     @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        mContext= context;
+        mMainActivity= (MainActivity) getActivity();
+    }
+
+    @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
@@ -94,7 +100,7 @@ public class FilterJobFragment extends Fragment {
                 String[] locations = getResources().getStringArray(R.array.location);
                 for (int i = 0; i < locations.length; i++) {
                     if (locations[i].equals(locationConstraint)) {
-                        mLocationCheckedPosition = i;
+                        mJobLocationCheckedPosition = i;
                         break;
                     }
                 }
@@ -103,14 +109,14 @@ public class FilterJobFragment extends Fragment {
                 btJobFilterLocation.setBackgroundColor(getResources().getColor(R.color.white));
             }
 
-            if (mMainActivity.isOrganisationPreferenceChecked()) {
+            if (mMainActivity.isJobOrganisationPreferenceChecked()) {
                 organisationConstraint = mMainActivity.getmJobOrganisationConstraint();
-                mMainActivity.setOrganisationPreferenceChecked(true);
+                mMainActivity.setJobOrganisationPreferenceChecked(true);
                 //find the position of classOf constraint
                 String[] organisations = getResources().getStringArray(R.array.organisation);
                 for (int j = 0; j < organisations.length; j++) {
                     if (organisations[j].equals(organisationConstraint)) {
-                        mOrganisationCheckedPoistion = j;
+                        mJobOrganisationCheckedPoistion = j;
                         break;
                     }
                 }
@@ -124,16 +130,16 @@ public class FilterJobFragment extends Fragment {
                 btJobFilterApply.setBackgroundColor(getResources().getColor(R.color.white));
         }else {
             boolean isJobLocationPrefChecked= savedInstanceState.getBoolean("isJobLocationChecked");
-            boolean isOrganisationPrefChecked= savedInstanceState.getBoolean("isOrganisationChecked");
+            boolean isJobOrganisationPrefChecked= savedInstanceState.getBoolean("isJobOrganisationChecked");
 
             if(isJobLocationPrefChecked){
                 btJobFilterLocation.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
             }
-            if(isOrganisationPrefChecked){
+            if(isJobOrganisationPrefChecked){
                 btJobFilterOrganisation.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
             }
 
-            if(isJobLocationPrefChecked  || isOrganisationPrefChecked)
+            if(isJobLocationPrefChecked  || isJobOrganisationPrefChecked)
                 btJobFilterApply.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
         }
     }
@@ -149,7 +155,7 @@ public class FilterJobFragment extends Fragment {
         switch (view.getId()) {
             case R.id.ivJobClose:
                 JobFragment.isJobFilterApplied = false;
-                mMainActivity.setOrganisationPreferenceChecked(false);
+                mMainActivity.setJobOrganisationPreferenceChecked(false);
                 mMainActivity.setJobLocationPreferenceChecked(false);
                 mMainActivity.setmJobLocationConstraint(null);
                 mMainActivity.setmJobOrganisationConstraint(null);
@@ -164,13 +170,14 @@ public class FilterJobFragment extends Fragment {
             case R.id.btJobFilterApply:
                 if (mMainActivity.isJobLocationPreferenceChecked()) {
                     mMainActivity.setmJobLocationConstraint(getResources().getStringArray
-                            (R.array.location)[mLocationCheckedPosition]);
+                            (R.array.location)[mJobLocationCheckedPosition]);
                 }
-                if(mMainActivity.isOrganisationPreferenceChecked()){
+                if(mMainActivity.isJobOrganisationPreferenceChecked()){
                     mMainActivity.setmJobOrganisationConstraint(getResources().getStringArray
-                            (R.array.organisation)[mOrganisationCheckedPoistion]);
+                            (R.array.organisation)[mJobOrganisationCheckedPoistion]);
                 }
-                if(mMainActivity.isLocationPreferenceChecked() || mMainActivity.isClassOfPreferenceChecked())
+                if(mMainActivity.isJobLocationPreferenceChecked() ||
+                        mMainActivity.isJobOrganisationPreferenceChecked())
                     JobFragment.isJobFilterApplied = true;
                 else
                     JobFragment.isJobFilterApplied = false;
@@ -193,7 +200,7 @@ public class FilterJobFragment extends Fragment {
                     btJobFilterApply.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
                 } else {
                     btJobFilterLocation.setBackgroundColor(getResources().getColor(android.R.color.white));
-                    if (!mMainActivity.isOrganisationPreferenceChecked())
+                    if (!mMainActivity.isJobOrganisationPreferenceChecked())
                         btJobFilterApply.setBackgroundColor(getResources().getColor(android.R.color.white));
                 }
             }
@@ -220,7 +227,7 @@ public class FilterJobFragment extends Fragment {
 
     private void showJobOrganisationAlertDialog() {
         final AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
-        builder.setTitle("Choose a graduation year");
+        builder.setTitle("Choose a company");
 
         LayoutInflater inflater = LayoutInflater.from(mContext);
         View content = inflater.inflate(R.layout.dialog_select_job_organisation, null);
@@ -228,7 +235,7 @@ public class FilterJobFragment extends Fragment {
         builder.setView(content);
         builder.setPositiveButton("DONE", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
-                if (mMainActivity.isOrganisationPreferenceChecked()) {
+                if (mMainActivity.isJobOrganisationPreferenceChecked()) {
                     btJobFilterOrganisation.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
                     btJobFilterApply.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
                 } else {
@@ -241,8 +248,8 @@ public class FilterJobFragment extends Fragment {
 
         builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
-                if (mMainActivity.isOrganisationPreferenceChecked())
-                    mMainActivity.setOrganisationPreferenceChecked(false);
+                if (mMainActivity.isJobOrganisationPreferenceChecked())
+                    mMainActivity.setJobOrganisationPreferenceChecked(false);
                 btJobFilterOrganisation.setBackgroundColor(getResources().getColor(R.color.white));
                 dialog.dismiss();
             }
@@ -258,20 +265,20 @@ public class FilterJobFragment extends Fragment {
         builder.show();
     }
 
-    public int getmLocationCheckedPosition() {
-        return mLocationCheckedPosition;
+    public int getmJobLocationCheckedPosition() {
+        return mJobLocationCheckedPosition;
     }
 
-    public void setmLocationCheckedPosition(int mLocationCheckedPosition) {
-        this.mLocationCheckedPosition = mLocationCheckedPosition;
+    public void setmJobLocationCheckedPosition(int mJobLocationCheckedPosition) {
+        this.mJobLocationCheckedPosition = mJobLocationCheckedPosition;
     }
 
-    public int getmOrganisationCheckedPoistion() {
-        return mOrganisationCheckedPoistion;
+    public int getmJobOrganisationCheckedPoistion() {
+        return mJobOrganisationCheckedPoistion;
     }
 
-    public void setmOrganisationCheckedPoistion(int mOrganisationCheckedPoistion) {
-        this.mOrganisationCheckedPoistion = mOrganisationCheckedPoistion;
+    public void setmJobOrganisationCheckedPoistion(int mJobOrganisationCheckedPoistion) {
+        this.mJobOrganisationCheckedPoistion = mJobOrganisationCheckedPoistion;
     }
 
     public MainActivity getmMainActivity() {
@@ -286,6 +293,6 @@ public class FilterJobFragment extends Fragment {
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putBoolean("isJobLocationChecked", mMainActivity.isJobLocationPreferenceChecked());
-        outState.putBoolean("isOrganisationChecked", mMainActivity.isOrganisationPreferenceChecked());
+        outState.putBoolean("isJobOrganisationChecked", mMainActivity.isJobOrganisationPreferenceChecked());
     }
 }

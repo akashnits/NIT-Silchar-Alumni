@@ -33,7 +33,7 @@ public class JobOrganisationAdapter extends RecyclerView.Adapter<JobOrganisation
         this.mJobOrganisationList = Arrays.asList(mContext.getResources().getStringArray(R.array.organisation));
         this.mRecyclerView = mRecyclerView;
         this.mFilterJobFragment = ((FilterJobFragment) fm.findFragmentByTag("FilterJob"));
-        this.mPositionLastChecked = mFilterJobFragment.getmOrganisationCheckedPoistion();
+        this.mPositionLastChecked = mFilterJobFragment.getmJobOrganisationCheckedPoistion();
     }
 
     @Override
@@ -46,7 +46,7 @@ public class JobOrganisationAdapter extends RecyclerView.Adapter<JobOrganisation
     @Override
     public void onBindViewHolder(JobOrganisationViewHolder holder, int position) {
         holder.ctvJobOrganisation.setText(mJobOrganisationList.get(position));
-        if ((mFilterJobFragment.getmMainActivity().isOrganisationPreferenceChecked() &&
+        if ((mFilterJobFragment.getmMainActivity().isJobOrganisationPreferenceChecked() &&
                 position == mPositionLastChecked)) {
             holder.ctvJobOrganisation.setSelected(true);
             holder.ctvJobOrganisation.setCheckMarkDrawable(mContext.getResources()
@@ -72,7 +72,7 @@ public class JobOrganisationAdapter extends RecyclerView.Adapter<JobOrganisation
                 public void onClick(View v) {
 
                     //wherever the click be, set the last checked position false if it's there
-                    if (mFilterJobFragment.getmMainActivity().isOrganisationPreferenceChecked()) {
+                    if (mFilterJobFragment.getmMainActivity().isJobOrganisationPreferenceChecked()) {
                         JobOrganisationViewHolder viewHolder = (JobOrganisationViewHolder)
                                 mRecyclerView.findViewHolderForAdapterPosition(mPositionLastChecked);
                         if (viewHolder != null) {
@@ -83,17 +83,17 @@ public class JobOrganisationAdapter extends RecyclerView.Adapter<JobOrganisation
                     }
 
                     //Clicked on  somewhere else or no checks
-                    if (!mFilterJobFragment.getmMainActivity().isOrganisationPreferenceChecked()
+                    if (!mFilterJobFragment.getmMainActivity().isJobOrganisationPreferenceChecked()
                             || getAdapterPosition() != mPositionLastChecked) {
                         CheckedTextView ctv = (CheckedTextView) v;
                         ctv.setCheckMarkDrawable(mContext.getResources()
                                 .getDrawable(R.drawable.ic_check_box_black_24dp));
                         mPositionLastChecked = getAdapterPosition();
-                        mFilterJobFragment.setmOrganisationCheckedPoistion(mPositionLastChecked);
-                        mFilterJobFragment.getmMainActivity().setOrganisationPreferenceChecked(true);
+                        mFilterJobFragment.setmJobOrganisationCheckedPoistion(mPositionLastChecked);
+                        mFilterJobFragment.getmMainActivity().setJobOrganisationPreferenceChecked(true);
                         ctv.toggle();
                     } else {
-                        mFilterJobFragment.getmMainActivity().setOrganisationPreferenceChecked(false);
+                        mFilterJobFragment.getmMainActivity().setJobOrganisationPreferenceChecked(false);
                     }
                 }
             });
