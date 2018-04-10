@@ -66,7 +66,6 @@ public class FilterAlumniFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setRetainInstance(true);
     }
 
     @Override
@@ -122,6 +121,8 @@ public class FilterAlumniFragment extends Fragment {
         }else {
             boolean isLocationPrefChecked= savedInstanceState.getBoolean("isLocationChecked");
             boolean isClassOfPrefChecked= savedInstanceState.getBoolean("isClassOfChecked");
+            mLocationCheckedPosition= savedInstanceState.getInt("alumniLocationCheckedPosition");
+            mAlumniClassOfCheckedPoistion= savedInstanceState.getInt("alumniClassOfCheckedPosition");
 
             if(isLocationPrefChecked){
                 btFilterLocation.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
@@ -301,5 +302,7 @@ public class FilterAlumniFragment extends Fragment {
         super.onSaveInstanceState(outState);
         outState.putBoolean("isLocationChecked", mMainActivity.isLocationPreferenceChecked());
         outState.putBoolean("isClassOfChecked", mMainActivity.isClassOfPreferenceChecked());
+        outState.putInt("alumniClassOfCheckedPosition", mAlumniClassOfCheckedPoistion);
+        outState.putInt("alumniLocationCheckedPosition", mLocationCheckedPosition);
     }
 }

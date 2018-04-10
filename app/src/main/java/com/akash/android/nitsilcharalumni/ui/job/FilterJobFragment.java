@@ -67,7 +67,6 @@ public class FilterJobFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setRetainInstance(true);
     }
 
     @Override
@@ -131,6 +130,8 @@ public class FilterJobFragment extends Fragment {
         }else {
             boolean isJobLocationPrefChecked= savedInstanceState.getBoolean("isJobLocationChecked");
             boolean isJobOrganisationPrefChecked= savedInstanceState.getBoolean("isJobOrganisationChecked");
+            mJobLocationCheckedPosition= savedInstanceState.getInt("jobLocationCheckedPosition");
+            mJobOrganisationCheckedPoistion= savedInstanceState.getInt("jobOrganisationCheckedPosition");
 
             if(isJobLocationPrefChecked){
                 btJobFilterLocation.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
@@ -294,5 +295,7 @@ public class FilterJobFragment extends Fragment {
         super.onSaveInstanceState(outState);
         outState.putBoolean("isJobLocationChecked", mMainActivity.isJobLocationPreferenceChecked());
         outState.putBoolean("isJobOrganisationChecked", mMainActivity.isJobOrganisationPreferenceChecked());
+        outState.putInt("jobLocationCheckedPosition", mJobLocationCheckedPosition);
+        outState.putInt("jobOrganisationCheckedPosition", mJobOrganisationCheckedPoistion);
     }
 }
