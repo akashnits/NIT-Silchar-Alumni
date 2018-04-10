@@ -107,6 +107,7 @@ public class AlumniFragment extends Fragment implements AlumniAdapter.OnAlumniCl
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
         mFirestore = FirebaseFirestore.getInstance();
+        mAlumniAdapter = new AlumniAdapter(mContext, this, this);
     }
 
     @Override
@@ -122,16 +123,16 @@ public class AlumniFragment extends Fragment implements AlumniAdapter.OnAlumniCl
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        mLocationConstraint = mMainActivity.getmAlumniLocationConstraint();
-        mClassConstraint = mMainActivity.getmAlumniClassOfConstraint();
 
         ((AppCompatActivity) getActivity()).setSupportActionBar(toolbarAlumni);
         setupDrawer();
         initializeRecyclerView();
 
         final List<User> newAlumni = new ArrayList<>();
-        if (!isAlumniFilterApplied) {
-            if (savedInstanceState == null) {
+        if (savedInstanceState == null) {
+            mLocationConstraint = mMainActivity.getmAlumniLocationConstraint();
+            mClassConstraint = mMainActivity.getmAlumniClassOfConstraint();
+            if (!isAlumniFilterApplied) {
                 if (TextUtils.isEmpty(mSearchString)) {
                     pbAlumniFragment.setVisibility(View.VISIBLE);
                     isLoading = true;
@@ -166,26 +167,28 @@ public class AlumniFragment extends Fragment implements AlumniAdapter.OnAlumniCl
                 } else {
                     updateAdapterAsPerSearch(newAlumni, mSearchString);
                 }
-            }
-        } else if (savedInstanceState == null) {
-            if (TextUtils.isEmpty(mSearchString)) {
-                if (mLocationConstraint != null && mClassConstraint != null) {
-                    //apply both the filters
-                    List<String> constraintList = new ArrayList<>();
-                    constraintList.add(mLocationConstraint);
-                    constraintList.add(mClassConstraint);
-                    String combinedFilter = TextUtils.join(",", constraintList);
-                    mAlumniAdapter.getFilter().filter(combinedFilter);
-                } else if (mLocationConstraint != null) {
-                    mAlumniAdapter.getFilter().filter(mLocationConstraint);
-                } else if (mClassConstraint != null) {
-                    mAlumniAdapter.getFilter().filter(mClassConstraint);
-                }
-            } else {
-                updateAdapterAsPerSearchWithFilter(newAlumni, mSearchString);
-            }
-        }
 
+            } else {
+                if (TextUtils.isEmpty(mSearchString)) {
+                    if (mLocationConstraint != null && mClassConstraint != null) {
+                        //apply both the filters
+                        List<String> constraintList = new ArrayList<>();
+                        constraintList.add(mLocationConstraint);
+                        constraintList.add(mClassConstraint);
+                        String combinedFilter = TextUtils.join(",", constraintList);
+                        mAlumniAdapter.getFilter().filter(combinedFilter);
+                    } else if (mLocationConstraint != null) {
+                        mAlumniAdapter.getFilter().filter(mLocationConstraint);
+                    } else if (mClassConstraint != null) {
+                        mAlumniAdapter.getFilter().filter(mClassConstraint);
+                    }
+                } else {
+                    updateAdapterAsPerSearchWithFilter(newAlumni, mSearchString);
+                }
+            }
+        }/*else if(!TextUtils.isEmpty(mSearchString))
+            ((EditText) mSearchView.findViewById(android.support.v7.appcompat.R.id.search_src_text)).setText(mSearchString);
+*/
         rvAlumni.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
@@ -222,8 +225,8 @@ public class AlumniFragment extends Fragment implements AlumniAdapter.OnAlumniCl
     }
 
     public void onAlumniClicked(String email, View view) {
-        if(mSearchString != null)
-            mSearchString= null;
+        if (mSearchString != null)
+            mSearchString = null;
         Bundle b = new Bundle();
         b.putString("email", email);
         ((MainActivity) getActivity()).commitAlumniDetailsFragment(b);
@@ -286,7 +289,7 @@ public class AlumniFragment extends Fragment implements AlumniAdapter.OnAlumniCl
         }
     }
 
-    @Override
+    /*@Override
     public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
         super.onViewStateRestored(savedInstanceState);
 
@@ -334,7 +337,7 @@ public class AlumniFragment extends Fragment implements AlumniAdapter.OnAlumniCl
             outState.putParcelable("position", rvAlumni.getLayoutManager().onSaveInstanceState());
         if (!TextUtils.isEmpty(mSearchView.getQuery()))
             outState.putString("searchAlumni", mSearchView.getQuery().toString());
-    }
+    }*/
 
 
     @Override
@@ -365,6 +368,7 @@ public class AlumniFragment extends Fragment implements AlumniAdapter.OnAlumniCl
             @Override
             public boolean onQueryTextChange(final String newText) {
                 if (newText != null) {
+                    mSearchString= newText;
                     final List<User> searchedAlumni = new ArrayList<User>();
                     if (!isAlumniFilterApplied) {
                         updateAdapterAsPerSearch(searchedAlumni, newText);
@@ -404,8 +408,8 @@ public class AlumniFragment extends Fragment implements AlumniAdapter.OnAlumniCl
         int id = item.getItemId();
         switch (id) {
             case R.id.filter:
-                if(mSearchString != null)
-                    mSearchString= null;
+                if (mSearchString != null)
+                    mSearchString = null;
                 ((MainActivity) getActivity()).commitFilterAlumniFragment();
                 break;
             default:
@@ -458,7 +462,6 @@ public class AlumniFragment extends Fragment implements AlumniAdapter.OnAlumniCl
         LinearLayoutManager lm = new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false);
         rvAlumni.setLayoutManager(lm);
         rvAlumni.hasFixedSize();
-        mAlumniAdapter = new AlumniAdapter(mContext, this, this);
         rvAlumni.setAdapter(mAlumniAdapter);
     }
 

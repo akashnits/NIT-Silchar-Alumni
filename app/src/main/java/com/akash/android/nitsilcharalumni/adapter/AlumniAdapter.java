@@ -46,7 +46,9 @@ public class AlumniAdapter extends RecyclerView.Adapter<AlumniAdapter.AlumniView
     private OnAlumniClickHandler mHandler;
     private ArrayList<User> mAlumniList;
     private FirebaseFirestore mFirestore;
-    private DocumentSnapshot mLastVisible = null;
+    private DocumentSnapshot mLastVisibleLocation = null;
+    private DocumentSnapshot mLastVisibleClassOf = null;
+    private DocumentSnapshot mLastVisibleBoth = null;
     private AlumniLocationFilter mAlumniLocationFilter;
     private AlumniFragment mAlumniFragment;
     private MainActivity mMainActivity;
@@ -112,6 +114,19 @@ public class AlumniAdapter extends RecyclerView.Adapter<AlumniAdapter.AlumniView
         notifyItemRangeInserted(initialSize, newAlumni.size());
     }
 
+    public void addAsPerFilterFirstLoad(List<User> newAlumni){
+        //get the current items
+        int currentSize = mAlumniList.size();
+        //remove the current items
+        mAlumniList.clear();
+        //add all the new items
+        mAlumniList.addAll(newAlumni);
+        //tell the recycler view that all the old items are gone
+        notifyItemRangeRemoved(0, currentSize);
+        //tell the recycler view how many new items we added
+        notifyItemRangeInserted(0, mAlumniList.size());
+    }
+
     public void addAsPerSearch(List<User> searchedFeed) {
         //get the current items
         int currentSize = mAlumniList.size();
@@ -165,6 +180,10 @@ public class AlumniAdapter extends RecyclerView.Adapter<AlumniAdapter.AlumniView
         return mAlumniList;
     }
 
+    public void setmAlumniList(ArrayList<User> mAlumniList) {
+        this.mAlumniList = mAlumniList;
+    }
+
     @Override
     public Filter getFilter() {
         if (mAlumniLocationFilter == null) {
@@ -185,19 +204,22 @@ public class AlumniAdapter extends RecyclerView.Adapter<AlumniAdapter.AlumniView
 
             if (constraint != null && constraint.length() > 0) {
                 final ArrayList<User> filterList = new ArrayList<>();
-                if (mMainActivity.getmAlumniLocationConstraint() != null && mMainActivity.getmAlumniClassOfConstraint() != null) {
+                if (mMainActivity.getmAlumniLocationConstraint() != null &&
+                        mMainActivity.getmAlumniClassOfConstraint() != null) {
                     mAlumniFragment.setLoading(true);
                     String[] constraints = constraint.toString().split(",");
                     Query query;
-                    if (mLastVisible != null) {
+                    if (mLastVisibleBoth != null) {
                         query = mFirestore.collection(Constants.USER_COLLECTION)
                                 .whereEqualTo("mTypeOfUser", "Alumni")
                                 .orderBy("mEmail")
-                                .startAfter(mLastVisible)
+                                .startAfter(mLastVisibleBoth)
                                 .limit(LIMIT)
                                 .whereEqualTo("mLocation", constraints[0])
                                 .whereEqualTo("mClassOf", constraints[1]);
                     } else {
+                        mLastVisibleClassOf= null;
+                        mLastVisibleLocation=null;
                         query = mFirestore.collection(Constants.USER_COLLECTION)
                                 .whereEqualTo("mTypeOfUser", "Alumni")
                                 .orderBy("mEmail")
@@ -211,21 +233,23 @@ public class AlumniAdapter extends RecyclerView.Adapter<AlumniAdapter.AlumniView
                                 @Override
                                 public void onSuccess(QuerySnapshot documentSnapshots) {
                                     if (documentSnapshots != null && !documentSnapshots.isEmpty()) {
-                                        mLastVisible = documentSnapshots.getDocuments()
-                                                .get(documentSnapshots.size() - 1);
                                         if (mAlumniFragment != null) {
                                             mAlumniFragment.setmLastDocumentSnapshotSize(documentSnapshots.size());
                                         }
                                         for (DocumentSnapshot documentSnapshot : documentSnapshots)
                                             filterList.add(documentSnapshot.toObject(User.class));
                                         if (filterList.size() > 0) {
-                                            addAll(filterList);
+                                            if(mLastVisibleBoth != null)
+                                                addAll(filterList);
+                                            else
+                                                addAsPerFilterFirstLoad(filterList);
                                         }
+                                        mLastVisibleBoth = documentSnapshots.getDocuments()
+                                                .get(documentSnapshots.size() - 1);
                                     } else {
                                         if (mAlumniFragment != null) {
                                             mAlumniFragment.setmLastDocumentSnapshotSize(0);
                                         }
-                                        Toast.makeText(mContext, "That's all, folks!", Toast.LENGTH_SHORT).show();
                                     }
                                     mAlumniFragment.setLoading(false);
                                 }
@@ -241,14 +265,16 @@ public class AlumniAdapter extends RecyclerView.Adapter<AlumniAdapter.AlumniView
                 } else if (mMainActivity.getmAlumniLocationConstraint() != null) {
                     mAlumniFragment.setLoading(true);
                     Query query;
-                    if (mLastVisible != null) {
+                    if (mLastVisibleLocation != null) {
                         query = mFirestore.collection(Constants.USER_COLLECTION)
                                 .whereEqualTo("mTypeOfUser", "Alumni")
                                 .orderBy("mEmail")
-                                .startAfter(mLastVisible)
+                                .startAfter(mLastVisibleLocation)
                                 .limit(LIMIT)
                                 .whereEqualTo("mLocation", constraint.toString());
                     } else {
+                        mLastVisibleClassOf= null;
+                        mLastVisibleBoth=null;
                         query = mFirestore.collection(Constants.USER_COLLECTION)
                                 .whereEqualTo("mTypeOfUser", "Alumni")
                                 .orderBy("mEmail")
@@ -261,21 +287,23 @@ public class AlumniAdapter extends RecyclerView.Adapter<AlumniAdapter.AlumniView
                                 @Override
                                 public void onSuccess(QuerySnapshot documentSnapshots) {
                                     if (documentSnapshots != null && !documentSnapshots.isEmpty()) {
-                                        mLastVisible = documentSnapshots.getDocuments()
-                                                .get(documentSnapshots.size() - 1);
                                         if (mAlumniFragment != null) {
                                             mAlumniFragment.setmLastDocumentSnapshotSize(documentSnapshots.size());
                                         }
                                         for (DocumentSnapshot documentSnapshot : documentSnapshots)
                                             filterList.add(documentSnapshot.toObject(User.class));
                                         if (filterList.size() > 0) {
-                                            addAll(filterList);
+                                            if(mLastVisibleLocation != null)
+                                                addAll(filterList);
+                                            else
+                                                addAsPerFilterFirstLoad(filterList);
                                         }
+                                        mLastVisibleLocation = documentSnapshots.getDocuments()
+                                                .get(documentSnapshots.size() - 1);
                                     } else {
                                         if (mAlumniFragment != null) {
                                             mAlumniFragment.setmLastDocumentSnapshotSize(0);
                                         }
-                                        Toast.makeText(mContext, "That's all, folks!", Toast.LENGTH_SHORT).show();
                                     }
                                     mAlumniFragment.setLoading(false);
                                 }
@@ -291,14 +319,16 @@ public class AlumniAdapter extends RecyclerView.Adapter<AlumniAdapter.AlumniView
                 } else if (mMainActivity.getmAlumniClassOfConstraint() != null) {
                     mAlumniFragment.setLoading(true);
                     Query query;
-                    if (mLastVisible != null) {
+                    if (mLastVisibleClassOf != null) {
                         query = mFirestore.collection(Constants.USER_COLLECTION)
                                 .whereEqualTo("mTypeOfUser", "Alumni")
                                 .orderBy("mEmail")
-                                .startAfter(mLastVisible)
+                                .startAfter(mLastVisibleClassOf)
                                 .limit(LIMIT)
                                 .whereEqualTo("mClassOf", constraint.toString());
                     } else {
+                        mLastVisibleBoth= null;
+                        mLastVisibleLocation=null;
                         query = mFirestore.collection(Constants.USER_COLLECTION)
                                 .whereEqualTo("mTypeOfUser", "Alumni")
                                 .orderBy("mEmail")
@@ -311,21 +341,23 @@ public class AlumniAdapter extends RecyclerView.Adapter<AlumniAdapter.AlumniView
                                 @Override
                                 public void onSuccess(QuerySnapshot documentSnapshots) {
                                     if (documentSnapshots != null && !documentSnapshots.isEmpty()) {
-                                        mLastVisible = documentSnapshots.getDocuments()
-                                                .get(documentSnapshots.size() - 1);
                                         if (mAlumniFragment != null) {
                                             mAlumniFragment.setmLastDocumentSnapshotSize(documentSnapshots.size());
                                         }
                                         for (DocumentSnapshot documentSnapshot : documentSnapshots)
                                             filterList.add(documentSnapshot.toObject(User.class));
                                         if (filterList.size() > 0) {
-                                            addAll(filterList);
+                                            if(mLastVisibleClassOf != null)
+                                                addAll(filterList);
+                                            else
+                                                addAsPerFilterFirstLoad(filterList);
                                         }
+                                        mLastVisibleClassOf = documentSnapshots.getDocuments()
+                                                .get(documentSnapshots.size() - 1);
                                     } else {
                                         if (mAlumniFragment != null) {
                                             mAlumniFragment.setmLastDocumentSnapshotSize(0);
                                         }
-                                        Toast.makeText(mContext, "That's all, folks!", Toast.LENGTH_SHORT).show();
                                     }
                                     mAlumniFragment.setLoading(false);
                                 }
