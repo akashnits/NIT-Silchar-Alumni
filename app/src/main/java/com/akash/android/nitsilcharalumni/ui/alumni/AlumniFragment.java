@@ -149,7 +149,7 @@ public class AlumniFragment extends Fragment implements AlumniAdapter.OnAlumniCl
                                     mLastDocumentSnapshotSize = documentSnapshots.size();
                                     for (DocumentSnapshot documentSnapshot : documentSnapshots)
                                         newAlumni.add(documentSnapshot.toObject(User.class));
-                                    mAlumniAdapter.addAll(newAlumni);
+                                    mAlumniAdapter.replaceAll(newAlumni);
                                     if (pbAlumniFragment != null)
                                         pbAlumniFragment.setVisibility(View.INVISIBLE);
                                     isLoading = false;
@@ -410,6 +410,10 @@ public class AlumniFragment extends Fragment implements AlumniAdapter.OnAlumniCl
             case R.id.filter:
                 if (mSearchString != null)
                     mSearchString = null;
+                //setting last document to null for pagination
+                mAlumniAdapter.setmLastVisibleBoth(null);
+                mAlumniAdapter.setmLastVisibleClassOf(null);
+                mAlumniAdapter.setmLastVisibleLocation(null);
                 ((MainActivity) getActivity()).commitFilterAlumniFragment();
                 break;
             default:
@@ -615,6 +619,7 @@ public class AlumniFragment extends Fragment implements AlumniAdapter.OnAlumniCl
                     });
         }
     }
+
 
     @Override
     public void onDestroy() {

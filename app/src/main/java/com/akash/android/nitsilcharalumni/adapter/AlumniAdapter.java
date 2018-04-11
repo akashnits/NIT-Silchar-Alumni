@@ -114,6 +114,21 @@ public class AlumniAdapter extends RecyclerView.Adapter<AlumniAdapter.AlumniView
         notifyItemRangeInserted(initialSize, newAlumni.size());
     }
 
+    public void replaceAll(List<User> newAlumni){
+        //get the current items
+        int currentSize = mAlumniList.size();
+        //remove the current items
+        if(currentSize > 0)
+            mAlumniList.clear();
+        //add all the new items
+        mAlumniList.addAll(newAlumni);
+        //tell the recycler view that all the old items are gone
+        if(currentSize > 0)
+            notifyItemRangeRemoved(0, currentSize);
+        //tell the recycler view how many new items we added
+        notifyItemRangeInserted(0, mAlumniList.size());
+
+    }
     public void addAsPerFilterFirstLoad(List<User> newAlumni){
         //get the current items
         int currentSize = mAlumniList.size();
@@ -217,51 +232,87 @@ public class AlumniAdapter extends RecyclerView.Adapter<AlumniAdapter.AlumniView
                                 .limit(LIMIT)
                                 .whereEqualTo("mLocation", constraints[0])
                                 .whereEqualTo("mClassOf", constraints[1]);
+                        query
+                                .get()
+                                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                                    @Override
+                                    public void onSuccess(QuerySnapshot documentSnapshots) {
+                                        if (documentSnapshots != null && !documentSnapshots.isEmpty()) {
+                                            if (mAlumniFragment != null) {
+                                                mAlumniFragment.setmLastDocumentSnapshotSize(documentSnapshots.size());
+                                            }
+                                            for (DocumentSnapshot documentSnapshot : documentSnapshots)
+                                                filterList.add(documentSnapshot.toObject(User.class));
+                                            if (filterList.size() > 0) {
+                                                if(mLastVisibleBoth != null)
+                                                    addAll(filterList);
+                                                else
+                                                    addAsPerFilterFirstLoad(filterList);
+                                            }
+                                            mLastVisibleBoth = documentSnapshots.getDocuments()
+                                                    .get(documentSnapshots.size() - 1);
+                                        } else {
+                                            if (mAlumniFragment != null) {
+                                                mAlumniFragment.setmLastDocumentSnapshotSize(0);
+                                            }
+                                        }
+                                        mAlumniFragment.setLoading(false);
+                                    }
+                                })
+                                .addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        e.printStackTrace();
+                                        Toast.makeText(mContext, "Failed to Load data", Toast.LENGTH_SHORT).show();
+                                        mAlumniFragment.setLoading(false);
+                                    }
+                                });
                     } else {
-                        mLastVisibleClassOf= null;
-                        mLastVisibleLocation=null;
                         query = mFirestore.collection(Constants.USER_COLLECTION)
                                 .whereEqualTo("mTypeOfUser", "Alumni")
                                 .orderBy("mEmail")
                                 .limit(LIMIT)
                                 .whereEqualTo("mLocation", constraints[0])
                                 .whereEqualTo("mClassOf", constraints[1]);
-                    }
-                    query
-                            .get()
-                            .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                                @Override
-                                public void onSuccess(QuerySnapshot documentSnapshots) {
-                                    if (documentSnapshots != null && !documentSnapshots.isEmpty()) {
-                                        if (mAlumniFragment != null) {
-                                            mAlumniFragment.setmLastDocumentSnapshotSize(documentSnapshots.size());
+
+                        query
+                                .get()
+                                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                                    @Override
+                                    public void onSuccess(QuerySnapshot documentSnapshots) {
+                                        if (documentSnapshots != null && !documentSnapshots.isEmpty()) {
+                                            if (mAlumniFragment != null) {
+                                                mAlumniFragment.setmLastDocumentSnapshotSize(documentSnapshots.size());
+                                            }
+                                            for (DocumentSnapshot documentSnapshot : documentSnapshots)
+                                                filterList.add(documentSnapshot.toObject(User.class));
+                                            if (filterList.size() > 0) {
+                                                if(mLastVisibleBoth != null)
+                                                    addAll(filterList);
+                                                else
+                                                    addAsPerFilterFirstLoad(filterList);
+                                            }
+                                            mLastVisibleBoth = documentSnapshots.getDocuments()
+                                                    .get(documentSnapshots.size() - 1);
+                                        } else {
+                                            if (mAlumniFragment != null) {
+                                                mAlumniFragment.setmLastDocumentSnapshotSize(0);
+                                                setEmptyView();
+                                                Toast.makeText(mContext, "Nothing to show", Toast.LENGTH_SHORT).show();
+                                            }
                                         }
-                                        for (DocumentSnapshot documentSnapshot : documentSnapshots)
-                                            filterList.add(documentSnapshot.toObject(User.class));
-                                        if (filterList.size() > 0) {
-                                            if(mLastVisibleBoth != null)
-                                                addAll(filterList);
-                                            else
-                                                addAsPerFilterFirstLoad(filterList);
-                                        }
-                                        mLastVisibleBoth = documentSnapshots.getDocuments()
-                                                .get(documentSnapshots.size() - 1);
-                                    } else {
-                                        if (mAlumniFragment != null) {
-                                            mAlumniFragment.setmLastDocumentSnapshotSize(0);
-                                        }
+                                        mAlumniFragment.setLoading(false);
                                     }
-                                    mAlumniFragment.setLoading(false);
-                                }
-                            })
-                            .addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception e) {
-                                    e.printStackTrace();
-                                    Toast.makeText(mContext, "Failed to Load data", Toast.LENGTH_SHORT).show();
-                                    mAlumniFragment.setLoading(false);
-                                }
-                            });
+                                })
+                                .addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        e.printStackTrace();
+                                        Toast.makeText(mContext, "Failed to Load data", Toast.LENGTH_SHORT).show();
+                                        mAlumniFragment.setLoading(false);
+                                    }
+                                });
+                    }
                 } else if (mMainActivity.getmAlumniLocationConstraint() != null) {
                     mAlumniFragment.setLoading(true);
                     Query query;
@@ -272,50 +323,85 @@ public class AlumniAdapter extends RecyclerView.Adapter<AlumniAdapter.AlumniView
                                 .startAfter(mLastVisibleLocation)
                                 .limit(LIMIT)
                                 .whereEqualTo("mLocation", constraint.toString());
+                        query
+                                .get()
+                                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                                    @Override
+                                    public void onSuccess(QuerySnapshot documentSnapshots) {
+                                        if (documentSnapshots != null && !documentSnapshots.isEmpty()) {
+                                            if (mAlumniFragment != null) {
+                                                mAlumniFragment.setmLastDocumentSnapshotSize(documentSnapshots.size());
+                                            }
+                                            for (DocumentSnapshot documentSnapshot : documentSnapshots)
+                                                filterList.add(documentSnapshot.toObject(User.class));
+                                            if (filterList.size() > 0) {
+                                                if(mLastVisibleLocation != null)
+                                                    addAll(filterList);
+                                                else
+                                                    addAsPerFilterFirstLoad(filterList);
+                                            }
+                                            mLastVisibleLocation = documentSnapshots.getDocuments()
+                                                    .get(documentSnapshots.size() - 1);
+                                        } else {
+                                            if (mAlumniFragment != null) {
+                                                mAlumniFragment.setmLastDocumentSnapshotSize(0);
+                                            }
+                                        }
+                                        mAlumniFragment.setLoading(false);
+                                    }
+                                })
+                                .addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        e.printStackTrace();
+                                        Toast.makeText(mContext, "Failed to Load data", Toast.LENGTH_SHORT).show();
+                                        mAlumniFragment.setLoading(false);
+                                    }
+                                });
                     } else {
-                        mLastVisibleClassOf= null;
-                        mLastVisibleBoth=null;
                         query = mFirestore.collection(Constants.USER_COLLECTION)
                                 .whereEqualTo("mTypeOfUser", "Alumni")
                                 .orderBy("mEmail")
                                 .limit(LIMIT)
                                 .whereEqualTo("mLocation", constraint.toString());
-                    }
-                    query
-                            .get()
-                            .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                                @Override
-                                public void onSuccess(QuerySnapshot documentSnapshots) {
-                                    if (documentSnapshots != null && !documentSnapshots.isEmpty()) {
-                                        if (mAlumniFragment != null) {
-                                            mAlumniFragment.setmLastDocumentSnapshotSize(documentSnapshots.size());
+                        query
+                                .get()
+                                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                                    @Override
+                                    public void onSuccess(QuerySnapshot documentSnapshots) {
+                                        if (documentSnapshots != null && !documentSnapshots.isEmpty()) {
+                                            if (mAlumniFragment != null) {
+                                                mAlumniFragment.setmLastDocumentSnapshotSize(documentSnapshots.size());
+                                            }
+                                            for (DocumentSnapshot documentSnapshot : documentSnapshots)
+                                                filterList.add(documentSnapshot.toObject(User.class));
+                                            if (filterList.size() > 0) {
+                                                if(mLastVisibleLocation != null)
+                                                    addAll(filterList);
+                                                else
+                                                    addAsPerFilterFirstLoad(filterList);
+                                            }
+                                            mLastVisibleLocation = documentSnapshots.getDocuments()
+                                                    .get(documentSnapshots.size() - 1);
+                                        } else {
+                                            if (mAlumniFragment != null) {
+                                                mAlumniFragment.setmLastDocumentSnapshotSize(0);
+                                                setEmptyView();
+                                                Toast.makeText(mContext, "Nothing to show", Toast.LENGTH_SHORT).show();
+                                            }
                                         }
-                                        for (DocumentSnapshot documentSnapshot : documentSnapshots)
-                                            filterList.add(documentSnapshot.toObject(User.class));
-                                        if (filterList.size() > 0) {
-                                            if(mLastVisibleLocation != null)
-                                                addAll(filterList);
-                                            else
-                                                addAsPerFilterFirstLoad(filterList);
-                                        }
-                                        mLastVisibleLocation = documentSnapshots.getDocuments()
-                                                .get(documentSnapshots.size() - 1);
-                                    } else {
-                                        if (mAlumniFragment != null) {
-                                            mAlumniFragment.setmLastDocumentSnapshotSize(0);
-                                        }
+                                        mAlumniFragment.setLoading(false);
                                     }
-                                    mAlumniFragment.setLoading(false);
-                                }
-                            })
-                            .addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception e) {
-                                    e.printStackTrace();
-                                    Toast.makeText(mContext, "Failed to Load data", Toast.LENGTH_SHORT).show();
-                                    mAlumniFragment.setLoading(false);
-                                }
-                            });
+                                })
+                                .addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        e.printStackTrace();
+                                        Toast.makeText(mContext, "Failed to Load data", Toast.LENGTH_SHORT).show();
+                                        mAlumniFragment.setLoading(false);
+                                    }
+                                });
+                    }
                 } else if (mMainActivity.getmAlumniClassOfConstraint() != null) {
                     mAlumniFragment.setLoading(true);
                     Query query;
@@ -326,52 +412,112 @@ public class AlumniAdapter extends RecyclerView.Adapter<AlumniAdapter.AlumniView
                                 .startAfter(mLastVisibleClassOf)
                                 .limit(LIMIT)
                                 .whereEqualTo("mClassOf", constraint.toString());
+                        query
+                                .get()
+                                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                                    @Override
+                                    public void onSuccess(QuerySnapshot documentSnapshots) {
+                                        if (documentSnapshots != null && !documentSnapshots.isEmpty()) {
+                                            if (mAlumniFragment != null) {
+                                                mAlumniFragment.setmLastDocumentSnapshotSize(documentSnapshots.size());
+                                            }
+                                            for (DocumentSnapshot documentSnapshot : documentSnapshots)
+                                                filterList.add(documentSnapshot.toObject(User.class));
+                                            if (filterList.size() > 0) {
+                                                if(mLastVisibleClassOf != null)
+                                                    addAll(filterList);
+                                                else
+                                                    addAsPerFilterFirstLoad(filterList);
+                                            }
+                                            mLastVisibleClassOf = documentSnapshots.getDocuments()
+                                                    .get(documentSnapshots.size() - 1);
+                                        } else {
+                                            if (mAlumniFragment != null) {
+                                                mAlumniFragment.setmLastDocumentSnapshotSize(0);
+                                            }
+                                        }
+                                        mAlumniFragment.setLoading(false);
+                                    }
+                                })
+                                .addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        e.printStackTrace();
+                                        Toast.makeText(mContext, "Failed to Load data", Toast.LENGTH_SHORT).show();
+                                        mAlumniFragment.setLoading(false);
+                                    }
+                                });
                     } else {
-                        mLastVisibleBoth= null;
-                        mLastVisibleLocation=null;
                         query = mFirestore.collection(Constants.USER_COLLECTION)
                                 .whereEqualTo("mTypeOfUser", "Alumni")
                                 .orderBy("mEmail")
                                 .limit(LIMIT)
                                 .whereEqualTo("mClassOf", constraint.toString());
-                    }
-                    query
-                            .get()
-                            .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                                @Override
-                                public void onSuccess(QuerySnapshot documentSnapshots) {
-                                    if (documentSnapshots != null && !documentSnapshots.isEmpty()) {
-                                        if (mAlumniFragment != null) {
-                                            mAlumniFragment.setmLastDocumentSnapshotSize(documentSnapshots.size());
+
+                        query
+                                .get()
+                                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                                    @Override
+                                    public void onSuccess(QuerySnapshot documentSnapshots) {
+                                        if (documentSnapshots != null && !documentSnapshots.isEmpty()) {
+                                            if (mAlumniFragment != null) {
+                                                mAlumniFragment.setmLastDocumentSnapshotSize(documentSnapshots.size());
+                                            }
+                                            for (DocumentSnapshot documentSnapshot : documentSnapshots)
+                                                filterList.add(documentSnapshot.toObject(User.class));
+                                            if (filterList.size() > 0) {
+                                                if(mLastVisibleClassOf != null)
+                                                    addAll(filterList);
+                                                else
+                                                    addAsPerFilterFirstLoad(filterList);
+                                            }
+                                            mLastVisibleClassOf = documentSnapshots.getDocuments()
+                                                    .get(documentSnapshots.size() - 1);
+                                        } else {
+                                            if (mAlumniFragment != null) {
+                                                mAlumniFragment.setmLastDocumentSnapshotSize(0);
+                                                setEmptyView();
+                                                Toast.makeText(mContext, "Nothing to show", Toast.LENGTH_SHORT).show();
+                                            }
                                         }
-                                        for (DocumentSnapshot documentSnapshot : documentSnapshots)
-                                            filterList.add(documentSnapshot.toObject(User.class));
-                                        if (filterList.size() > 0) {
-                                            if(mLastVisibleClassOf != null)
-                                                addAll(filterList);
-                                            else
-                                                addAsPerFilterFirstLoad(filterList);
-                                        }
-                                        mLastVisibleClassOf = documentSnapshots.getDocuments()
-                                                .get(documentSnapshots.size() - 1);
-                                    } else {
-                                        if (mAlumniFragment != null) {
-                                            mAlumniFragment.setmLastDocumentSnapshotSize(0);
-                                        }
+                                        mAlumniFragment.setLoading(false);
                                     }
-                                    mAlumniFragment.setLoading(false);
-                                }
-                            })
-                            .addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception e) {
-                                    e.printStackTrace();
-                                    Toast.makeText(mContext, "Failed to Load data", Toast.LENGTH_SHORT).show();
-                                    mAlumniFragment.setLoading(false);
-                                }
-                            });
+                                })
+                                .addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        e.printStackTrace();
+                                        Toast.makeText(mContext, "Failed to Load data", Toast.LENGTH_SHORT).show();
+                                        mAlumniFragment.setLoading(false);
+                                    }
+                                });
+                    }
                 }
             }
         }
+    }
+
+    public DocumentSnapshot getmLastVisibleLocation() {
+        return mLastVisibleLocation;
+    }
+
+    public void setmLastVisibleLocation(DocumentSnapshot mLastVisibleLocation) {
+        this.mLastVisibleLocation = mLastVisibleLocation;
+    }
+
+    public DocumentSnapshot getmLastVisibleClassOf() {
+        return mLastVisibleClassOf;
+    }
+
+    public void setmLastVisibleClassOf(DocumentSnapshot mLastVisibleClassOf) {
+        this.mLastVisibleClassOf = mLastVisibleClassOf;
+    }
+
+    public DocumentSnapshot getmLastVisibleBoth() {
+        return mLastVisibleBoth;
+    }
+
+    public void setmLastVisibleBoth(DocumentSnapshot mLastVisibleBoth) {
+        this.mLastVisibleBoth = mLastVisibleBoth;
     }
 }

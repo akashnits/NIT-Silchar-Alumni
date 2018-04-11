@@ -173,10 +173,14 @@ public class FilterAlumniFragment extends Fragment {
                 if (mMainActivity.isLocationPreferenceChecked()) {
                     mMainActivity.setmAlumniLocationConstraint(getResources().getStringArray
                             (R.array.location)[mLocationCheckedPosition]);
+                }else {
+                    mMainActivity.setmAlumniLocationConstraint(null);
                 }
                 if(mMainActivity.isClassOfPreferenceChecked()){
                     mMainActivity.setmAlumniClassOfConstraint(getResources().getStringArray
                             (R.array.alumniClassOf)[mAlumniClassOfCheckedPoistion]);
+                }else {
+                    mMainActivity.setmAlumniClassOfConstraint(null);
                 }
                 if(mMainActivity.isLocationPreferenceChecked() || mMainActivity.isClassOfPreferenceChecked())
                     AlumniFragment.isAlumniFilterApplied = true;
