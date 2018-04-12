@@ -186,9 +186,59 @@ public class AlumniFragment extends Fragment implements AlumniAdapter.OnAlumniCl
                     updateAdapterAsPerSearchWithFilter(newAlumni, mSearchString);
                 }
             }
-        }/*else if(!TextUtils.isEmpty(mSearchString))
-            ((EditText) mSearchView.findViewById(android.support.v7.appcompat.R.id.search_src_text)).setText(mSearchString);
-*/
+        }else if(mMainActivity.isFilterAlumniFragRotated()){
+            mMainActivity.setFilterAlumniFragRotated(false);
+
+            mLocationConstraint = mMainActivity.getmAlumniLocationConstraint();
+            mClassConstraint = mMainActivity.getmAlumniClassOfConstraint();
+
+            if (!isAlumniFilterApplied) {
+                pbAlumniFragment.setVisibility(View.VISIBLE);
+                isLoading = true;
+                mFirestore.collection(Constants.USER_COLLECTION)
+                        .whereEqualTo("mTypeOfUser", "Alumni")
+                        .orderBy("mEmail")
+                        .limit(LIMIT)
+                        .get()
+                        .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                            @Override
+                            public void onSuccess(QuerySnapshot documentSnapshots) {
+                                mLastVisible = documentSnapshots.getDocuments()
+                                        .get(documentSnapshots.size() - 1);
+                                mLastDocumentSnapshotSize = documentSnapshots.size();
+                                for (DocumentSnapshot documentSnapshot : documentSnapshots)
+                                    newAlumni.add(documentSnapshot.toObject(User.class));
+                                mAlumniAdapter.replaceAll(newAlumni);
+                                if (pbAlumniFragment != null)
+                                    pbAlumniFragment.setVisibility(View.INVISIBLE);
+                                isLoading = false;
+                            }
+                        })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Toast.makeText(mContext, "Failed to Load data", Toast.LENGTH_SHORT).show();
+                                if (pbAlumniFragment != null)
+                                    pbAlumniFragment.setVisibility(View.INVISIBLE);
+                                isLoading = false;
+                            }
+                        });
+            }else {
+                if (mLocationConstraint != null && mClassConstraint != null) {
+                    //apply both the filters
+                    List<String> constraintList = new ArrayList<>();
+                    constraintList.add(mLocationConstraint);
+                    constraintList.add(mClassConstraint);
+                    String combinedFilter = TextUtils.join(",", constraintList);
+                    mAlumniAdapter.getFilter().filter(combinedFilter);
+                } else if (mLocationConstraint != null) {
+                    mAlumniAdapter.getFilter().filter(mLocationConstraint);
+                } else if (mClassConstraint != null) {
+                    mAlumniAdapter.getFilter().filter(mClassConstraint);
+                }
+            }
+        }
+
         rvAlumni.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {

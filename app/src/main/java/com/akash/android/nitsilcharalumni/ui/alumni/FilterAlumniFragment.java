@@ -304,6 +304,7 @@ public class FilterAlumniFragment extends Fragment {
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
+        mMainActivity.setFilterAlumniFragRotated(true);
         outState.putBoolean("isLocationChecked", mMainActivity.isLocationPreferenceChecked());
         outState.putBoolean("isClassOfChecked", mMainActivity.isClassOfPreferenceChecked());
         outState.putInt("alumniClassOfCheckedPosition", mAlumniClassOfCheckedPoistion);
