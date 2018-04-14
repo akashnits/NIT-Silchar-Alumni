@@ -172,10 +172,14 @@ public class FilterJobFragment extends Fragment {
                 if (mMainActivity.isJobLocationPreferenceChecked()) {
                     mMainActivity.setmJobLocationConstraint(getResources().getStringArray
                             (R.array.location)[mJobLocationCheckedPosition]);
+                }else {
+                    mMainActivity.setmJobLocationConstraint(null);
                 }
                 if(mMainActivity.isJobOrganisationPreferenceChecked()){
                     mMainActivity.setmJobOrganisationConstraint(getResources().getStringArray
                             (R.array.organisation)[mJobOrganisationCheckedPoistion]);
+                }else {
+                    mMainActivity.setmJobOrganisationConstraint(null);
                 }
                 if(mMainActivity.isJobLocationPreferenceChecked() ||
                         mMainActivity.isJobOrganisationPreferenceChecked())
@@ -293,6 +297,7 @@ public class FilterJobFragment extends Fragment {
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
+        mMainActivity.setFilterJobFragRotated(true);
         outState.putBoolean("isJobLocationChecked", mMainActivity.isJobLocationPreferenceChecked());
         outState.putBoolean("isJobOrganisationChecked", mMainActivity.isJobOrganisationPreferenceChecked());
         outState.putInt("jobLocationCheckedPosition", mJobLocationCheckedPosition);

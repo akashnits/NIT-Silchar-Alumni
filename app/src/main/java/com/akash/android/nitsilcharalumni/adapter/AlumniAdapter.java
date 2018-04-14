@@ -2,10 +2,7 @@ package com.akash.android.nitsilcharalumni.adapter;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
-import android.support.v4.app.FragmentManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,7 +29,6 @@ import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.Semaphore;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -49,7 +45,7 @@ public class AlumniAdapter extends RecyclerView.Adapter<AlumniAdapter.AlumniView
     private DocumentSnapshot mLastVisibleLocation = null;
     private DocumentSnapshot mLastVisibleClassOf = null;
     private DocumentSnapshot mLastVisibleBoth = null;
-    private AlumniLocationFilter mAlumniLocationFilter;
+    private AlumniFilter mAlumniFilter;
     private AlumniFragment mAlumniFragment;
     private MainActivity mMainActivity;
 
@@ -124,6 +120,7 @@ public class AlumniAdapter extends RecyclerView.Adapter<AlumniAdapter.AlumniView
         notifyItemRangeInserted(0, mAlumniList.size());
 
     }
+
     public void addAsPerFilterFirstLoad(List<User> newAlumni){
         //get the current items
         int currentSize = mAlumniList.size();
@@ -196,13 +193,13 @@ public class AlumniAdapter extends RecyclerView.Adapter<AlumniAdapter.AlumniView
 
     @Override
     public Filter getFilter() {
-        if (mAlumniLocationFilter == null) {
-            mAlumniLocationFilter = new AlumniLocationFilter();
+        if (mAlumniFilter == null) {
+            mAlumniFilter = new AlumniFilter();
         }
-        return mAlumniLocationFilter;
+        return mAlumniFilter;
     }
 
-    class AlumniLocationFilter extends Filter {
+    class AlumniFilter extends Filter {
         @Override
         protected FilterResults performFiltering(final CharSequence constraint) {
             //do nothing
