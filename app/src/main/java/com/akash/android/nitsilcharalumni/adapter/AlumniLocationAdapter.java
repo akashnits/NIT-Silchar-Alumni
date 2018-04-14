@@ -46,7 +46,8 @@ public class AlumniLocationAdapter extends RecyclerView.Adapter<AlumniLocationAd
     @Override
     public void onBindViewHolder(AlumniLocationViewHolder holder, int position) {
         holder.ctvAlumniLocation.setText(mAlumniLocationList.get(position));
-        if((mFilterAlumniFragment.getmMainActivity().isLocationPreferenceChecked() && position == mPositionLastChecked)) {
+        if((mFilterAlumniFragment.getmMainActivity().isLocationPreferenceChecked()
+                && position == mPositionLastChecked)) {
             holder.ctvAlumniLocation.setSelected(true);
             holder.ctvAlumniLocation.setCheckMarkDrawable(mContext.getResources()
                     .getDrawable(R.drawable.ic_check_box_black_24dp));

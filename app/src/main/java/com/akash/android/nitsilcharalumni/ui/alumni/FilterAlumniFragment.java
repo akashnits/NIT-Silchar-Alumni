@@ -66,7 +66,6 @@ public class FilterAlumniFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setRetainInstance(true);
     }
 
     @Override
@@ -81,12 +80,10 @@ public class FilterAlumniFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
-
         if(savedInstanceState == null) {
             String locationConstraint= null;
             String classOfConstraint= null;
-            if (mMainActivity.getmAlumniLocationConstraint() != null) {
+            if (mMainActivity.isLocationPreferenceChecked()) {
                 locationConstraint = mMainActivity.getmAlumniLocationConstraint();
                 mMainActivity.setLocationPreferenceChecked(true);
                 //find the position of location constraint
@@ -102,7 +99,7 @@ public class FilterAlumniFragment extends Fragment {
                 btFilterLocation.setBackgroundColor(getResources().getColor(R.color.white));
             }
 
-            if (mMainActivity.getmAlumniClassOfConstraint() != null) {
+            if (mMainActivity.isClassOfPreferenceChecked()) {
                 classOfConstraint = mMainActivity.getmAlumniClassOfConstraint();
                 mMainActivity.setClassOfPreferenceChecked(true);
                 //find the position of classOf constraint
@@ -124,6 +121,8 @@ public class FilterAlumniFragment extends Fragment {
         }else {
             boolean isLocationPrefChecked= savedInstanceState.getBoolean("isLocationChecked");
             boolean isClassOfPrefChecked= savedInstanceState.getBoolean("isClassOfChecked");
+            mLocationCheckedPosition= savedInstanceState.getInt("alumniLocationCheckedPosition");
+            mAlumniClassOfCheckedPoistion= savedInstanceState.getInt("alumniClassOfCheckedPosition");
 
             if(isLocationPrefChecked){
                 btFilterLocation.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
@@ -157,7 +156,7 @@ public class FilterAlumniFragment extends Fragment {
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.ivClose:
-                AlumniFragment.isFilterApplied= false;
+                AlumniFragment.isAlumniFilterApplied = false;
                 mMainActivity.setClassOfPreferenceChecked(false);
                 mMainActivity.setLocationPreferenceChecked(false);
                 mMainActivity.setmAlumniLocationConstraint(null);
@@ -174,15 +173,19 @@ public class FilterAlumniFragment extends Fragment {
                 if (mMainActivity.isLocationPreferenceChecked()) {
                     mMainActivity.setmAlumniLocationConstraint(getResources().getStringArray
                             (R.array.location)[mLocationCheckedPosition]);
+                }else {
+                    mMainActivity.setmAlumniLocationConstraint(null);
                 }
                 if(mMainActivity.isClassOfPreferenceChecked()){
                     mMainActivity.setmAlumniClassOfConstraint(getResources().getStringArray
                             (R.array.alumniClassOf)[mAlumniClassOfCheckedPoistion]);
+                }else {
+                    mMainActivity.setmAlumniClassOfConstraint(null);
                 }
                 if(mMainActivity.isLocationPreferenceChecked() || mMainActivity.isClassOfPreferenceChecked())
-                    AlumniFragment.isFilterApplied = true;
+                    AlumniFragment.isAlumniFilterApplied = true;
                 else
-                    AlumniFragment.isFilterApplied = false;
+                    AlumniFragment.isAlumniFilterApplied = false;
                 getFragmentManager().popBackStackImmediate();
                 break;
         }
@@ -301,7 +304,10 @@ public class FilterAlumniFragment extends Fragment {
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
+        mMainActivity.setFilterAlumniFragRotated(true);
         outState.putBoolean("isLocationChecked", mMainActivity.isLocationPreferenceChecked());
         outState.putBoolean("isClassOfChecked", mMainActivity.isClassOfPreferenceChecked());
+        outState.putInt("alumniClassOfCheckedPosition", mAlumniClassOfCheckedPoistion);
+        outState.putInt("alumniLocationCheckedPosition", mLocationCheckedPosition);
     }
 }

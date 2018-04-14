@@ -1,14 +1,11 @@
 package com.akash.android.nitsilcharalumni.ui;
 
 import android.os.Bundle;
-import android.os.PersistableBundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
-import android.widget.Toast;
 
 import com.akash.android.nitsilcharalumni.R;
 import com.akash.android.nitsilcharalumni.ui.alumni.AlumniDetailsFragment;
@@ -33,6 +30,12 @@ public class MainActivity extends AppCompatActivity implements DrawerMenuItem.Dr
     private boolean isClassOfPreferenceChecked;
     private String mAlumniLocationConstraint;
     private String mAlumniClassOfConstraint;
+    private boolean isJobLocationPreferenceChecked;
+    private boolean isJobOrganisationPreferenceChecked;
+    private String mJobLocationConstraint;
+    private String mJobOrganisationConstraint;
+    private boolean isFilterAlumniFragRotated;
+    private boolean isFilterJobFragRotated;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +53,17 @@ public class MainActivity extends AppCompatActivity implements DrawerMenuItem.Dr
                     false,
                     "Home",R.anim.enter_from_right,
                     R.anim.exit_to_left );
+        }else {
+            mAlumniLocationConstraint= savedInstanceState.getString("alumniLocationConstraint");
+            mAlumniClassOfConstraint= savedInstanceState.getString("alumniClassOfConstraint");
+            isLocationPreferenceChecked= savedInstanceState.getBoolean("alumniLocationPrefChecked");
+            isClassOfPreferenceChecked= savedInstanceState.getBoolean("alumniClassOfPrefChecked");
+            mJobLocationConstraint= savedInstanceState.getString("jobLocationConstraint");
+            mJobOrganisationConstraint= savedInstanceState.getString("jobOrganisationConstraint");
+            isJobLocationPreferenceChecked= savedInstanceState.getBoolean("jobLocationPrefChecked");
+            isJobOrganisationPreferenceChecked = savedInstanceState.getBoolean("jobOrganisationPrefChecked");
+            isFilterAlumniFragRotated= savedInstanceState.getBoolean("isFilterAlumniFragRotated");
+            isFilterJobFragRotated= savedInstanceState.getBoolean("isFilterJobFragRotated");
         }
     }
 
@@ -239,6 +253,54 @@ public class MainActivity extends AppCompatActivity implements DrawerMenuItem.Dr
         this.mAlumniClassOfConstraint = mAlumniClassOfConstraint;
     }
 
+    public boolean isJobLocationPreferenceChecked() {
+        return isJobLocationPreferenceChecked;
+    }
+
+    public void setJobLocationPreferenceChecked(boolean jobLocationPreferenceChecked) {
+        isJobLocationPreferenceChecked = jobLocationPreferenceChecked;
+    }
+
+    public boolean isJobOrganisationPreferenceChecked() {
+        return isJobOrganisationPreferenceChecked;
+    }
+
+    public void setJobOrganisationPreferenceChecked(boolean jobOrganisationPreferenceChecked) {
+        isJobOrganisationPreferenceChecked = jobOrganisationPreferenceChecked;
+    }
+
+    public String getmJobLocationConstraint() {
+        return mJobLocationConstraint;
+    }
+
+    public void setmJobLocationConstraint(String mJobLocationConstraint) {
+        this.mJobLocationConstraint = mJobLocationConstraint;
+    }
+
+    public String getmJobOrganisationConstraint() {
+        return mJobOrganisationConstraint;
+    }
+
+    public void setmJobOrganisationConstraint(String mJobOrganisationConstraint) {
+        this.mJobOrganisationConstraint = mJobOrganisationConstraint;
+    }
+
+    public boolean isFilterAlumniFragRotated() {
+        return isFilterAlumniFragRotated;
+    }
+
+    public void setFilterAlumniFragRotated(boolean filterAlumniFragRotated) {
+        isFilterAlumniFragRotated = filterAlumniFragRotated;
+    }
+
+    public boolean isFilterJobFragRotated() {
+        return isFilterJobFragRotated;
+    }
+
+    public void setFilterJobFragRotated(boolean filterJobFragRotated) {
+        isFilterJobFragRotated = filterJobFragRotated;
+    }
+
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
@@ -246,14 +308,11 @@ public class MainActivity extends AppCompatActivity implements DrawerMenuItem.Dr
         outState.putString("alumniClassOfConstraint", mAlumniClassOfConstraint);
         outState.putBoolean("alumniLocationPrefChecked", isLocationPreferenceChecked);
         outState.putBoolean("alumniClassOfPrefChecked", isClassOfPreferenceChecked);
-    }
-
-    @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
-        mAlumniLocationConstraint= savedInstanceState.getString("alumniLocationConstraint");
-        mAlumniClassOfConstraint= savedInstanceState.getString("alumniClassOfConstraint");
-        isLocationPreferenceChecked= savedInstanceState.getBoolean("alumniLocationPrefChecked");
-        isClassOfPreferenceChecked= savedInstanceState.getBoolean("alumniClassOfPrefChecked");
+        outState.putString("jobLocationConstraint", mJobLocationConstraint);
+        outState.putString("jobOrganisationConstraint", mJobOrganisationConstraint);
+        outState.putBoolean("jobLocationPrefChecked", isJobLocationPreferenceChecked);
+        outState.putBoolean("jobOrganisationPrefChecked", isJobOrganisationPreferenceChecked);
+        outState.putBoolean("isFilterAlumniFragRotated", isFilterAlumniFragRotated);
+        outState.putBoolean("isFilterJobFragRotated", isFilterJobFragRotated);
     }
 }

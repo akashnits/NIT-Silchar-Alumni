@@ -1,16 +1,30 @@
 package com.akash.android.nitsilcharalumni.adapter;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.akash.android.nitsilcharalumni.R;
 import com.akash.android.nitsilcharalumni.model.Job;
+import com.akash.android.nitsilcharalumni.model.User;
+import com.akash.android.nitsilcharalumni.ui.MainActivity;
+import com.akash.android.nitsilcharalumni.ui.job.JobFragment;
+import com.akash.android.nitsilcharalumni.utils.Constants;
 import com.akash.android.nitsilcharalumni.utils.imageUtils.PicassoCircleTransformation;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.squareup.picasso.Picasso;
 
 import java.text.SimpleDateFormat;
@@ -23,17 +37,28 @@ import java.util.Map;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static com.akash.android.nitsilcharalumni.ui.job.JobFragment.LIMIT;
 
-public class JobAdapter extends RecyclerView.Adapter<JobAdapter.JobViewHolder> {
+
+public class JobAdapter extends RecyclerView.Adapter<JobAdapter.JobViewHolder> implements Filterable {
 
 
     private Context mContext;
     private ArrayList<Job> mJobList;
+    private FirebaseFirestore mFirestore;
+    private DocumentSnapshot mLastVisibleLocation = null;
+    private DocumentSnapshot mLastVisibleOrganisation = null;
+    private DocumentSnapshot mLastVisibleBoth = null;
+    private JobFilter mJobFilter;
+    private JobFragment mJobFragment;
+    private MainActivity mMainActivity;
 
-
-    public JobAdapter(Context mContext) {
+    public JobAdapter(Context mContext,JobFragment jobFragment) {
         this.mContext = mContext;
-        this.mJobList = new ArrayList<>();
+        mJobList = new ArrayList<>();
+        mFirestore = FirebaseFirestore.getInstance();
+        mJobFragment = jobFragment;
+        this.mMainActivity= (MainActivity) mJobFragment.getActivity();
     }
 
     @Override
@@ -126,10 +151,40 @@ public class JobAdapter extends RecyclerView.Adapter<JobAdapter.JobViewHolder> {
         return mJobList.size();
     }
 
+
     public void addAll(List<Job> newJob) {
         int initialSize = mJobList.size();
         mJobList.addAll(newJob);
         notifyItemRangeInserted(initialSize, newJob.size());
+    }
+
+    public void replaceAll(List<Job> newJob){
+        //get the current items
+        int currentSize = mJobList.size();
+        //remove the current items
+        if(currentSize > 0)
+            mJobList.clear();
+        //add all the new items
+        mJobList.addAll(newJob);
+        //tell the recycler view that all the old items are gone
+        if(currentSize > 0)
+            notifyItemRangeRemoved(0, currentSize);
+        //tell the recycler view how many new items we added
+        notifyItemRangeInserted(0, mJobList.size());
+
+    }
+
+    public void addAsPerFilterFirstLoad(List<Job> newJob){
+        //get the current items
+        int currentSize = mJobList.size();
+        //remove the current items
+        mJobList.clear();
+        //add all the new items
+        mJobList.addAll(newJob);
+        //tell the recycler view that all the old items are gone
+        notifyItemRangeRemoved(0, currentSize);
+        //tell the recycler view how many new items we added
+        notifyItemRangeInserted(0, mJobList.size());
     }
 
     public void addAllAtStart(List<Job> newJob) {
@@ -194,5 +249,329 @@ public class JobAdapter extends RecyclerView.Adapter<JobAdapter.JobViewHolder> {
             super(itemView);
             ButterKnife.bind(this, itemView);
         }
+    }
+
+    @Override
+    public Filter getFilter() {
+        if (mJobFilter == null) {
+            mJobFilter = new JobFilter();
+        }
+        return mJobFilter;
+    }
+
+    class JobFilter extends Filter{
+        @Override
+        protected FilterResults performFiltering(CharSequence constraint) {
+            return null;
+        }
+
+        @Override
+        protected void publishResults(CharSequence constraint, FilterResults results) {
+            if (constraint != null && constraint.length() > 0) {
+                final ArrayList<Job> filterList = new ArrayList<>();
+                if (mMainActivity.getmJobLocationConstraint() != null &&
+                        mMainActivity.getmJobOrganisationConstraint() != null) {
+                    mJobFragment.setmIsLoading(true);
+                    String[] constraints = constraint.toString().split(",");
+                    Query query;
+                    if (mLastVisibleBoth != null) {
+                        query = mFirestore.collection(Constants.JOB_COLLECTION)
+                                .orderBy("mTimestamp", Query.Direction.DESCENDING)
+                                .startAfter(mLastVisibleBoth)
+                                .limit(LIMIT)
+                                .whereEqualTo("mJobLocation", constraints[0])
+                                .whereEqualTo("mJobOrganisation", constraints[1]);
+                        query.get()
+                                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                                    @Override
+                                    public void onSuccess(QuerySnapshot documentSnapshots) {
+                                        if (documentSnapshots != null && !documentSnapshots.isEmpty()) {
+                                            if (mJobFragment != null) {
+                                                mJobFragment.setmLastDocumentSnapshotSize(documentSnapshots.size());
+                                            }
+                                            for (DocumentSnapshot documentSnapshot : documentSnapshots)
+                                                filterList.add(documentSnapshot.toObject(Job.class));
+                                            if (filterList.size() > 0) {
+                                                if(mLastVisibleBoth != null)
+                                                    addAll(filterList);
+                                                else
+                                                    addAsPerFilterFirstLoad(filterList);
+                                            }
+                                            mLastVisibleBoth = documentSnapshots.getDocuments()
+                                                    .get(documentSnapshots.size() - 1);
+                                        } else {
+                                            if (mJobFragment != null) {
+                                                mJobFragment.setmLastDocumentSnapshotSize(0);
+                                            }
+                                        }
+                                        mJobFragment.setmIsLoading(false);
+                                    }
+                                })
+                                .addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        e.printStackTrace();
+                                        Toast.makeText(mContext, "Failed to Load data", Toast.LENGTH_SHORT).show();
+                                        mJobFragment.setmIsLoading(false);
+                                    }
+                                });
+                    } else {
+                        query = mFirestore.collection(Constants.JOB_COLLECTION)
+                                .orderBy("mTimestamp", Query.Direction.DESCENDING)
+                                .limit(LIMIT)
+                                .whereEqualTo("mJobLocation", constraints[0])
+                                .whereEqualTo("mJobOrganisation", constraints[1]);
+
+                        query
+                                .get()
+                                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                                    @Override
+                                    public void onSuccess(QuerySnapshot documentSnapshots) {
+                                        if (documentSnapshots != null && !documentSnapshots.isEmpty()) {
+                                            if (mJobFragment != null) {
+                                                mJobFragment.setmLastDocumentSnapshotSize(documentSnapshots.size());
+                                            }
+                                            for (DocumentSnapshot documentSnapshot : documentSnapshots)
+                                                filterList.add(documentSnapshot.toObject(Job.class));
+                                            if (filterList.size() > 0) {
+                                                if(mLastVisibleBoth != null)
+                                                    addAll(filterList);
+                                                else
+                                                    addAsPerFilterFirstLoad(filterList);
+                                            }
+                                            mLastVisibleBoth = documentSnapshots.getDocuments()
+                                                    .get(documentSnapshots.size() - 1);
+                                        } else {
+                                            if (mJobFragment != null) {
+                                                mJobFragment.setmLastDocumentSnapshotSize(0);
+                                                setEmptyView();
+                                                Toast.makeText(mContext, "Nothing to show", Toast.LENGTH_SHORT).show();
+                                            }
+                                        }
+                                        mJobFragment.setmIsLoading(false);
+                                    }
+                                })
+                                .addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        e.printStackTrace();
+                                        Toast.makeText(mContext, "Failed to Load data", Toast.LENGTH_SHORT).show();
+                                        mJobFragment.setmIsLoading(false);
+                                    }
+                                });
+                    }
+                } else if (mMainActivity.getmJobLocationConstraint() != null) {
+                    mJobFragment.setmIsLoading(true);
+                    Query query;
+                    if (mLastVisibleLocation != null) {
+                        query = mFirestore.collection(Constants.JOB_COLLECTION)
+                                .orderBy("mTimestamp", Query.Direction.DESCENDING)
+                                .startAfter(mLastVisibleLocation)
+                                .limit(LIMIT)
+                                .whereEqualTo("mJobLocation", constraint.toString());
+
+                        query
+                                .get()
+                                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                                    @Override
+                                    public void onSuccess(QuerySnapshot documentSnapshots) {
+                                        if (documentSnapshots != null && !documentSnapshots.isEmpty()) {
+                                            if (mJobFragment != null) {
+                                                mJobFragment.setmLastDocumentSnapshotSize(documentSnapshots.size());
+                                            }
+                                            for (DocumentSnapshot documentSnapshot : documentSnapshots)
+                                                filterList.add(documentSnapshot.toObject(Job.class));
+                                            if (filterList.size() > 0) {
+                                                if(mLastVisibleLocation != null)
+                                                    addAll(filterList);
+                                                else
+                                                    addAsPerFilterFirstLoad(filterList);
+                                            }
+                                            mLastVisibleLocation = documentSnapshots.getDocuments()
+                                                    .get(documentSnapshots.size() - 1);
+                                        } else {
+                                            if (mJobFragment != null) {
+                                                mJobFragment.setmLastDocumentSnapshotSize(0);
+                                            }
+                                        }
+                                        mJobFragment.setmIsLoading(false);
+                                    }
+                                })
+                                .addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        e.printStackTrace();
+                                        Toast.makeText(mContext, "Failed to Load data", Toast.LENGTH_SHORT).show();
+                                        mJobFragment.setmIsLoading(false);
+                                    }
+                                });
+                    } else {
+                        query = mFirestore.collection(Constants.JOB_COLLECTION)
+                                .orderBy("mTimestamp", Query.Direction.DESCENDING)
+                                .limit(LIMIT)
+                                .whereEqualTo("mJobLocation", constraint.toString());
+
+                        query
+                                .get()
+                                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                                    @Override
+                                    public void onSuccess(QuerySnapshot documentSnapshots) {
+                                        if (documentSnapshots != null && !documentSnapshots.isEmpty()) {
+                                            if (mJobFragment != null) {
+                                                mJobFragment.setmLastDocumentSnapshotSize(documentSnapshots.size());
+                                            }
+                                            for (DocumentSnapshot documentSnapshot : documentSnapshots)
+                                                filterList.add(documentSnapshot.toObject(Job.class));
+                                            if (filterList.size() > 0) {
+                                                if(mLastVisibleLocation != null)
+                                                    addAll(filterList);
+                                                else
+                                                    addAsPerFilterFirstLoad(filterList);
+                                            }
+                                            mLastVisibleLocation = documentSnapshots.getDocuments()
+                                                    .get(documentSnapshots.size() - 1);
+                                        } else {
+                                            if (mJobFragment != null) {
+                                                mJobFragment.setmLastDocumentSnapshotSize(0);
+                                                setEmptyView();
+                                                Toast.makeText(mContext, "Nothing to show", Toast.LENGTH_SHORT).show();
+                                            }
+                                        }
+                                        mJobFragment.setmIsLoading(false);
+                                    }
+                                })
+                                .addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        e.printStackTrace();
+                                        Toast.makeText(mContext, "Failed to Load data", Toast.LENGTH_SHORT).show();
+                                        mJobFragment.setmIsLoading(false);
+                                    }
+                                });
+                    }
+                } else if (mMainActivity.getmJobOrganisationConstraint() != null) {
+                    mJobFragment.setmIsLoading(true);
+                    Query query;
+                    if (mLastVisibleOrganisation != null) {
+                        query = mFirestore.collection(Constants.JOB_COLLECTION)
+                                .orderBy("mTimestamp", Query.Direction.DESCENDING)
+                                .startAfter(mLastVisibleOrganisation)
+                                .limit(LIMIT)
+                                .whereEqualTo("mJobOrganisation", constraint.toString());
+
+                        query
+                                .get()
+                                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                                    @Override
+                                    public void onSuccess(QuerySnapshot documentSnapshots) {
+                                        if (documentSnapshots != null && !documentSnapshots.isEmpty()) {
+                                            if (mJobFragment != null) {
+                                                mJobFragment.setmLastDocumentSnapshotSize(documentSnapshots.size());
+                                            }
+                                            for (DocumentSnapshot documentSnapshot : documentSnapshots)
+                                                filterList.add(documentSnapshot.toObject(Job.class));
+                                            if (filterList.size() > 0) {
+                                                if(mLastVisibleOrganisation != null)
+                                                    addAll(filterList);
+                                                else
+                                                    addAsPerFilterFirstLoad(filterList);
+                                            }
+                                            mLastVisibleOrganisation = documentSnapshots.getDocuments()
+                                                    .get(documentSnapshots.size() - 1);
+                                        } else {
+                                            if (mJobFragment != null) {
+                                                mJobFragment.setmLastDocumentSnapshotSize(0);
+                                            }
+                                        }
+                                        mJobFragment.setmIsLoading(false);
+                                    }
+                                })
+                                .addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        e.printStackTrace();
+                                        Toast.makeText(mContext, "Failed to Load data", Toast.LENGTH_SHORT).show();
+                                        mJobFragment.setmIsLoading(false);
+                                    }
+                                });
+                    } else {
+                        query = mFirestore.collection(Constants.JOB_COLLECTION)
+                                .orderBy("mTimestamp", Query.Direction.DESCENDING)
+                                .limit(LIMIT)
+                                .whereEqualTo("mJobOrganisation", constraint.toString());
+
+                        query
+                                .get()
+                                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                                    @Override
+                                    public void onSuccess(QuerySnapshot documentSnapshots) {
+                                        if (documentSnapshots != null && !documentSnapshots.isEmpty()) {
+                                            if (mJobFragment != null) {
+                                                mJobFragment.setmLastDocumentSnapshotSize(documentSnapshots.size());
+                                            }
+                                            for (DocumentSnapshot documentSnapshot : documentSnapshots)
+                                                filterList.add(documentSnapshot.toObject(Job.class));
+                                            if (filterList.size() > 0) {
+                                                if(mLastVisibleOrganisation != null)
+                                                    addAll(filterList);
+                                                else
+                                                    addAsPerFilterFirstLoad(filterList);
+                                            }
+                                            mLastVisibleOrganisation = documentSnapshots.getDocuments()
+                                                    .get(documentSnapshots.size() - 1);
+                                        } else {
+                                            if (mJobFragment != null) {
+                                                mJobFragment.setmLastDocumentSnapshotSize(0);
+                                                setEmptyView();
+                                                Toast.makeText(mContext, "Nothing to show", Toast.LENGTH_SHORT).show();
+                                            }
+                                        }
+                                        mJobFragment.setmIsLoading(false);
+                                    }
+                                })
+                                .addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        e.printStackTrace();
+                                        Toast.makeText(mContext, "Failed to Load data", Toast.LENGTH_SHORT).show();
+                                        mJobFragment.setmIsLoading(false);
+                                    }
+                                });
+                    }
+                }
+            }
+        }
+    }
+
+    public DocumentSnapshot getmLastVisibleLocation() {
+        return mLastVisibleLocation;
+    }
+
+    public void setmLastVisibleLocation(DocumentSnapshot mLastVisibleLocation) {
+        this.mLastVisibleLocation = mLastVisibleLocation;
+    }
+
+    public DocumentSnapshot getmLastVisibleOrganisation() {
+        return mLastVisibleOrganisation;
+    }
+
+    public void setmLastVisibleOrganisation(DocumentSnapshot mLastVisibleOrganisation) {
+        this.mLastVisibleOrganisation = mLastVisibleOrganisation;
+    }
+
+    public DocumentSnapshot getmLastVisibleBoth() {
+        return mLastVisibleBoth;
+    }
+
+    public void setmLastVisibleBoth(DocumentSnapshot mLastVisibleBoth) {
+        this.mLastVisibleBoth = mLastVisibleBoth;
+    }
+
+    public MainActivity getmMainActivity() {
+        return mMainActivity;
+    }
+
+    public void setmMainActivity(MainActivity mMainActivity) {
+        this.mMainActivity = mMainActivity;
     }
 }
