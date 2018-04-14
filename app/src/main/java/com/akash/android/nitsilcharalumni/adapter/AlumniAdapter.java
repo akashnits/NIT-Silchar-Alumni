@@ -57,11 +57,6 @@ public class AlumniAdapter extends RecyclerView.Adapter<AlumniAdapter.AlumniView
         void onAlumniClicked(String email, View view);
     }
 
-    public AlumniAdapter(Context mContext) {
-        this.mContext = mContext;
-        mAlumniList = new ArrayList<>();
-        mFirestore = FirebaseFirestore.getInstance();
-    }
 
     public AlumniAdapter(Context mContext, OnAlumniClickHandler mHandler, AlumniFragment alumniFragment) {
         this.mContext = mContext;
@@ -519,5 +514,13 @@ public class AlumniAdapter extends RecyclerView.Adapter<AlumniAdapter.AlumniView
 
     public void setmLastVisibleBoth(DocumentSnapshot mLastVisibleBoth) {
         this.mLastVisibleBoth = mLastVisibleBoth;
+    }
+
+    public MainActivity getmMainActivity() {
+        return mMainActivity;
+    }
+
+    public void setmMainActivity(MainActivity mMainActivity) {
+        this.mMainActivity = mMainActivity;
     }
 }

@@ -188,6 +188,7 @@ public class AlumniFragment extends Fragment implements AlumniAdapter.OnAlumniCl
             }
         }else if(mMainActivity.isFilterAlumniFragRotated()){
             mMainActivity.setFilterAlumniFragRotated(false);
+            mAlumniAdapter.setmMainActivity(mMainActivity);
 
             mLocationConstraint = mMainActivity.getmAlumniLocationConstraint();
             mClassConstraint = mMainActivity.getmAlumniClassOfConstraint();
