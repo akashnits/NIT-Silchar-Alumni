@@ -88,7 +88,7 @@ public class AlumniAdapter extends RecyclerView.Adapter<AlumniAdapter.AlumniView
                     .transform(new PicassoCircleTransformation())
                     .into(holder.ivAlumniProfileIcon);
         } else {
-            Picasso.with(mContext).load(R.drawable.loading)
+            Picasso.with(mContext).load(R.drawable.person)
                     .transform(new PicassoCircleTransformation())
                     .into(holder.ivAlumniProfileIcon);
         }

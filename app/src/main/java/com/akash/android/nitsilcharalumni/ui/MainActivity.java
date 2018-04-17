@@ -20,7 +20,10 @@ import com.akash.android.nitsilcharalumni.ui.job.FilterJobFragment;
 import com.akash.android.nitsilcharalumni.ui.job.JobFragment;
 import com.akash.android.nitsilcharalumni.utils.ActivityUtils;
 import com.akash.android.nitsilcharalumni.utils.BottomNavigationViewHelper;
+import com.akash.android.nitsilcharalumni.widget.UpdateWidgetService;
 import com.google.firebase.auth.FirebaseAuth;
+
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements DrawerMenuItem.DrawerCallBack {
 
@@ -314,5 +317,11 @@ public class MainActivity extends AppCompatActivity implements DrawerMenuItem.Dr
         outState.putBoolean("jobOrganisationPrefChecked", isJobOrganisationPreferenceChecked);
         outState.putBoolean("isFilterAlumniFragRotated", isFilterAlumniFragRotated);
         outState.putBoolean("isFilterJobFragRotated", isFilterJobFragRotated);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        UpdateWidgetService.startUpdatingWidget(getApplicationContext(), new ArrayList<String>());
     }
 }
