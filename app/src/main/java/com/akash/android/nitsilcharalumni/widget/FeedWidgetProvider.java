@@ -17,7 +17,7 @@ public class FeedWidgetProvider extends AppWidgetProvider{
 
     private static RemoteViews getFeedListRemoteView(Context context){
         RemoteViews views= new RemoteViews(context.getPackageName(), R.layout.widget_list_view);
-        Intent intent= new Intent(context, UpdateWidgetService.class);
+        Intent intent= new Intent(context, ListWidgetService.class);
         views.setRemoteAdapter(R.id.widget_list_view, intent);
         views.setEmptyView(R.id.widget_list_view, R.id.empty_view);
         return views;

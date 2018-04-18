@@ -150,8 +150,6 @@ public class FeedFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
         if (savedInstanceState == null) {
             loadInitial();
-            //update the widget here to load initial list
-            UpdateWidgetService.startUpdatingWidget(getContext(), getFeedDescriptionList());
         }
 
         rvFeed.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -169,7 +167,6 @@ public class FeedFragment extends Fragment implements SwipeRefreshLayout.OnRefre
                             .findFirstVisibleItemPosition();
                     if ((LIMIT + pastVisibleItem) >= totalItemCount && !mIsLoading && mLastDocumentSnapshotSize == LIMIT) {
                         loadMore();
-                        UpdateWidgetService.startUpdatingWidget(getContext(), getFeedDescriptionList());
                     }
                 }
             }
@@ -204,6 +201,8 @@ public class FeedFragment extends Fragment implements SwipeRefreshLayout.OnRefre
                             for (DocumentSnapshot documentSnapshot : documentSnapshots)
                                 newFeed.add(documentSnapshot.toObject(Feed.class));
                             mFeedAdapter.addAll(newFeed);
+                            //update the widget here to load initial list
+                            UpdateWidgetService.startUpdatingWidget(getContext(), getFeedDescriptionList());
                         }
                         if (pbFeedFragment != null)
                             pbFeedFragment.setVisibility(View.INVISIBLE);
@@ -241,6 +240,7 @@ public class FeedFragment extends Fragment implements SwipeRefreshLayout.OnRefre
                             for (DocumentSnapshot documentSnapshot : documentSnapshots)
                                 newFeed.add(documentSnapshot.toObject(Feed.class));
                             mFeedAdapter.addAll(newFeed);
+                            UpdateWidgetService.startUpdatingWidget(getContext(), getFeedDescriptionList());
                         } else {
                             mLastDocumentSnapshotSize = 0;
                         }

@@ -16,7 +16,7 @@ import java.util.List;
 public class UpdateWidgetService extends IntentService{
 
 
-    public static String ACTION_UPDATE_WIDGET= "com.example.android.bakers.widget.action.update_widget";
+    public static String ACTION_UPDATE_WIDGET= "com.akash.android.nitsilcharalumni.widget.action.update_widget";
 
     private int[] mAppWidgetIds;
     private AppWidgetManager mAppWidgetManager;

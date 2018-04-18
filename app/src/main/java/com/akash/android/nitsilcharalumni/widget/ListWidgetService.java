@@ -14,7 +14,7 @@ public class ListWidgetService extends RemoteViewsService{
 
     @Override
     public RemoteViewsFactory onGetViewFactory(Intent intent) {
-        return new ListRemoteViewsFactory(getApplicationContext());
+        return new ListRemoteViewsFactory(this.getApplicationContext());
     }
 
     class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory{
@@ -51,7 +51,7 @@ public class ListWidgetService extends RemoteViewsService{
         public RemoteViews getViewAt(int position) {
             RemoteViews views= new RemoteViews(mContext.getPackageName(), R.layout.feed_widget);
             views.setTextViewText(R.id.appwidget_text, feedList.get(position));
-            return null;
+            return views;
         }
 
         @Override
