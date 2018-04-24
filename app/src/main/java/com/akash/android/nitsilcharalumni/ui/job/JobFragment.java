@@ -321,54 +321,6 @@ public class JobFragment extends Fragment implements SwipeRefreshLayout.OnRefres
         }
     }
 
-   /* @Override
-    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
-        super.onViewStateRestored(savedInstanceState);
-        if (savedInstanceState != null) {
-            List<Job> jobList = savedInstanceState.getParcelableArrayList("job");
-            if (!isJobFilterApplied) {
-                mJobAdapter.addAll(jobList);
-                Parcelable savedRecyclerLayoutState = savedInstanceState.getParcelable("position");
-                if (rvJob != null)
-                    rvJob.getLayoutManager().onRestoreInstanceState(savedRecyclerLayoutState);
-                mSearchString = savedInstanceState.getString("searchJob");
-            } else {
-                if (savedInstanceState.getParcelable("position") == null) {
-                    if (mLocationConstraint != null && mOrganisationConstraint != null) {
-                        //apply both the filters
-                        List<String> constraintList = new ArrayList<>();
-                        constraintList.add(mLocationConstraint);
-                        constraintList.add(mOrganisationConstraint);
-                        String combinedFilter = TextUtils.join(",", constraintList);
-                        mJobAdapter.getFilter().filter(combinedFilter);
-                    } else if (mLocationConstraint != null) {
-                        mJobAdapter.getFilter().filter(mLocationConstraint);
-                    } else if (mOrganisationConstraint != null) {
-                        mJobAdapter.getFilter().filter(mOrganisationConstraint);
-                    }
-                } else {
-                    mJobAdapter.addAll(jobList);
-                    Parcelable savedRecyclerLayoutState = savedInstanceState.getParcelable("position");
-                    if (rvJob != null)
-                        rvJob.getLayoutManager().onRestoreInstanceState(savedRecyclerLayoutState);
-                    mSearchString = savedInstanceState.getString("searchJob");
-                }
-            }
-            mLocationConstraint = mMainActivity.getmJobLocationConstraint();
-            mOrganisationConstraint = mMainActivity.getmJobOrganisationConstraint();
-        }
-    }
-
-
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putParcelableArrayList("job", mJobAdapter.getmJobList());
-        if (rvJob != null)
-            outState.putParcelable("position", rvJob.getLayoutManager().onSaveInstanceState());
-        if (mSearchView != null && !TextUtils.isEmpty(mSearchView.getQuery()))
-            outState.putString("searchJob", mSearchView.getQuery().toString());
-    }*/
 
     @Override
     public void onAttach(Context context) {

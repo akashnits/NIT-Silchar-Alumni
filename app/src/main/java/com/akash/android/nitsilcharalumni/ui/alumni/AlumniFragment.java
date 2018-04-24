@@ -92,6 +92,7 @@ public class AlumniFragment extends Fragment implements AlumniAdapter.OnAlumniCl
     private String mLocationConstraint;
     private String mClassConstraint;
     private MainActivity mMainActivity;
+    private boolean mTwoPane;
 
     public AlumniFragment() {
         // Required empty public constructor
@@ -108,6 +109,7 @@ public class AlumniFragment extends Fragment implements AlumniAdapter.OnAlumniCl
         setRetainInstance(true);
         mFirestore = FirebaseFirestore.getInstance();
         mAlumniAdapter = new AlumniAdapter(mContext, this, this);
+        mTwoPane= getResources().getBoolean(R.bool.twoPaneMode);
     }
 
     @Override
@@ -126,7 +128,15 @@ public class AlumniFragment extends Fragment implements AlumniAdapter.OnAlumniCl
 
         ((AppCompatActivity) getActivity()).setSupportActionBar(toolbarAlumni);
         setupDrawer();
+        if(!mTwoPane)
         initializeRecyclerView();
+
+        if(mTwoPane){
+            mMainActivity.findViewById(R.id.alumniDetailsContainer).setVisibility(View.VISIBLE);
+
+            //commit the alumni details fragment corresponding to first item in recyclerView
+
+        }
 
         final List<User> newAlumni = new ArrayList<>();
         if (savedInstanceState == null) {
@@ -280,7 +290,10 @@ public class AlumniFragment extends Fragment implements AlumniAdapter.OnAlumniCl
             mSearchString = null;
         Bundle b = new Bundle();
         b.putString("email", email);
-        ((MainActivity) getActivity()).commitAlumniDetailsFragment(b);
+        if(!mTwoPane)
+            mMainActivity.commitAlumniDetailsFragment(b);
+        else
+            mMainActivity.commitAlumniDetailsFragmentOnTablets(b);
     }
 
     private void loadMore() {
@@ -339,57 +352,6 @@ public class AlumniFragment extends Fragment implements AlumniAdapter.OnAlumniCl
             }
         }
     }
-
-    /*@Override
-    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
-        super.onViewStateRestored(savedInstanceState);
-
-        if (savedInstanceState != null) {
-            List<User> alumniList = savedInstanceState.getParcelableArrayList("alumni");
-            if (!isAlumniFilterApplied) {
-                mAlumniAdapter.addAll(alumniList);
-                Parcelable savedRecyclerLayoutState = savedInstanceState.getParcelable("position");
-                if (rvAlumni != null)
-                    rvAlumni.getLayoutManager().onRestoreInstanceState(savedRecyclerLayoutState);
-                mSearchString = savedInstanceState.getString("searchAlumni");
-            } else {
-                if (savedInstanceState.getParcelable("position") == null) {
-                    if (mLocationConstraint != null && mClassConstraint != null) {
-                        //apply both the filters
-                        List<String> constraintList = new ArrayList<>();
-                        constraintList.add(mLocationConstraint);
-                        constraintList.add(mClassConstraint);
-                        String combinedFilter = TextUtils.join(",", constraintList);
-                        mAlumniAdapter.getFilter().filter(combinedFilter);
-                    } else if (mLocationConstraint != null) {
-                        mAlumniAdapter.getFilter().filter(mLocationConstraint);
-                    } else if (mClassConstraint != null) {
-                        mAlumniAdapter.getFilter().filter(mClassConstraint);
-                    }
-                } else {
-                    mAlumniAdapter.addAll(alumniList);
-                    Parcelable savedRecyclerLayoutState = savedInstanceState.getParcelable("position");
-                    if (rvAlumni != null)
-                        rvAlumni.getLayoutManager().onRestoreInstanceState(savedRecyclerLayoutState);
-                    mSearchString = savedInstanceState.getString("searchAlumni");
-                }
-            }
-            mLocationConstraint = mMainActivity.getmAlumniLocationConstraint();
-            mClassConstraint = mMainActivity.getmAlumniClassOfConstraint();
-        }
-    }
-
-
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putParcelableArrayList("alumni", mAlumniAdapter.getmAlumniList());
-        if (rvAlumni != null)
-            outState.putParcelable("position", rvAlumni.getLayoutManager().onSaveInstanceState());
-        if (!TextUtils.isEmpty(mSearchView.getQuery()))
-            outState.putString("searchAlumni", mSearchView.getQuery().toString());
-    }*/
-
 
     @Override
     public void onCreateOptionsMenu(final Menu menu, MenuInflater inflater) {

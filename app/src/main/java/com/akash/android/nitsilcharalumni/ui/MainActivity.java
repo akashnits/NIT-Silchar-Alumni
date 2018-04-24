@@ -137,6 +137,17 @@ public class MainActivity extends AppCompatActivity implements DrawerMenuItem.Dr
                 R.anim.exit_to_left);
     }
 
+    public void commitAlumniDetailsFragmentOnTablets(Bundle args){
+        ActivityUtils.replaceFragmentOnActivity(
+                mSupportFragmentManager,
+                AlumniDetailsFragment.newInstance(args),
+                R.id.alumniDetailsContainer,
+                true,
+                "AlumniDetails",
+                R.anim.enter_from_right,
+                R.anim.exit_to_left);
+    }
+
     public void commitFilterAlumniFragment(){
         ActivityUtils.replaceFragmentOnActivity(
                 mSupportFragmentManager,
