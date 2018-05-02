@@ -15,16 +15,16 @@
       },
       "oauth_client": [
         {
-          "client_id": "1081552565030-6n2h6en5tersom99kv63eirl414j51cr.apps.googleusercontent.com",
-          "client_type": 3
-        },
-        {
-          "client_id": "1081552565030-vbt8fctkmeps6bhq74l68vrgh9c39eug.apps.googleusercontent.com",
+          "client_id": "1081552565030-okr4djea6a0vcm5pnpi5a3t50ugsvcjq.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.akash.android.nitsilcharalumni",
-            "certificate_hash": "8f5062d5f71719fd1643dd9208e995ca718f02b3"
+            "certificate_hash": "041f709a8ccbe6d02b0c5a3a38ccf831e45adf13"
           }
+        },
+        {
+          "client_id": "1081552565030-6n2h6en5tersom99kv63eirl414j51cr.apps.googleusercontent.com",
+          "client_type": 3
         }
       ],
       "api_key": [
