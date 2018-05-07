@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.akash.android.nitsilcharalumni.model.User;
 import com.akash.android.nitsilcharalumni.utils.Constants;
@@ -104,18 +105,38 @@ public class LoginInteractor  {
     Exchanging google account details for firebase credentials
      */
 
-    private void firebaseAuthWithGoogle(GoogleSignInAccount account, Activity context) {
+    private void firebaseAuthWithGoogle(GoogleSignInAccount account, final Activity context) {
         AuthCredential credential = GoogleAuthProvider.getCredential(account.getIdToken(), null);
         mAuth.signInWithCredential(credential)
                 .addOnCompleteListener(context, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
+                            //Sign in success, now check to see if we have data about this user
+                            // if not then ask for it
+
+                            FirebaseUser user = mAuth.getCurrentUser();
+                            String email= null;
+                            if(user != null){
+                                email = user.getEmail();
+                            }
+                            mFirebaseFirestore.collection(Constants.USER_COLLECTION)
+                                    .document(email)
+                                    .get()
+                                    .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                            DocumentSnapshot documentSnapshot= task.getResult();
+                                            if(!documentSnapshot.exists()){
+                                                // document doesn't exist
+
+                                                //TODO: Redirect to form for details
+                                            }
+                                            mLoginPresenter.loadMainActivity();
+                                        }
+                                    });
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "signInWithCredential:success");
-                            FirebaseUser user = mAuth.getCurrentUser();
-                            downloadUserData();
-                            mLoginPresenter.loadMainActivity();
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "signInWithCredential:failure", task.getException());

@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "1081552565030-34altvkjsoiv22ct9018ulki777k6hh5.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.akash.android.nitsilcharalumni",
+            "certificate_hash": "b1b073b460c08572394bbdc8019a12d4507f265d"
+          }
+        },
+        {
           "client_id": "1081552565030-okr4djea6a0vcm5pnpi5a3t50ugsvcjq.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
