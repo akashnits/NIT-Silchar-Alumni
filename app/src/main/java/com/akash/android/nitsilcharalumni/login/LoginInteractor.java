@@ -116,10 +116,11 @@ public class LoginInteractor  {
                             // if not then ask for it
 
                             FirebaseUser user = mAuth.getCurrentUser();
-                            String email= null;
+                            final String email;
                             if(user != null){
                                 email = user.getEmail();
-                            }
+                            }else
+                                email= null;
                             mFirebaseFirestore.collection(Constants.USER_COLLECTION)
                                     .document(email)
                                     .get()
@@ -131,6 +132,7 @@ public class LoginInteractor  {
                                                 // document doesn't exist
 
                                                 //TODO: Redirect to form for details
+                                                mLoginPresenter.loadSocialLoginForm(email);
                                             }
                                             mLoginPresenter.loadMainActivity();
                                         }

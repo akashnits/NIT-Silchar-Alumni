@@ -8,16 +8,35 @@ import android.widget.Toast;
 
 import com.akash.android.nitsilcharalumni.NITSilcharAlumniApp;
 import com.akash.android.nitsilcharalumni.R;
+import com.akash.android.nitsilcharalumni.model.User;
+import com.akash.android.nitsilcharalumni.signup.placeAutoComplete.PlaceAutoCompleteFragment;
+import com.akash.android.nitsilcharalumni.signup.social.SocialLoginFragment;
+import com.akash.android.nitsilcharalumni.utils.ActivityUtils;
 
 import javax.inject.Inject;
 
 public class LoginActivity extends AppCompatActivity {
 
+    private LoginPresenter mLoginPresenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        LoginFragment loginFragment= (LoginFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.loginFragment);
+        if(loginFragment == null)
+            loginFragment = LoginFragment.newInstance();
+
+        if(savedInstanceState == null) {
+            ActivityUtils.replaceFragmentOnActivity(getSupportFragmentManager(),
+                    loginFragment,
+                    R.id.loginContainer,
+                    false, getString(R.string.loginFragment),R.anim.enter_from_right,
+                    R.anim.exit_to_left );
+        }
+        mLoginPresenter= new LoginPresenter(loginFragment);
     }
 
     @Override
@@ -28,5 +47,23 @@ public class LoginActivity extends AppCompatActivity {
                 .findFragmentById(R.id.loginFragment);
 
         loginFragment.onActivityResult(requestCode, resultCode, data);
+    }
+
+    public void showSocialLoginFragment(String email){
+        SocialLoginFragment socialLoginFragment= SocialLoginFragment.newInstance(email);
+        ActivityUtils.replaceFragmentOnActivity(getSupportFragmentManager(),
+                socialLoginFragment,
+                R.id.loginContainer,
+                true, getString(R.string.socialLoginFragment), R.anim.enter_from_right,
+                R.anim.exit_to_left );
+    }
+
+    public void showPlaceAutoCompleteFragment(User user){
+        PlaceAutoCompleteFragment placeAutoCompleteFragment= PlaceAutoCompleteFragment.newInstance(user);
+        ActivityUtils.replaceFragmentOnActivity(getSupportFragmentManager(),
+                placeAutoCompleteFragment,
+                R.id.loginContainer,
+                true, getString(R.string.placeAutoCompleteFragment), R.anim.enter_from_right,
+                R.anim.exit_to_left );
     }
 }

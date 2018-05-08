@@ -27,6 +27,8 @@ public class LoginContract {
         void showFacebookSignInErrorMessage();
 
         void saveLoggedInUsername(String name);
+
+        void showSocialLoginFragment(String email);
     }
 
     public interface Presenter extends BasePresenter {
@@ -48,6 +50,8 @@ public class LoginContract {
         void loadFacebookSignInErrorMessage();
 
         void saveLoggedInUserData(User user);
+
+        void loadSocialLoginForm(String email);
 
     }
 }

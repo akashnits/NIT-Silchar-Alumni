@@ -9,6 +9,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Adapter;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -17,17 +18,22 @@ import android.widget.RadioGroup;
 import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.akash.android.nitsilcharalumni.NITSilcharAlumniApp;
 import com.akash.android.nitsilcharalumni.R;
 import com.akash.android.nitsilcharalumni.data.DataManager;
 import com.akash.android.nitsilcharalumni.di.component.SocialLoginFragmentComponent;
 import com.akash.android.nitsilcharalumni.di.module.SocialLoginFragmentModule;
+import com.akash.android.nitsilcharalumni.login.LoginActivity;
+import com.akash.android.nitsilcharalumni.model.User;
+import com.google.firebase.auth.FirebaseAuth;
 
 import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import butterknife.Unbinder;
 
 /**
@@ -36,7 +42,7 @@ import butterknife.Unbinder;
  * create an instance of this fragment.
  */
 public class SocialLoginFragment extends Fragment implements SocialLoginContract.View, AdapterView.OnItemSelectedListener,
-RadioGroup.OnCheckedChangeListener {
+        RadioGroup.OnCheckedChangeListener {
 
 
     @Inject
@@ -64,6 +70,7 @@ RadioGroup.OnCheckedChangeListener {
     private SocialLoginFragmentComponent mSocialLoginFragmentComponent;
     private String mGender;
     private String mTypeOfUser;
+    private String mEmail;
 
 
     public SocialLoginFragment() {
@@ -71,8 +78,12 @@ RadioGroup.OnCheckedChangeListener {
     }
 
 
-    public static SocialLoginFragment newInstance() {
-        return new SocialLoginFragment();
+    public static SocialLoginFragment newInstance(String email) {
+        SocialLoginFragment socialLoginFragment= new SocialLoginFragment();
+        Bundle args= new Bundle();
+        args.putString("email", email);
+        socialLoginFragment.setArguments(args);
+        return socialLoginFragment;
     }
 
     @Override
@@ -81,6 +92,7 @@ RadioGroup.OnCheckedChangeListener {
         setRetainInstance(true);
         mPresenter = new SocialLoginPresenter(this);
         getSocialLoginFragmentComponent().inject(this);
+        mEmail= getArguments().getString("email");
     }
 
     public SocialLoginFragmentComponent getSocialLoginFragmentComponent() {
@@ -108,8 +120,9 @@ RadioGroup.OnCheckedChangeListener {
         socialSpinner.setOnItemSelectedListener(this);
         rgSocialMaleFemale.setOnCheckedChangeListener(this);
 
-        mPresenter.
+        mPresenter.loadSpinnerDropdown(getContext());
     }
+
 
     @Override
     public void setPresenter(SocialLoginContract.Presenter presenter) {
@@ -134,16 +147,39 @@ RadioGroup.OnCheckedChangeListener {
 
     @Override
     public void onCheckedChanged(RadioGroup group, @IdRes int checkedId) {
-        switch(checkedId){
+        switch (checkedId) {
             case R.id.radioSocialButtonMale:
-                mGender= "male";
+                mGender = "male";
                 break;
             case R.id.radioSocialButtonFemale:
-                mGender= "female";
+                mGender = "female";
                 break;
             default:
-                mGender= null;
+                mGender = null;
                 break;
         }
+    }
+
+    @OnClick(R.id.validateSocialForm)
+    public void onViewClicked() {
+        if(mPresenter.validateForm(mGender, mTypeOfUser)){
+            User user= new User();
+            user.setmGender(mGender);
+            user.setmTypeOfUser(mTypeOfUser);
+            user.setmEmail(mEmail);
+            mPresenter.loadPlaceAutoCompleteFragment(user);
+        }else{
+            Toast.makeText(getContext(), "Please complete the form", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    public void showPlaceAutoCompleteFragment(User user) {
+        ((LoginActivity) getActivity()).showPlaceAutoCompleteFragment(user);
+    }
+
+    @Override
+    public void showSpinnerDropdownUser(Adapter adapter) {
+        socialSpinner.setAdapter(adapter);
     }
 }

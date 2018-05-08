@@ -84,6 +84,8 @@
     <string name="create_job_post">Create Job Post</string>
     <string name="edit_done">Edit done</string>
     <string name="edit">Edit</string>
+    <string name="socialLoginFragment">SocialLoginFragment</string>
+    <string name="loginFragment">LoginFragment</string>
 
     <string-array name="location">
         <item>Delhi</item>

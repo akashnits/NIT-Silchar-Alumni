@@ -78,6 +78,13 @@ public class PlaceAutoCompleteFragment extends Fragment implements PlaceAutoComp
         return placeAutoCompleteFragment;
     }
 
+    public static PlaceAutoCompleteFragment newInstance(User user){
+        PlaceAutoCompleteFragment placeAutoCompleteFragment= new PlaceAutoCompleteFragment();
+        Bundle args= new Bundle();
+        args.putParcelable("user", user);
+        return placeAutoCompleteFragment;
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
