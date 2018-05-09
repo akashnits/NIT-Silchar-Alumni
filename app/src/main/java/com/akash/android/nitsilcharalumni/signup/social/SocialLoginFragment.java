@@ -9,8 +9,8 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Adapter;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
@@ -27,7 +27,6 @@ import com.akash.android.nitsilcharalumni.di.component.SocialLoginFragmentCompon
 import com.akash.android.nitsilcharalumni.di.module.SocialLoginFragmentModule;
 import com.akash.android.nitsilcharalumni.login.LoginActivity;
 import com.akash.android.nitsilcharalumni.model.User;
-import com.google.firebase.auth.FirebaseAuth;
 
 import javax.inject.Inject;
 
@@ -137,12 +136,13 @@ public class SocialLoginFragment extends Fragment implements SocialLoginContract
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-
+        mTypeOfUser = mPresenter.loadTextOnButton(parent, view, position);
+        mDataManager.saveTypeOfUser(mTypeOfUser);
     }
 
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
-
+        Toast.makeText(getContext(), "Nothing selected", Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -179,7 +179,7 @@ public class SocialLoginFragment extends Fragment implements SocialLoginContract
     }
 
     @Override
-    public void showSpinnerDropdownUser(Adapter adapter) {
+    public void showSpinnerDropdownUser(ArrayAdapter<CharSequence> adapter) {
         socialSpinner.setAdapter(adapter);
     }
 }

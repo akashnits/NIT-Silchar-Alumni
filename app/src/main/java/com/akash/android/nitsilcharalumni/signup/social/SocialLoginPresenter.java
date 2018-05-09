@@ -1,7 +1,11 @@
 package com.akash.android.nitsilcharalumni.signup.social;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.TextView;
 
 import com.akash.android.nitsilcharalumni.R;
 import com.akash.android.nitsilcharalumni.model.User;
@@ -44,5 +48,15 @@ public class SocialLoginPresenter implements SocialLoginContract.Presenter {
     @Override
     public void loadPlaceAutoCompleteFragment(User user) {
         mSocialLoginView.showPlaceAutoCompleteFragment(user);
+    }
+
+    @Override
+    public String loadTextOnButton(AdapterView<?> parent, View view, int position) {
+        if (parent != null && parent.getChildCount() != 0) {
+            ((TextView) parent.getChildAt(0)).setTextColor(Color.BLACK);
+            ((TextView) parent.getChildAt(0)).setTextSize(14);
+            return parent.getItemAtPosition(position).toString();
+        }
+        return null;
     }
 }

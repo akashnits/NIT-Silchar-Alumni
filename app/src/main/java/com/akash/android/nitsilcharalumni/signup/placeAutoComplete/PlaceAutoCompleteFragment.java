@@ -82,6 +82,7 @@ public class PlaceAutoCompleteFragment extends Fragment implements PlaceAutoComp
         PlaceAutoCompleteFragment placeAutoCompleteFragment= new PlaceAutoCompleteFragment();
         Bundle args= new Bundle();
         args.putParcelable("user", user);
+        placeAutoCompleteFragment.setArguments(args);
         return placeAutoCompleteFragment;
     }
 
