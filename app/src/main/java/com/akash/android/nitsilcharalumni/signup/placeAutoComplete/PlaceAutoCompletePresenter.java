@@ -43,6 +43,11 @@ public class PlaceAutoCompletePresenter implements PlaceAutoCompleteContract.Pre
     }
 
     @Override
+    public void loadAlumniOrStudentSignUpFragment(User user) {
+        mPlaceAutoCompleteView.commitAlumniOrStudentSignUpFragment(user);
+    }
+
+    @Override
     public boolean validateLocationEntered(Editable location) {
         return !TextUtils.isEmpty(location);
     }
@@ -66,5 +71,10 @@ public class PlaceAutoCompletePresenter implements PlaceAutoCompleteContract.Pre
     @Override
     public void saveLoggedInUserName(String name) {
         mPlaceAutoCompleteView.saveLoggedInUsername(name);
+    }
+
+    @Override
+    public void writeLoggedInUser(User user) {
+        mPlaceAutoCompleteInteractor.writeLoggedInUser(user);
     }
 }

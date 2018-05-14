@@ -9,6 +9,7 @@ import android.widget.Toast;
 import com.akash.android.nitsilcharalumni.NITSilcharAlumniApp;
 import com.akash.android.nitsilcharalumni.R;
 import com.akash.android.nitsilcharalumni.model.User;
+import com.akash.android.nitsilcharalumni.signup.alumniOrStudentSignUpFragment.AlumniOrStudentSignUpFragment;
 import com.akash.android.nitsilcharalumni.signup.placeAutoComplete.PlaceAutoCompleteFragment;
 import com.akash.android.nitsilcharalumni.signup.social.SocialLoginFragment;
 import com.akash.android.nitsilcharalumni.utils.ActivityUtils;
@@ -64,6 +65,16 @@ public class LoginActivity extends AppCompatActivity {
                 placeAutoCompleteFragment,
                 R.id.loginContainer,
                 true, getString(R.string.placeAutoCompleteFragment), R.anim.enter_from_right,
+                R.anim.exit_to_left );
+    }
+
+    public void showAlumniOrStudentSignUpFragment(User user, boolean isAlumnus){
+        AlumniOrStudentSignUpFragment alumniOrStudentSignUpFragment= AlumniOrStudentSignUpFragment
+                .newInstance(user, isAlumnus);
+        ActivityUtils.replaceFragmentOnActivity(getSupportFragmentManager(),
+                alumniOrStudentSignUpFragment,
+                R.id.loginContainer,
+                true, getString(R.string.alumniOrStudentSignupFrag), R.anim.enter_from_right,
                 R.anim.exit_to_left );
     }
 }

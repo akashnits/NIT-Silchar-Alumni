@@ -24,6 +24,7 @@ import com.akash.android.nitsilcharalumni.data.DataManager;
 import com.akash.android.nitsilcharalumni.di.component.AlumniOrStudentSignUpFragmentComponent;
 import com.akash.android.nitsilcharalumni.di.component.DaggerAlumniOrStudentSignUpFragmentComponent;
 import com.akash.android.nitsilcharalumni.di.module.AlumniOrStudentSignUpFragmentModule;
+import com.akash.android.nitsilcharalumni.login.LoginActivity;
 import com.akash.android.nitsilcharalumni.ui.MainActivity;
 import com.akash.android.nitsilcharalumni.model.User;
 import com.akash.android.nitsilcharalumni.signup.SignUpActivity;
@@ -67,6 +68,8 @@ public class AlumniOrStudentSignUpFragment extends Fragment implements AlumniOrS
 
     private AlumniOrStudentSignUpFragmentComponent alumniOrStudentSignUpFragmentComponent;
 
+    private boolean isSocialLogin;
+
     public AlumniOrStudentSignUpFragment() {
         // Required empty public constructor
     }
@@ -79,6 +82,15 @@ public class AlumniOrStudentSignUpFragment extends Fragment implements AlumniOrS
         b.putBoolean("alumnus", isAlumnus);
         b.putParcelable("user", user);
         b.putCharArray("password", password);
+        fragment.setArguments(b);
+        return fragment;
+    }
+
+    public static AlumniOrStudentSignUpFragment newInstance(User user, boolean isAlumnus) {
+        AlumniOrStudentSignUpFragment fragment = new AlumniOrStudentSignUpFragment();
+        Bundle b = new Bundle();
+        b.putBoolean("alumnus", isAlumnus);
+        b.putParcelable("user", user);
         fragment.setArguments(b);
         return fragment;
     }
@@ -113,6 +125,8 @@ public class AlumniOrStudentSignUpFragment extends Fragment implements AlumniOrS
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         if (getArguments() != null) {
+            if(getArguments().get("password") == null)
+                isSocialLogin= true;
             boolean isAlumnus = getArguments().getBoolean("alumnus");
             if (isAlumnus) {
                 textInputLayout2.setVisibility(View.VISIBLE);
@@ -161,7 +175,6 @@ public class AlumniOrStudentSignUpFragment extends Fragment implements AlumniOrS
         }
         Bundle b= getArguments();
         User user= b.getParcelable("user");
-        //TODO: insert classof and organisaton in user object
         switch(user.getmTypeOfUser()){
             case "Student":
                 user.setmClassOf(mClassOf);
@@ -172,15 +185,23 @@ public class AlumniOrStudentSignUpFragment extends Fragment implements AlumniOrS
                 break;
             default:break;
         }
-
-        char[] password= b.getCharArray("password");
-        mPresenter.createAccountWithEmailAndPassword(getActivity(), user, password);
+        if(isSocialLogin){
+            //write user on firebase db and showMainactivity
+            mPresenter.writeLoggedinUser(user);
+        }else {
+            char[] password= b.getCharArray("password");
+            mPresenter.createAccountWithEmailAndPassword(getActivity(), user, password);
+        }
     }
 
     @Override
     public void showMainActivity() {
         startActivity(new Intent(getActivity(), MainActivity.class));
-        ((SignUpActivity) getActivity()).finish();
+        if(isSocialLogin){
+            ((LoginActivity) getActivity()).finish();
+        }else {
+            ((SignUpActivity) getActivity()).finish();
+        }
     }
 
     @Override

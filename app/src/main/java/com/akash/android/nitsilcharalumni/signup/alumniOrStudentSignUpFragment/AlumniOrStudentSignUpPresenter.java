@@ -78,4 +78,9 @@ public class AlumniOrStudentSignUpPresenter implements AlumniOrStudentSignUpCont
     public void saveLoggedInUserName(String name) {
         mAlumniOrStudentSignUpView.saveLoggedInUsername(name);
     }
+
+    @Override
+    public void writeLoggedinUser(User user) {
+        mAlumniOrStudentSignUpInteractor.writeLoggedInUser(user);
+    }
 }
