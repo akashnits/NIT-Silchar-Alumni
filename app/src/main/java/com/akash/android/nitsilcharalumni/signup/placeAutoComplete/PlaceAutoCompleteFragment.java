@@ -48,7 +48,7 @@ import static android.app.Activity.RESULT_OK;
  */
 public class PlaceAutoCompleteFragment extends Fragment implements PlaceAutoCompleteContract.View {
 
-    public static final int PLACE_AUTOCOMPLETE_REQUEST_CODE = 1;
+    public static final int PLACE_AUTOCOMPLETE_REQUEST_CODE = 454;
 
     private PlaceAutoCompleteContract.Presenter mPresenter;
 
@@ -198,8 +198,8 @@ public class PlaceAutoCompleteFragment extends Fragment implements PlaceAutoComp
             } else if (resultCode == PlaceAutocomplete.RESULT_ERROR) {
                 Status status = PlaceAutocomplete.getStatus(getContext(), data);
                 // TODO: Handle the error.
-                Snackbar.make(((SignUpActivity) getActivity()).findViewById(R.id.chooseLocationLayout),
-                        status.toString(), Snackbar.LENGTH_SHORT).show();
+                Toast.makeText(getContext(),
+                        status.toString(), Toast.LENGTH_SHORT).show();
             } else if (resultCode == RESULT_CANCELED) {
                 // The user canceled the operation.
             }

@@ -212,9 +212,10 @@ public class MainActivity extends AppCompatActivity implements DrawerMenuItem.Dr
     public void onLogoutMenuSelected() {
         //TODO: Logout current user
         mAuth= FirebaseAuth.getInstance();
-        if(mAuth != null)
+        if(mAuth != null) {
             mAuth.signOut();
             finish();
+        }
     }
 
     @Override

@@ -23,6 +23,7 @@ import android.widget.Toast;
 import com.akash.android.nitsilcharalumni.NITSilcharAlumniApp;
 import com.akash.android.nitsilcharalumni.R;
 import com.akash.android.nitsilcharalumni.data.DataManager;
+import com.akash.android.nitsilcharalumni.di.component.DaggerSocialLoginFragmentComponent;
 import com.akash.android.nitsilcharalumni.di.component.SocialLoginFragmentComponent;
 import com.akash.android.nitsilcharalumni.di.module.SocialLoginFragmentModule;
 import com.akash.android.nitsilcharalumni.login.LoginActivity;
@@ -97,7 +98,7 @@ public class SocialLoginFragment extends Fragment implements SocialLoginContract
     public SocialLoginFragmentComponent getSocialLoginFragmentComponent() {
         if (mSocialLoginFragmentComponent == null) {
             mSocialLoginFragmentComponent = DaggerSocialLoginFragmentComponent.builder()
-                    .placeAutoCompleteFragmentModule(new SocialLoginFragmentModule(this))
+                    .socialLoginFragmentModule(new SocialLoginFragmentModule(this))
                     .appComponent(NITSilcharAlumniApp.get(getContext()).getAppComponent())
                     .build();
         }

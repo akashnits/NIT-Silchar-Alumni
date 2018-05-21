@@ -7,6 +7,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.akash.android.nitsilcharalumni.model.User;
+import com.akash.android.nitsilcharalumni.signup.placeAutoComplete.PlaceAutoCompleteFragment;
 import com.akash.android.nitsilcharalumni.utils.Constants;
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
@@ -34,7 +35,7 @@ public class LoginInteractor  {
 
     public static final String TAG = LoginInteractor.class.getSimpleName();
 
-    private static final int RC_SIGN_IN = 1;
+    private static final int RC_SIGN_IN = 1565;
 
     private LoginContract.Presenter mLoginPresenter;
 
@@ -114,29 +115,7 @@ public class LoginInteractor  {
                         if (task.isSuccessful()) {
                             //Sign in success, now check to see if we have data about this user
                             // if not then ask for it
-
-                            FirebaseUser user = mAuth.getCurrentUser();
-                            final String email;
-                            if(user != null){
-                                email = user.getEmail();
-                            }else
-                                email= null;
-                            mFirebaseFirestore.collection(Constants.USER_COLLECTION)
-                                    .document(email)
-                                    .get()
-                                    .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                                        @Override
-                                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                                            DocumentSnapshot documentSnapshot= task.getResult();
-                                            if(!documentSnapshot.exists()){
-                                                // document doesn't exist
-
-                                                //TODO: Redirect to form for details
-                                                mLoginPresenter.loadSocialLoginForm(email);
-                                            }
-                                            mLoginPresenter.loadMainActivity();
-                                        }
-                                    });
+                            writeUserToFirebase();
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "signInWithCredential:success");
                         } else {
@@ -187,8 +166,7 @@ public class LoginInteractor  {
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "signInWithCredential:success");
-                            downloadUserData();
-                            mLoginPresenter.loadMainActivity();
+                            writeUserToFirebase();
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "signInWithCredential:failure", task.getException());
@@ -222,6 +200,30 @@ public class LoginInteractor  {
                         }
                     });
         }
+    }
+
+    private void writeUserToFirebase(){
+        FirebaseUser user = mAuth.getCurrentUser();
+        final String email;
+        if(user != null){
+            email = user.getEmail();
+        }else
+            email= null;
+
+        mFirebaseFirestore.collection(Constants.USER_COLLECTION)
+                .document(email)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        DocumentSnapshot documentSnapshot= task.getResult();
+                        if(!documentSnapshot.exists()){
+                            mLoginPresenter.loadSocialLoginForm(email);
+                        }else {
+                            mLoginPresenter.loadMainActivity();
+                        }
+                    }
+                });
     }
 }
 
