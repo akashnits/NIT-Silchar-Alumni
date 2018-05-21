@@ -87,4 +87,9 @@ public class LoginPresenter implements LoginContract.Presenter {
     public void saveLoggedInUserData(User user) {
         mLoginView.saveLoggedInUsername(user.getmName());
     }
+
+    @Override
+    public void loadSocialLoginForm(String email) {
+        mLoginView.showSocialLoginFragment(email);
+    }
 }

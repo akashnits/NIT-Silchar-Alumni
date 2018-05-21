@@ -43,5 +43,7 @@ public class AlumniOrStudentSignUpContract {
         boolean validateSpinnerItemSelected(Spinner classOf);
 
         void saveLoggedInUserName(String name);
+
+        void writeLoggedinUser(User user);
     }
 }

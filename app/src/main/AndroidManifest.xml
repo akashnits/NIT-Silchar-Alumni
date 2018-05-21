@@ -64,6 +64,20 @@
             android:name=".data.FeedProvider"
             android:authorities="com.akash.android.nitsilcharalumni"
             android:exported="false" />
+
+        <receiver android:name=".widget.FeedWidgetProvider">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/feed_widget_info" />
+        </receiver>
+        <service android:name=".widget.UpdateWidgetService"
+            android:stopWithTask="false" />
+        <service android:name=".widget.ListWidgetService"
+            android:permission="android.permission.BIND_REMOTEVIEWS"/>
     </application>
 
 </manifest>

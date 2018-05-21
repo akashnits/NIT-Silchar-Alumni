@@ -45,6 +45,7 @@ import com.akash.android.nitsilcharalumni.ui.drawer.DrawerHeader;
 import com.akash.android.nitsilcharalumni.ui.drawer.DrawerMenuItem;
 import com.akash.android.nitsilcharalumni.utils.ActivityUtils;
 import com.akash.android.nitsilcharalumni.utils.Constants;
+import com.akash.android.nitsilcharalumni.widget.UpdateWidgetService;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -173,6 +174,13 @@ public class FeedFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     }
 
 
+    private List<String> getFeedDescriptionList(){
+        List<String> feedDescriptionList= new ArrayList<>();
+        for(Feed feed: mFeedAdapter.getmFeedList()){
+            feedDescriptionList.add(feed.getmFeedDescription());
+        }
+        return feedDescriptionList;
+    }
     private void loadInitial(){
         pbFeedFragment.setVisibility(View.VISIBLE);
         mIsLoading = true;
@@ -193,6 +201,8 @@ public class FeedFragment extends Fragment implements SwipeRefreshLayout.OnRefre
                             for (DocumentSnapshot documentSnapshot : documentSnapshots)
                                 newFeed.add(documentSnapshot.toObject(Feed.class));
                             mFeedAdapter.addAll(newFeed);
+                            //update the widget here to load initial list
+                            UpdateWidgetService.startUpdatingWidget(getContext(), getFeedDescriptionList());
                         }
                         if (pbFeedFragment != null)
                             pbFeedFragment.setVisibility(View.INVISIBLE);
@@ -230,6 +240,7 @@ public class FeedFragment extends Fragment implements SwipeRefreshLayout.OnRefre
                             for (DocumentSnapshot documentSnapshot : documentSnapshots)
                                 newFeed.add(documentSnapshot.toObject(Feed.class));
                             mFeedAdapter.addAll(newFeed);
+                            UpdateWidgetService.startUpdatingWidget(getContext(), getFeedDescriptionList());
                         } else {
                             mLastDocumentSnapshotSize = 0;
                         }

@@ -88,4 +88,24 @@ public class AlumniOrStudentSignUpInteractor {
                     }
                 });
     }
+
+    public void writeLoggedInUser(final User user){
+        mFirestoreDb.collection("users")
+                .document(user.getmEmail())
+                .set(user)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.d(TAG, "DocumentSnapshot successfully written!");
+                        mAlumniOrStudentSignUpPresenter.saveLoggedInUserName(user.getmName());
+                        mAlumniOrStudentSignUpPresenter.setFirebaseUser(mAuth.getCurrentUser());
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.w(TAG, "Error writing document", e);
+                    }
+                });
+    }
 }

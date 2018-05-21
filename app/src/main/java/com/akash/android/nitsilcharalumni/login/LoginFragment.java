@@ -1,6 +1,7 @@
 package com.akash.android.nitsilcharalumni.login;
 
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -80,6 +81,10 @@ public class LoginFragment extends Fragment implements LoginContract.View {
         // Required empty public constructor
     }
 
+    public static LoginFragment newInstance() {
+        return new LoginFragment();
+    }
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -102,6 +107,11 @@ public class LoginFragment extends Fragment implements LoginContract.View {
         super.onViewCreated(view, savedInstanceState);
         signInButton.setSize(SignInButton.SIZE_ICON_ONLY);
 
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
     }
 
     @Override
@@ -182,5 +192,10 @@ public class LoginFragment extends Fragment implements LoginContract.View {
     @Override
     public void saveLoggedInUsername(String name) {
         mDataManager.saveUserName(name);
+    }
+
+    @Override
+    public void showSocialLoginFragment(String email) {
+        ((LoginActivity) getActivity()).showSocialLoginFragment(email);
     }
 }

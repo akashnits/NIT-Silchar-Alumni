@@ -20,12 +20,16 @@ public class PlaceAutoCompleteContract {
 
         void showMainActivity();
 
+        void commitAlumniOrStudentSignUpFragment(User user);
+
         void saveLoggedInUsername(String name);
     }
 
     public interface Presenter extends BasePresenter {
 
         void loadAlumniOrStudentSignUpFragment(User user, char[] password);
+
+        void loadAlumniOrStudentSignUpFragment(User user);
 
         boolean validateLocationEntered(Editable location);
 
@@ -36,5 +40,7 @@ public class PlaceAutoCompleteContract {
         void loadErrorMessage();
 
         void saveLoggedInUserName(String name);
+
+        void writeLoggedInUser(User user);
     }
 }

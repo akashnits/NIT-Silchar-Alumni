@@ -20,9 +20,11 @@ import com.akash.android.nitsilcharalumni.data.DataManager;
 import com.akash.android.nitsilcharalumni.di.component.DaggerPlaceAutoCompleteFragmentComponent;
 import com.akash.android.nitsilcharalumni.di.component.PlaceAutoCompleteFragmentComponent;
 import com.akash.android.nitsilcharalumni.di.module.PlaceAutoCompleteFragmentModule;
+import com.akash.android.nitsilcharalumni.login.LoginActivity;
 import com.akash.android.nitsilcharalumni.ui.MainActivity;
 import com.akash.android.nitsilcharalumni.model.User;
 import com.akash.android.nitsilcharalumni.signup.SignUpActivity;
+import com.facebook.login.Login;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.common.api.Status;
@@ -46,11 +48,13 @@ import static android.app.Activity.RESULT_OK;
  */
 public class PlaceAutoCompleteFragment extends Fragment implements PlaceAutoCompleteContract.View {
 
-    public static final int PLACE_AUTOCOMPLETE_REQUEST_CODE = 1;
+    public static final int PLACE_AUTOCOMPLETE_REQUEST_CODE = 454;
 
     private PlaceAutoCompleteContract.Presenter mPresenter;
 
     private PlaceAutoCompleteFragmentComponent placeAutoCompleteFragmentComponent;
+
+    private boolean isSocialLogin= false;
 
 
     @Inject
@@ -78,6 +82,14 @@ public class PlaceAutoCompleteFragment extends Fragment implements PlaceAutoComp
         return placeAutoCompleteFragment;
     }
 
+    public static PlaceAutoCompleteFragment newInstance(User user){
+        PlaceAutoCompleteFragment placeAutoCompleteFragment= new PlaceAutoCompleteFragment();
+        Bundle args= new Bundle();
+        args.putParcelable("user", user);
+        placeAutoCompleteFragment.setArguments(args);
+        return placeAutoCompleteFragment;
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -98,6 +110,8 @@ public class PlaceAutoCompleteFragment extends Fragment implements PlaceAutoComp
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        if(getArguments().get("password") == null)
+            isSocialLogin= true;
         String typeOfUser = mDatamanager.getTypeOfUser();
         if (typeOfUser.equals("Faculty")) {
             btSignUpOrNext.setText("Sign up");
@@ -148,14 +162,23 @@ public class PlaceAutoCompleteFragment extends Fragment implements PlaceAutoComp
                 if(flag) {
                     Bundle b= getArguments();
                     User user= b.getParcelable("user");
-                    char[] password= b.getCharArray("password");
                     if(user != null) {
                         user.setmLocation(etChoosePlace.getText().toString());
                     }
                     if (!mDatamanager.getTypeOfUser().equals("Faculty"))
-                        mPresenter.loadAlumniOrStudentSignUpFragment(user, password);
+                        if(isSocialLogin){
+                            mPresenter.loadAlumniOrStudentSignUpFragment(user);
+                        }else {
+                            mPresenter.loadAlumniOrStudentSignUpFragment(user, b.getCharArray("password"));
+                        }
                     else{
-                        mPresenter.createAccountWithEmailAndPassword((SignUpActivity) getActivity(), user, password);
+                        if(isSocialLogin){
+                            //TODO: write logged in user and showMainActivity
+                            mPresenter.writeLoggedInUser(user);
+                        }else {
+                            mPresenter.createAccountWithEmailAndPassword((SignUpActivity)
+                                    getActivity(), user, b.getCharArray("password"));
+                        }
                     }
                 }else {
                     Snackbar.make(getView(), "Please select location", Snackbar.LENGTH_SHORT).show();
@@ -175,8 +198,8 @@ public class PlaceAutoCompleteFragment extends Fragment implements PlaceAutoComp
             } else if (resultCode == PlaceAutocomplete.RESULT_ERROR) {
                 Status status = PlaceAutocomplete.getStatus(getContext(), data);
                 // TODO: Handle the error.
-                Snackbar.make(((SignUpActivity) getActivity()).findViewById(R.id.chooseLocationLayout),
-                        status.toString(), Snackbar.LENGTH_SHORT).show();
+                Toast.makeText(getContext(),
+                        status.toString(), Toast.LENGTH_SHORT).show();
             } else if (resultCode == RESULT_CANCELED) {
                 // The user canceled the operation.
             }
@@ -203,11 +226,21 @@ public class PlaceAutoCompleteFragment extends Fragment implements PlaceAutoComp
     @Override
     public void showMainActivity() {
         startActivity(new Intent(getActivity(), MainActivity.class));
-        ((SignUpActivity) getActivity()).finish();
+        if(isSocialLogin){
+            ((LoginActivity) getActivity()).finish();
+        }else {
+            ((SignUpActivity) getActivity()).finish();
+        }
     }
 
     @Override
     public void saveLoggedInUsername(String name) {
         mDatamanager.saveUserName(name);
+    }
+
+    @Override
+    public void commitAlumniOrStudentSignUpFragment(User user) {
+        boolean isAlumnus= mDatamanager.getTypeOfUser().equals("Alumni");
+        ((LoginActivity) getActivity()).showAlumniOrStudentSignUpFragment(user, isAlumnus);
     }
 }
