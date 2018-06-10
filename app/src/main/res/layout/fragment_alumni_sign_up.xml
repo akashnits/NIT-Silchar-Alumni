@@ -24,7 +24,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="30dp"
-            android:text="Class of"
+            android:text="@string/class_of"
             android:textSize="20sp"
             android:textColor="@android:color/white"
             />
@@ -50,7 +50,7 @@
             android:id="@+id/tvOrganisation"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Organisation"
+            android:text="@string/organisation"
             android:layout_marginTop="40dp"
             android:textSize="20sp"
             android:layout_marginStart="30dp"
@@ -70,7 +70,7 @@
                 android:id="@+id/etOrganisation"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Current company"
+                android:hint="@string/current_company"
                 android:textColor="@android:color/white"
                 android:textSize="20sp" />
 
@@ -84,7 +84,7 @@
         android:layout_width="300dp"
         android:layout_height="60dp"
         android:background="@color/colorPrimary"
-        android:text="Create Account"
+        android:text="@string/create_account"
         android:textSize="20sp"
         android:textColor="@android:color/white"
         android:textAllCaps="false"

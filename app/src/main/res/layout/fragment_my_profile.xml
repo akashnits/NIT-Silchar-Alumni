@@ -67,7 +67,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:padding="4dp"
-                android:text="About you" />
+                android:text="@string/about_you" />
 
             <TextView
                 android:id="@+id/tvAboutYouTextMyProfile"
@@ -84,7 +84,7 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/tvAboutYouTextMyProfile"
                 android:padding="4dp"
-                android:text="Class of" />
+                android:text="@string/class_of" />
 
             <TextView
                 android:id="@+id/tvClassofTextMyProfile"
@@ -101,7 +101,7 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/tvClassofTextMyProfile"
                 android:padding="4dp"
-                android:text="Location" />
+                android:text="@string/location" />
 
             <TextView
                 android:id="@+id/tvLocationTextMyProfile"
@@ -118,7 +118,7 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/tvLocationTextMyProfile"
                 android:padding="4dp"
-                android:text="Contact" />
+                android:text="@string/contact" />
 
             <TextView
                 android:id="@+id/tvContactTextMyProfile"
@@ -135,7 +135,7 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/tvContactTextMyProfile"
                 android:padding="4dp"
-                android:text="Email" />
+                android:text="@string/email" />
 
             <TextView
                 android:id="@+id/tvEmailTextMyProfile"
@@ -152,7 +152,7 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/tvEmailTextMyProfile"
                 android:padding="4dp"
-                android:text="Organisation" />
+                android:text="@string/organisation" />
 
             <TextView
                 android:id="@+id/tvOrganisationTextMyProfile"
@@ -169,7 +169,7 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/tvOrganisationTextMyProfile"
                 android:padding="4dp"
-                android:text="Designation" />
+                android:text="@string/designation" />
 
             <TextView
                 android:id="@+id/tvDesignationTextMyProfile"
@@ -186,7 +186,7 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/tvDesignationTextMyProfile"
                 android:padding="4dp"
-                android:text="Skills" />
+                android:text="@string/skills" />
 
             <TextView
                 android:id="@+id/tvSkillsTextMyProfile"

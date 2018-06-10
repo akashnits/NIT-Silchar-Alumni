@@ -212,7 +212,7 @@ public class FeedFragment extends Fragment implements SwipeRefreshLayout.OnRefre
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(mContext, "Failed to Load data", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(mContext, R.string.failed_to_load_data, Toast.LENGTH_SHORT).show();
                         if (pbFeedFragment != null)
                             pbFeedFragment.setVisibility(View.INVISIBLE);
                         mIsLoading = false;
@@ -252,7 +252,7 @@ public class FeedFragment extends Fragment implements SwipeRefreshLayout.OnRefre
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(mContext, "Failed to Load data", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(mContext, R.string.failed_to_load_data, Toast.LENGTH_SHORT).show();
                         if (pbFeedFragment != null)
                             pbFeedFragment.setVisibility(View.INVISIBLE);
                         mIsLoading = false;
@@ -315,10 +315,10 @@ public class FeedFragment extends Fragment implements SwipeRefreshLayout.OnRefre
                             for (DocumentSnapshot documentSnapshot : documentSnapshots)
                                 newFeed.add(documentSnapshot.toObject(Feed.class));
                             mFeedAdapter.addAllAtStart(newFeed);
-                            Toast.makeText(mContext, "Refreshed", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(mContext, R.string.refreshed, Toast.LENGTH_SHORT).show();
                             swipeRefreshLayout.setRefreshing(false);
                         } else {
-                            Toast.makeText(mContext, "No new feed", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(mContext, R.string.no_new_feed, Toast.LENGTH_SHORT).show();
                             swipeRefreshLayout.setRefreshing(false);
                         }
                         mIsLoading = false;
@@ -346,7 +346,7 @@ public class FeedFragment extends Fragment implements SwipeRefreshLayout.OnRefre
                 CreateFeedFragment.newInstance(),
                 R.id.content,
                 true,
-                "CreateFeedFragment", R.anim.enter_from_right,
+                getString(R.string.create_feed_fragment), R.anim.enter_from_right,
                 R.anim.exit_to_left);
     }
 
@@ -408,7 +408,7 @@ public class FeedFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
         MenuItem searchItem = menu.findItem(R.id.searchFeed);
         mSearchView = (SearchView) MenuItemCompat.getActionView(searchItem);
-        mSearchView.setQueryHint("Search...");
+        mSearchView.setQueryHint(getString(R.string.seach));
 
         EditText etSearch = (EditText) mSearchView.findViewById(android.support.v7.appcompat.R.id.search_src_text);
         etSearch.setHintTextColor(Color.DKGRAY);
@@ -450,7 +450,7 @@ public class FeedFragment extends Fragment implements SwipeRefreshLayout.OnRefre
                             .addOnFailureListener(new OnFailureListener() {
                                 @Override
                                 public void onFailure(@NonNull Exception e) {
-                                    Toast.makeText(mContext, "Failed to search", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(mContext, R.string.failed_to_search, Toast.LENGTH_SHORT).show();
                                 }
                             });
                 }
@@ -470,7 +470,6 @@ public class FeedFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
             @Override
             public boolean onMenuItemActionCollapse(MenuItem item) {
-                //TODO: set the whole list (without any filter) on adapter and notify
                 List<Feed> feedList= mFeedAdapter.getmFeedList();
                 int currentSize = feedList != null ? feedList.size():0;
                 //remove the current items

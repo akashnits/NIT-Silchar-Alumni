@@ -170,7 +170,7 @@ public class AlumniOrStudentSignUpFragment extends Fragment implements AlumniOrS
     public void onViewClicked() {
 
         if(mPresenter.validateSpinnerItemSelected(spinnerClassOf)) {
-            Snackbar.make(getView(), "Please choose class of ", Snackbar.LENGTH_SHORT).show();
+            Snackbar.make(getView(), R.string.please_choose_class_of, Snackbar.LENGTH_SHORT).show();
             return;
         }
         Bundle b= getArguments();
@@ -206,7 +206,7 @@ public class AlumniOrStudentSignUpFragment extends Fragment implements AlumniOrS
 
     @Override
     public void showErrorMessage() {
-        Toast.makeText(getContext(), "Authentication failed: You're probably signed up already",
+        Toast.makeText(getContext(), R.string.auth_failed,
                 Toast.LENGTH_SHORT).show();
     }
 

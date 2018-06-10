@@ -161,7 +161,7 @@ public class JobFragment extends Fragment implements SwipeRefreshLayout.OnRefres
                             .addOnFailureListener(new OnFailureListener() {
                                 @Override
                                 public void onFailure(@NonNull Exception e) {
-                                    Toast.makeText(mContext, "Failed to Load data", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(mContext, R.string.failed_to_load_data, Toast.LENGTH_SHORT).show();
                                     if (pbJobFragment != null)
                                         pbJobFragment.setVisibility(View.INVISIBLE);
                                     mIsLoading = false;
@@ -219,7 +219,7 @@ public class JobFragment extends Fragment implements SwipeRefreshLayout.OnRefres
                         .addOnFailureListener(new OnFailureListener() {
                             @Override
                             public void onFailure(@NonNull Exception e) {
-                                Toast.makeText(mContext, "Failed to Load data", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(mContext, R.string.failed_to_load_data, Toast.LENGTH_SHORT).show();
                                 if (pbJobFragment != null)
                                     pbJobFragment.setVisibility(View.INVISIBLE);
                                 mIsLoading = false;
@@ -298,7 +298,7 @@ public class JobFragment extends Fragment implements SwipeRefreshLayout.OnRefres
                         .addOnFailureListener(new OnFailureListener() {
                             @Override
                             public void onFailure(@NonNull Exception e) {
-                                Toast.makeText(mContext, "Failed to Load data", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(mContext, R.string.failed_to_load_data, Toast.LENGTH_SHORT).show();
                                 if (pbJobFragment != null)
                                     pbJobFragment.setVisibility(View.INVISIBLE);
                                 mIsLoading = false;
@@ -358,9 +358,9 @@ public class JobFragment extends Fragment implements SwipeRefreshLayout.OnRefres
                                 for (DocumentSnapshot documentSnapshot : documentSnapshots)
                                     newJob.add(documentSnapshot.toObject(Job.class));
                                 mJobAdapter.addAllAtStart(newJob);
-                                Toast.makeText(mContext, "Refreshed", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(mContext, R.string.refreshed, Toast.LENGTH_SHORT).show();
                             } else {
-                                Toast.makeText(mContext, "No new jobs", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(mContext, R.string.no_new_jobs, Toast.LENGTH_SHORT).show();
                             }
                             mIsLoading = false;
                         }
@@ -368,7 +368,7 @@ public class JobFragment extends Fragment implements SwipeRefreshLayout.OnRefres
                     .addOnFailureListener(new OnFailureListener() {
                         @Override
                         public void onFailure(@NonNull Exception e) {
-                            Toast.makeText(mContext, "Failed to Load data", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(mContext, R.string.failed_to_load_data, Toast.LENGTH_SHORT).show();
                             mIsLoading = false;
                         }
                     });
@@ -389,7 +389,7 @@ public class JobFragment extends Fragment implements SwipeRefreshLayout.OnRefres
                         CreateJobFragment.newInstance(),
                         R.id.content,
                         true,
-                        "CreateJobFragment", R.anim.enter_from_right,
+                        getString(R.string.create_job_fragment), R.anim.enter_from_right,
                         R.anim.exit_to_left);
                 break;
             case R.id.swipe_refresh_layout_job:
@@ -402,7 +402,7 @@ public class JobFragment extends Fragment implements SwipeRefreshLayout.OnRefres
         inflater.inflate(R.menu.jobmenu, menu);
         final MenuItem searchItem = menu.findItem(R.id.searchJob);
         mSearchView = (SearchView) MenuItemCompat.getActionView(searchItem);
-        mSearchView.setQueryHint("Search...");
+        mSearchView.setQueryHint(getResources().getString(R.string.seach));
 
         EditText etSearch = (EditText) mSearchView.findViewById(android.support.v7.appcompat.R.id.search_src_text);
         etSearch.setHintTextColor(Color.DKGRAY);
@@ -593,7 +593,7 @@ public class JobFragment extends Fragment implements SwipeRefreshLayout.OnRefres
                             @Override
                             public void onFailure(@NonNull Exception e) {
                                 e.printStackTrace();
-                                Toast.makeText(mContext, "Failed to search", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(mContext, R.string.failed_to_search, Toast.LENGTH_SHORT).show();
                             }
                         });
             } else if (mLocationConstraint != null) {
@@ -617,7 +617,7 @@ public class JobFragment extends Fragment implements SwipeRefreshLayout.OnRefres
                             @Override
                             public void onFailure(@NonNull Exception e) {
                                 e.printStackTrace();
-                                Toast.makeText(mContext, "Failed to search", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(mContext, R.string.failed_to_search, Toast.LENGTH_SHORT).show();
                             }
                         });
             } else if (mOrganisationConstraint != null) {
@@ -641,7 +641,7 @@ public class JobFragment extends Fragment implements SwipeRefreshLayout.OnRefres
                             @Override
                             public void onFailure(@NonNull Exception e) {
                                 e.printStackTrace();
-                                Toast.makeText(mContext, "Failed to search", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(mContext, R.string.failed_to_search, Toast.LENGTH_SHORT).show();
                             }
                         });
             }

@@ -58,7 +58,6 @@ public class FilterJobFragment extends Fragment {
         // Required empty public constructor
     }
 
-    // TODO: Rename and change types and number of parameters
     public static FilterJobFragment newInstance() {
         FilterJobFragment fragment = new FilterJobFragment();
         return fragment;
@@ -193,7 +192,7 @@ public class FilterJobFragment extends Fragment {
 
     private void showJobLocationAlertDialog() {
         final AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
-        builder.setTitle("Choose a location");
+        builder.setTitle(R.string.choose_a_location);
 
         LayoutInflater inflater = LayoutInflater.from(mContext);
         View content = inflater.inflate(R.layout.dialog_select_job_location, null);
@@ -232,7 +231,7 @@ public class FilterJobFragment extends Fragment {
 
     private void showJobOrganisationAlertDialog() {
         final AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
-        builder.setTitle("Choose a company");
+        builder.setTitle(R.string.choose_a_company);
 
         LayoutInflater inflater = LayoutInflater.from(mContext);
         View content = inflater.inflate(R.layout.dialog_select_job_organisation, null);

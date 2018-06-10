@@ -45,7 +45,7 @@
             android:layout_height="30dp"
             android:background="@drawable/sharp_cornors"
             android:gravity="center_vertical"
-            android:hint="Enter job title"
+            android:hint="@string/enter_job_title"
             android:inputType="textCapSentences" />
     </android.support.design.widget.TextInputLayout>
 
@@ -57,7 +57,7 @@
         android:layout_below="@+id/tvPostJobTitle"
         android:layout_marginStart="4dp"
         android:layout_marginTop="8dp"
-        android:text="Organisation"
+        android:text="@string/organisation"
         android:textSize="18sp" />
 
     <android.support.design.widget.TextInputLayout
@@ -78,7 +78,7 @@
             android:layout_height="30dp"
             android:background="@drawable/sharp_cornors"
             android:gravity="center_vertical"
-            android:hint="Enter organisation name"
+            android:hint="@string/enter_organisation_name"
             android:inputType="textCapSentences" />
     </android.support.design.widget.TextInputLayout>
 
@@ -86,7 +86,7 @@
         android:id="@+id/tvPostJobLocation"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Location"
+        android:text="@string/location"
         android:layout_below="@+id/tvPostJobOrganisation"
         android:layout_marginStart="4dp"
         android:layout_marginTop="8dp"
@@ -111,7 +111,7 @@
             android:layout_height="30dp"
             android:background="@drawable/sharp_cornors"
             android:gravity="center_vertical"
-            android:hint="Enter job location"
+            android:hint="@string/enter_job_location"
             android:inputType="textCapSentences" />
     </android.support.design.widget.TextInputLayout>
 
@@ -121,7 +121,7 @@
         android:id="@+id/tvPostJobDescription"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Description"
+        android:text="@string/description"
         android:layout_below="@+id/tvPostJobLocation"
         android:layout_marginStart="4dp"
         android:layout_marginTop="8dp"
@@ -145,7 +145,7 @@
             android:layout_height="160dp"
             android:background="@drawable/sharp_cornors"
             android:gravity="start"
-            android:hint="Tell a bit about this job "
+            android:hint="@string/tell_a_bit_about_this_job"
             android:inputType="textCapSentences|textMultiLine" />
     </android.support.design.widget.TextInputLayout>
 
@@ -153,7 +153,7 @@
         android:id="@+id/tvPostJobKeywords"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Keywords"
+        android:text="@string/keywords"
         android:layout_below="@+id/til_post_job_description"
         android:layout_marginStart="4dp"
         android:layout_marginTop="8dp"
@@ -177,7 +177,7 @@
             android:layout_height="30dp"
             android:background="@drawable/sharp_cornors"
             android:gravity="center_vertical"
-            android:hint="Enter keywords "
+            android:hint="@string/enter_keywords"
             android:inputType="text" />
     </android.support.design.widget.TextInputLayout>
 
@@ -190,7 +190,7 @@
         android:layout_marginTop="12dp"
         android:background="@color/colorPrimary"
         android:padding="4dp"
-        android:text="Select Image"
+        android:text="@string/select_image"
         android:textColor="@android:color/white" />
 
     <RelativeLayout
@@ -229,7 +229,7 @@
         android:layout_below="@+id/postJobfabLayout"
         android:background="@color/colorPrimary"
         android:layout_marginTop="80dp"
-        android:text="Post"
+        android:text="@string/post"
         android:textColor="@android:color/white" />
 </RelativeLayout>
 </ScrollView>

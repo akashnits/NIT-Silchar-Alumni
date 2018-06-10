@@ -91,7 +91,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:padding="4dp"
-                    android:text="About you" />
+                    android:text="@string/about_you" />
 
                 <TextView
                     android:id="@+id/tvAboutYouText"
@@ -108,7 +108,7 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/tvAboutYouText"
                     android:padding="4dp"
-                    android:text="Class of" />
+                    android:text="@string/class_of" />
 
                 <TextView
                     android:id="@+id/tvClassofText"
@@ -125,7 +125,7 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/tvClassofText"
                     android:padding="4dp"
-                    android:text="Location" />
+                    android:text="@string/location" />
 
                 <TextView
                     android:id="@+id/tvLocationText"
@@ -142,7 +142,7 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/tvLocationText"
                     android:padding="4dp"
-                    android:text="Contact" />
+                    android:text="@string/contact" />
 
                 <TextView
                     android:id="@+id/tvContactText"
@@ -159,7 +159,7 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/tvContactText"
                     android:padding="4dp"
-                    android:text="Email" />
+                    android:text="@string/email" />
 
                 <TextView
                     android:id="@+id/tvEmailText"
@@ -176,7 +176,7 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/tvEmailText"
                     android:padding="4dp"
-                    android:text="Organisation" />
+                    android:text="@string/organisation" />
 
                 <TextView
                     android:id="@+id/tvOrganisationText"
@@ -193,7 +193,7 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/tvOrganisationText"
                     android:padding="4dp"
-                    android:text="Designation" />
+                    android:text="@string/designation" />
 
                 <TextView
                     android:id="@+id/tvDesignationText"
@@ -210,7 +210,7 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/tvDesignationText"
                     android:padding="4dp"
-                    android:text="Skills" />
+                    android:text="@string/skills" />
 
                 <TextView
                     android:id="@+id/tvSkillsText"

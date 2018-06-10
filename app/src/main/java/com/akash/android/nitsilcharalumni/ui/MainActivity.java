@@ -56,7 +56,7 @@ public class MainActivity extends AppCompatActivity implements DrawerMenuItem.Dr
                     FeedFragment.newInstance(),
                     R.id.content,
                     false,
-                    "Home",R.anim.enter_from_right,
+                    getString(R.string.home),R.anim.enter_from_right,
                     R.anim.exit_to_left );
         }else {
             mAlumniLocationConstraint= savedInstanceState.getString("alumniLocationConstraint");
@@ -85,7 +85,7 @@ public class MainActivity extends AppCompatActivity implements DrawerMenuItem.Dr
                             FeedFragment.newInstance(),
                             R.id.content,
                             false,
-                            "Home",
+                            getString(R.string.home),
                             R.anim.enter_from_right,
                             R.anim.exit_to_left);
                     return true;
@@ -96,7 +96,7 @@ public class MainActivity extends AppCompatActivity implements DrawerMenuItem.Dr
                             AlumniFragment.newInstance(),
                             R.id.content,
                             false,
-                            "Alumni",
+                            getString(R.string.alumni),
                             R.anim.enter_from_right,
                             R.anim.exit_to_left );
                     return true;
@@ -107,7 +107,7 @@ public class MainActivity extends AppCompatActivity implements DrawerMenuItem.Dr
                             JobFragment.newInstance(),
                             R.id.content,
                             false,
-                            "Job",
+                            getString(R.string.job),
                             R.anim.enter_from_right,
                             R.anim.exit_to_left );
                     return true;
@@ -118,7 +118,7 @@ public class MainActivity extends AppCompatActivity implements DrawerMenuItem.Dr
                             BookmarkFragment.newInstance(),
                             R.id.content,
                             false,
-                            "Bookmark",
+                            getString(R.string.bookmark),
                             R.anim.enter_from_right,
                             R.anim.exit_to_left );
                     return true;
@@ -134,7 +134,7 @@ public class MainActivity extends AppCompatActivity implements DrawerMenuItem.Dr
                 AlumniDetailsFragment.newInstance(args),
                 R.id.content,
                 true,
-                "AlumniDetails",
+                getString(R.string.alumni_details),
                 R.anim.enter_from_right,
                 R.anim.exit_to_left);
     }
@@ -145,7 +145,7 @@ public class MainActivity extends AppCompatActivity implements DrawerMenuItem.Dr
                 AlumniDetailsFragment.newInstance(args),
                 R.id.alumniDetailsContainer,
                 true,
-                "AlumniDetails",
+                getString(R.string.alumni_details),
                 R.anim.enter_from_right,
                 R.anim.exit_to_left);
     }
@@ -156,7 +156,7 @@ public class MainActivity extends AppCompatActivity implements DrawerMenuItem.Dr
                 FilterAlumniFragment.newInstance(),
                 R.id.content,
                 true,
-                "FilterAlumni",
+                getString(R.string.filter_alumni),
                 R.anim.enter_from_right,
                 R.anim.exit_to_left );
     }
@@ -167,7 +167,7 @@ public class MainActivity extends AppCompatActivity implements DrawerMenuItem.Dr
                 FilterJobFragment.newInstance(),
                 R.id.content,
                 true,
-                "FilterJob",
+                getString(R.string.filter_job),
                 R.anim.enter_from_right,
                 R.anim.exit_to_left);
     }
@@ -178,7 +178,7 @@ public class MainActivity extends AppCompatActivity implements DrawerMenuItem.Dr
                 MyProfileFragment.newInstance(),
                 R.id.content,
                 true,
-                "MyProfileFragment",
+                getString(R.string.my_profile_fragment),
                 R.anim.enter_from_right,
                 R.anim.exit_to_left);
     }
@@ -189,7 +189,7 @@ public class MainActivity extends AppCompatActivity implements DrawerMenuItem.Dr
                 EditMyProfileFragment.newInstance(args),
                 R.id.content,
                 true,
-                "EditMyProfileFragment",
+                getString(R.string.edit_my_profile_fragment),
                 R.anim.enter_from_right,
                 R.anim.exit_to_left
         );

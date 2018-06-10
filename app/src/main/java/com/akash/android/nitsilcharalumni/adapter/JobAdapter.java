@@ -311,7 +311,7 @@ public class JobAdapter extends RecyclerView.Adapter<JobAdapter.JobViewHolder> i
                                     @Override
                                     public void onFailure(@NonNull Exception e) {
                                         e.printStackTrace();
-                                        Toast.makeText(mContext, "Failed to Load data", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(mContext, R.string.failed_to_load_data, Toast.LENGTH_SHORT).show();
                                         mJobFragment.setmIsLoading(false);
                                     }
                                 });
@@ -345,7 +345,7 @@ public class JobAdapter extends RecyclerView.Adapter<JobAdapter.JobViewHolder> i
                                             if (mJobFragment != null) {
                                                 mJobFragment.setmLastDocumentSnapshotSize(0);
                                                 setEmptyView();
-                                                Toast.makeText(mContext, "Nothing to show", Toast.LENGTH_SHORT).show();
+                                                Toast.makeText(mContext, R.string.nothing_to_show, Toast.LENGTH_SHORT).show();
                                             }
                                         }
                                         mJobFragment.setmIsLoading(false);
@@ -355,7 +355,7 @@ public class JobAdapter extends RecyclerView.Adapter<JobAdapter.JobViewHolder> i
                                     @Override
                                     public void onFailure(@NonNull Exception e) {
                                         e.printStackTrace();
-                                        Toast.makeText(mContext, "Failed to Load data", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(mContext, R.string.failed_to_load_data, Toast.LENGTH_SHORT).show();
                                         mJobFragment.setmIsLoading(false);
                                     }
                                 });
@@ -401,7 +401,7 @@ public class JobAdapter extends RecyclerView.Adapter<JobAdapter.JobViewHolder> i
                                     @Override
                                     public void onFailure(@NonNull Exception e) {
                                         e.printStackTrace();
-                                        Toast.makeText(mContext, "Failed to Load data", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(mContext, R.string.failed_to_load_data, Toast.LENGTH_SHORT).show();
                                         mJobFragment.setmIsLoading(false);
                                     }
                                 });
@@ -434,7 +434,7 @@ public class JobAdapter extends RecyclerView.Adapter<JobAdapter.JobViewHolder> i
                                             if (mJobFragment != null) {
                                                 mJobFragment.setmLastDocumentSnapshotSize(0);
                                                 setEmptyView();
-                                                Toast.makeText(mContext, "Nothing to show", Toast.LENGTH_SHORT).show();
+                                                Toast.makeText(mContext, R.string.nothing_to_show, Toast.LENGTH_SHORT).show();
                                             }
                                         }
                                         mJobFragment.setmIsLoading(false);
@@ -444,7 +444,7 @@ public class JobAdapter extends RecyclerView.Adapter<JobAdapter.JobViewHolder> i
                                     @Override
                                     public void onFailure(@NonNull Exception e) {
                                         e.printStackTrace();
-                                        Toast.makeText(mContext, "Failed to Load data", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(mContext, R.string.failed_to_load_data, Toast.LENGTH_SHORT).show();
                                         mJobFragment.setmIsLoading(false);
                                     }
                                 });
@@ -490,7 +490,7 @@ public class JobAdapter extends RecyclerView.Adapter<JobAdapter.JobViewHolder> i
                                     @Override
                                     public void onFailure(@NonNull Exception e) {
                                         e.printStackTrace();
-                                        Toast.makeText(mContext, "Failed to Load data", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(mContext, R.string.failed_to_load_data, Toast.LENGTH_SHORT).show();
                                         mJobFragment.setmIsLoading(false);
                                     }
                                 });
@@ -523,7 +523,7 @@ public class JobAdapter extends RecyclerView.Adapter<JobAdapter.JobViewHolder> i
                                             if (mJobFragment != null) {
                                                 mJobFragment.setmLastDocumentSnapshotSize(0);
                                                 setEmptyView();
-                                                Toast.makeText(mContext, "Nothing to show", Toast.LENGTH_SHORT).show();
+                                                Toast.makeText(mContext, R.string.nothing_to_show, Toast.LENGTH_SHORT).show();
                                             }
                                         }
                                         mJobFragment.setmIsLoading(false);
@@ -533,7 +533,7 @@ public class JobAdapter extends RecyclerView.Adapter<JobAdapter.JobViewHolder> i
                                     @Override
                                     public void onFailure(@NonNull Exception e) {
                                         e.printStackTrace();
-                                        Toast.makeText(mContext, "Failed to Load data", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(mContext, R.string.failed_to_load_data, Toast.LENGTH_SHORT).show();
                                         mJobFragment.setmIsLoading(false);
                                     }
                                 });

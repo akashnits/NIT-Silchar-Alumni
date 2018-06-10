@@ -173,7 +173,6 @@ public class PlaceAutoCompleteFragment extends Fragment implements PlaceAutoComp
                         }
                     else{
                         if(isSocialLogin){
-                            //TODO: write logged in user and showMainActivity
                             mPresenter.writeLoggedInUser(user);
                         }else {
                             mPresenter.createAccountWithEmailAndPassword((SignUpActivity)
@@ -181,7 +180,7 @@ public class PlaceAutoCompleteFragment extends Fragment implements PlaceAutoComp
                         }
                     }
                 }else {
-                    Snackbar.make(getView(), "Please select location", Snackbar.LENGTH_SHORT).show();
+                    Snackbar.make(getView(), R.string.please_select_location, Snackbar.LENGTH_SHORT).show();
                 }
                 break;
         }
@@ -219,7 +218,7 @@ public class PlaceAutoCompleteFragment extends Fragment implements PlaceAutoComp
 
     @Override
     public void showErrorMessage() {
-        Toast.makeText(getContext(), "Authentication failed.",
+        Toast.makeText(getContext(), R.string.auth_failed,
                 Toast.LENGTH_SHORT).show();
     }
 

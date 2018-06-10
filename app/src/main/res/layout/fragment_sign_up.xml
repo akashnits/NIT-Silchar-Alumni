@@ -31,7 +31,7 @@
             android:layout_marginBottom="8dp"
             android:layout_marginTop="8dp"
             android:gravity="center_horizontal"
-            android:text="Sign Up"
+            android:text="@string/sign_up"
             android:textColor="@android:color/white"
             android:textSize="24sp"
             android:textStyle="bold" />
@@ -48,7 +48,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/round_cornors"
-                android:hint="Enter your name"
+                android:hint="@string/enter_your_name"
                 android:inputType="textCapWords"
                 android:padding="10dp"
                 android:textColor="@android:color/black"
@@ -67,7 +67,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/round_cornors"
-                android:hint="Enter your email"
+                android:hint="@string/enter_your_email"
                 android:inputType="textEmailAddress"
                 android:padding="10dp"
             />
@@ -86,7 +86,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/round_cornors"
-                android:hint="Enter password"
+                android:hint="@string/enter_password"
                 android:inputType="textPassword"
                 android:padding="10dp"
                 />
@@ -104,7 +104,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/round_cornors"
-                android:hint="Re-type password"
+                android:hint="@string/re_type_password"
                 android:inputType="textPassword"
                 android:padding="10dp"
                 />
@@ -119,7 +119,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Gender"
+                android:text="@string/gender"
                 android:textColor="@android:color/black"
                 />
 
@@ -130,7 +130,7 @@
                 android:layout_marginBottom="10dp"
                 android:layout_marginStart="100dp"
                 android:buttonTint="@color/colorPrimary"
-                android:text="Male"
+                android:text="@string/male"
                 android:textColor="@android:color/black"
                 />
 
@@ -140,7 +140,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
                 android:buttonTint="@color/colorPrimary"
-                android:text="Female"
+                android:text="@string/female"
                 android:textColor="@android:color/black" />
         </RadioGroup>
 
@@ -156,7 +156,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
                 android:layout_marginStart="2dp"
-                android:text="Type of user"
+                android:text="@string/type_of_user"
                 android:textColor="@android:color/black"
                 />
 
@@ -177,7 +177,7 @@
             android:layout_width="match_parent"
             android:layout_height="45dp"
             android:background="@drawable/round_cornors_green"
-            android:text="Next"
+            android:text="@string/next"
             android:textSize="20sp"
             android:textColor="@android:color/white"
             android:textAllCaps="false"
@@ -195,7 +195,7 @@
                 style="@style/LoginCreateText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Already have an account? "
+                android:text="@string/already_have_an_account"
                 android:textColor="@android:color/white"/>
 
             <TextView
@@ -203,7 +203,7 @@
                 style="@style/LoginCreateTextButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Sign in" />
+                android:text="@string/sign_in" />
         </LinearLayout>
     </LinearLayout>
 </ScrollView>

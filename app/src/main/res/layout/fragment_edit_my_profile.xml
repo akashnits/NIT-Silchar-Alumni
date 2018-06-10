@@ -72,7 +72,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:padding="4dp"
-                    android:text="About you"/>
+                    android:text="@string/about_you"/>
 
                 <android.support.design.widget.TextInputLayout
                     android:id="@+id/tilEditAboutYouMyProfile"
@@ -96,7 +96,7 @@
                     android:layout_height="wrap_content"
                     android:padding="4dp"
                     android:layout_marginTop="8dp"
-                    android:text="Class of"
+                    android:text="@string/class_of"
                     android:layout_below="@+id/tilEditAboutYouMyProfile"/>
 
                 <android.support.design.widget.TextInputLayout
@@ -122,7 +122,7 @@
                     android:layout_height="wrap_content"
                     android:padding="4dp"
                     android:layout_marginTop="8dp"
-                    android:text="Location"
+                    android:text="@string/location"
                     android:layout_below="@+id/tilEditClassOfMyProfile"/>
 
                 <android.support.design.widget.TextInputLayout
@@ -148,7 +148,7 @@
                     android:layout_height="wrap_content"
                     android:padding="4dp"
                     android:layout_marginTop="8dp"
-                    android:text="Contact"
+                    android:text="@string/contact"
                     android:layout_below="@+id/tilEditLocationMyProfile"/>
 
                 <android.support.design.widget.TextInputLayout
@@ -174,7 +174,7 @@
                     android:layout_height="wrap_content"
                     android:padding="4dp"
                     android:layout_marginTop="8dp"
-                    android:text="Email"
+                    android:text="@string/email"
                     android:visibility="gone"
                     android:layout_below="@+id/tilEditContactMyProfile"/>
 
@@ -202,7 +202,7 @@
                     android:layout_height="wrap_content"
                     android:padding="4dp"
                     android:layout_marginTop="8dp"
-                    android:text="Organisation"
+                    android:text="@string/organisation"
                     android:layout_below="@+id/tilEditEmailMyProfile"/>
 
                 <android.support.design.widget.TextInputLayout
@@ -228,7 +228,7 @@
                     android:layout_height="wrap_content"
                     android:padding="4dp"
                     android:layout_marginTop="8dp"
-                    android:text="Designation"
+                    android:text="@string/designation"
                     android:layout_below="@+id/tilEditOrganisationMyProfile"/>
 
                 <android.support.design.widget.TextInputLayout
@@ -254,7 +254,7 @@
                     android:layout_height="wrap_content"
                     android:padding="4dp"
                     android:layout_marginTop="8dp"
-                    android:text="Skills"
+                    android:text="@string/skills"
                     android:layout_below="@+id/tilEditDesignationMyProfile"/>
 
                 <android.support.design.widget.TextInputLayout
