@@ -154,5 +154,15 @@
             android:text="Sign up!"
             android:textColor="@color/colorPrimary" />
 
+        <ProgressBar
+            android:id="@+id/pbLoginFragment"
+            style="?android:attr/progressBarStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_centerHorizontal="true"
+            android:visibility="gone"
+            />
+
     </RelativeLayout>
 </ScrollView>

@@ -202,7 +202,7 @@ public class FeedFragment extends Fragment implements SwipeRefreshLayout.OnRefre
                                 newFeed.add(documentSnapshot.toObject(Feed.class));
                             mFeedAdapter.addAll(newFeed);
                             //update the widget here to load initial list
-                            UpdateWidgetService.startUpdatingWidget(getContext(), getFeedDescriptionList());
+                            UpdateWidgetService.startUpdatingWidget(mContext, getFeedDescriptionList());
                         }
                         if (pbFeedFragment != null)
                             pbFeedFragment.setVisibility(View.INVISIBLE);

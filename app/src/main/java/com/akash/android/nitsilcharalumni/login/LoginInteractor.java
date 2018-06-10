@@ -92,6 +92,8 @@ public class LoginInteractor  {
                 // Google Sign In was successful, authenticate with Firebase
                 GoogleSignInAccount account = task.getResult(ApiException.class);
                 firebaseAuthWithGoogle(account, context);
+                //show progress
+                mLoginPresenter.loadProgressBar();
             } catch (ApiException e) {
                 // Google Sign In failed, update UI appropriately
                 Log.w(TAG, "Google sign in failed", e);
@@ -122,6 +124,7 @@ public class LoginInteractor  {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "signInWithCredential:failure", task.getException());
                             mLoginPresenter.loadGoogleSignInErrorMessage();
+                            mLoginPresenter.hideProgressBar();
                         }
                     }
                 });
@@ -139,6 +142,7 @@ public class LoginInteractor  {
             public void onSuccess(LoginResult loginResult) {
                 Log.d(TAG, "facebook:onSuccess:" + loginResult);
                 handleFacebookAccessToken(loginResult.getAccessToken(), context);
+                mLoginPresenter.loadProgressBar();
             }
 
             @Override
@@ -171,6 +175,7 @@ public class LoginInteractor  {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "signInWithCredential:failure", task.getException());
                             mLoginPresenter.loadFacebookSignInErrorMessage();
+                            mLoginPresenter.hideProgressBar();
                         }
                     }
                 });
@@ -204,9 +209,13 @@ public class LoginInteractor  {
 
     private void writeUserToFirebase(){
         FirebaseUser user = mAuth.getCurrentUser();
+
         final String email;
         if(user != null){
             email = user.getEmail();
+            User u= new User();
+            u.setmName(user.getDisplayName());
+            mLoginPresenter.saveLoggedInUserData(u);
         }else
             email= null;
 
@@ -216,6 +225,8 @@ public class LoginInteractor  {
                 .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        //stop progress
+                        mLoginPresenter.hideProgressBar();
                         DocumentSnapshot documentSnapshot= task.getResult();
                         if(!documentSnapshot.exists()){
                             mLoginPresenter.loadSocialLoginForm(email);

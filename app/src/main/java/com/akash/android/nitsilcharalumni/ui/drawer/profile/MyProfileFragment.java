@@ -148,8 +148,6 @@ public class MyProfileFragment extends Fragment implements LoaderManager.LoaderC
 
         collapsingToolbarLayoutMyProfile.setExpandedTitleColor(Color.WHITE);
         collapsingToolbarLayoutMyProfile.setCollapsedTitleTextColor(Color.WHITE);
-
-
     }
 
     @Override

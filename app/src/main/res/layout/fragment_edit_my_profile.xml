@@ -175,6 +175,7 @@
                     android:padding="4dp"
                     android:layout_marginTop="8dp"
                     android:text="Email"
+                    android:visibility="gone"
                     android:layout_below="@+id/tilEditContactMyProfile"/>
 
                 <android.support.design.widget.TextInputLayout
@@ -183,7 +184,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="200dp"
                     android:layout_below="@+id/tilEditContactMyProfile"
-                    app:hintTextAppearance="@style/HintText">
+                    app:hintTextAppearance="@style/HintText"
+                    android:visibility="gone">
 
                     <android.support.design.widget.TextInputEditText
                         android:id="@+id/etEmailMyProfile"

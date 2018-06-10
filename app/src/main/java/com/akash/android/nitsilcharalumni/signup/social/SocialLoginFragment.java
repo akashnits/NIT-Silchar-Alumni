@@ -168,6 +168,7 @@ public class SocialLoginFragment extends Fragment implements SocialLoginContract
             user.setmGender(mGender);
             user.setmTypeOfUser(mTypeOfUser);
             user.setmEmail(mEmail);
+            user.setmName(mDataManager.getUserName());
             mPresenter.loadPlaceAutoCompleteFragment(user);
         }else{
             Toast.makeText(getContext(), "Please complete the form", Toast.LENGTH_SHORT).show();

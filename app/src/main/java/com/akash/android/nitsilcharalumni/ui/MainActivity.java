@@ -21,6 +21,8 @@ import com.akash.android.nitsilcharalumni.ui.job.JobFragment;
 import com.akash.android.nitsilcharalumni.utils.ActivityUtils;
 import com.akash.android.nitsilcharalumni.utils.BottomNavigationViewHelper;
 import com.akash.android.nitsilcharalumni.widget.UpdateWidgetService;
+import com.facebook.AccessToken;
+import com.facebook.login.LoginManager;
 import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
@@ -211,6 +213,9 @@ public class MainActivity extends AppCompatActivity implements DrawerMenuItem.Dr
     @Override
     public void onLogoutMenuSelected() {
         //TODO: Logout current user
+        if (AccessToken.getCurrentAccessToken() != null && com.facebook.Profile.getCurrentProfile() != null) {
+            LoginManager.getInstance().logOut();
+        }
         mAuth= FirebaseAuth.getInstance();
         if(mAuth != null) {
             mAuth.signOut();
