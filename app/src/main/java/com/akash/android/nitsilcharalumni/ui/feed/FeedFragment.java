@@ -483,7 +483,7 @@ public class FeedFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     private void setupDrawer() {
         MainActivity mainActivity = (MainActivity) getActivity();
         drawerView
-                .addView(new DrawerHeader())
+                .addView(new DrawerHeader(mContext))
                 .addView(new DrawerMenuItem(mContext, DrawerMenuItem.DRAWER_MENU_ITEM_PROFILE, mainActivity, this))
                 .addView(new DrawerMenuItem(mContext, DrawerMenuItem.DRAWER_MENU_ITEM_RATE_US, mainActivity, this))
                 .addView(new DrawerMenuItem(mContext, DrawerMenuItem.DRAWER_MENU_ITEM_CONTACT_US, mainActivity, this))

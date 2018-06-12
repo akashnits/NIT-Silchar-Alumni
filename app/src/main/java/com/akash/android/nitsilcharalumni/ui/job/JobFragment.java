@@ -485,7 +485,7 @@ public class JobFragment extends Fragment implements SwipeRefreshLayout.OnRefres
         MainActivity mainActivity = (MainActivity) getActivity();
 
         drawerViewJob
-                .addView(new DrawerHeader())
+                .addView(new DrawerHeader(mContext))
                 .addView(new DrawerMenuItem(mContext, DrawerMenuItem.DRAWER_MENU_ITEM_PROFILE, mainActivity, this))
                 .addView(new DrawerMenuItem(mContext, DrawerMenuItem.DRAWER_MENU_ITEM_RATE_US, mainActivity, this))
                 .addView(new DrawerMenuItem(mContext, DrawerMenuItem.DRAWER_MENU_ITEM_CONTACT_US, mainActivity, this))
