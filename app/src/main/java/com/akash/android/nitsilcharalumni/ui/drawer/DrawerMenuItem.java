@@ -47,23 +47,23 @@ public class DrawerMenuItem {
     private void onResolved() {
         switch (mMenuPosition){
             case DRAWER_MENU_ITEM_PROFILE:
-                itemNameTxt.setText("Profile");
+                itemNameTxt.setText(R.string.profile);
                 itemIcon.setImageDrawable(mContext.getResources().getDrawable(R.drawable.ic_account_circle_black_24dp));
                 break;
             case DRAWER_MENU_ITEM_RATE_US:
-                itemNameTxt.setText("Rate us");
+                itemNameTxt.setText(R.string.rate_us);
                 itemIcon.setImageDrawable(mContext.getResources().getDrawable(R.drawable.ic_rate_review_black_24dp));
                 break;
             case DRAWER_MENU_ITEM_CONTACT_US:
-                itemNameTxt.setText("Contact us");
+                itemNameTxt.setText(R.string.contact_us);
                 itemIcon.setImageDrawable(mContext.getResources().getDrawable(R.drawable.ic_contact_mail_black_24dp));
                 break;
             case DRAWER_MENU_ITEM_LOGOUT:
                 itemIcon.setImageDrawable(mContext.getResources().getDrawable(R.drawable.ic_exit_to_app_black_24dp));
-                itemNameTxt.setText("Logout");
+                itemNameTxt.setText(R.string.logout);
                 break;
             case DRAWER_MENU_ITEM_DEVELOPED_BY:
-                itemNameTxt.setText("Developed by Akash");
+                itemNameTxt.setText(R.string.developed_by);
                 itemIcon.setImageDrawable(mContext.getResources().getDrawable(R.drawable.ic_account_circle_black_24dp));
                 break;
         }
@@ -84,22 +84,22 @@ public class DrawerMenuItem {
                         }, 500);
                 break;
             case DRAWER_MENU_ITEM_RATE_US:
-                Toast.makeText(mContext, "Rate us", Toast.LENGTH_SHORT).show();
+                Toast.makeText(mContext, R.string.rate_us, Toast.LENGTH_SHORT).show();
                 mHandler.onClickMenuItemListener();
                 mCallBack.onRateUsMenuSelected();
                 break;
             case DRAWER_MENU_ITEM_CONTACT_US:
-                Toast.makeText(mContext, "Contact us", Toast.LENGTH_SHORT).show();
+                Toast.makeText(mContext, R.string.contact_us, Toast.LENGTH_SHORT).show();
                 mHandler.onClickMenuItemListener();
                 mCallBack.onContactUsMenuSelected();
                 break;
             case DRAWER_MENU_ITEM_LOGOUT:
-                Toast.makeText(mContext, "Logout", Toast.LENGTH_SHORT).show();
+                Toast.makeText(mContext, R.string.logout, Toast.LENGTH_SHORT).show();
                 mHandler.onClickMenuItemListener();
                 mCallBack.onLogoutMenuSelected();
                 break;
             case DRAWER_MENU_ITEM_DEVELOPED_BY:
-                Toast.makeText(mContext, "Developer", Toast.LENGTH_SHORT).show();
+                Toast.makeText(mContext, R.string.developed_by, Toast.LENGTH_SHORT).show();
                 mHandler.onClickMenuItemListener();
                 mCallBack.onDeveloperMenuSelected();
                 break;

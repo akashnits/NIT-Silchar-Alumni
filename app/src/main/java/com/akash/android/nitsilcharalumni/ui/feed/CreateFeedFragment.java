@@ -176,7 +176,7 @@ public class CreateFeedFragment extends Fragment implements FABProgressListener 
 
     @Override
     public void onFABProgressAnimationEnd() {
-        Snackbar.make(fabProgressCircle, "Upload Complete", Snackbar.LENGTH_LONG)
+        Snackbar.make(fabProgressCircle, R.string.upload_complete, Snackbar.LENGTH_LONG)
                 .setAction("Action", null)
                 .show();
     }
@@ -189,7 +189,7 @@ public class CreateFeedFragment extends Fragment implements FABProgressListener 
                 intent.setType("image/*");
                 intent.setAction(Intent.ACTION_GET_CONTENT);
                 startActivityForResult(Intent.createChooser(intent,
-                        "Select a picture"), SELECT_FEED_PICTURE);
+                        getResources().getString(R.string.please_select_a_image_to_upload)), SELECT_FEED_PICTURE);
                 break;
             case R.id.uploadFab:
                 //start uploading the selected picture
@@ -213,24 +213,24 @@ public class CreateFeedFragment extends Fragment implements FABProgressListener 
                         @Override
                         public void onFailure(@NonNull Exception e) {
                             e.printStackTrace();
-                            Toast.makeText(mContext, "Upload failed", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(mContext, R.string.upload_failed, Toast.LENGTH_SHORT).show();
                             btPost.setEnabled(true);
                         }
                     });
                 } else {
-                    Toast.makeText(mContext, "Please select a image to upload", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(mContext, R.string.please_select_a_image_to_upload, Toast.LENGTH_SHORT).show();
                 }
                 break;
             case R.id.btPost:
                 if (TextUtils.isEmpty(editTextFeedDescription.getText())) {
-                    Toast.makeText(mContext, "Please enter brief description about the post",
+                    Toast.makeText(mContext, R.string.brief_description_about_post,
                             Toast.LENGTH_SHORT).show();
                     return;
                 }
 
                 //give user a warning if user forgets to upload the image after selecting it
                 if (mSelectedImageUri != null && mDownloadUri == null) {
-                    Toast.makeText(mContext, "Please upload the image", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(mContext, R.string.please_select_a_image_to_upload, Toast.LENGTH_SHORT).show();
                     return;
                 }
 
@@ -239,7 +239,7 @@ public class CreateFeedFragment extends Fragment implements FABProgressListener 
                 if (!TextUtils.isEmpty(editTextFeedKeywords.getText())) {
                     String feedSearchKeywords = editTextFeedKeywords.getText().toString().trim();
                     if (!Pattern.compile("(\\w+)(,\\s*\\w+)*").matcher(feedSearchKeywords).matches()) {
-                        Toast.makeText(mContext, "Search keywords should be alphanumeric and separated by comma",
+                        Toast.makeText(mContext, R.string.seach_keyword_warning,
                                 Toast.LENGTH_SHORT).show();
                         return;
                     }
@@ -261,14 +261,14 @@ public class CreateFeedFragment extends Fragment implements FABProgressListener 
                             searchKeywordMap,
                             mAuth.getCurrentUser().getEmail());
 
-                    Toast.makeText(mContext, "Posting...", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(mContext, R.string.posting, Toast.LENGTH_SHORT).show();
                     mFirebaseFirestore.collection(Constants.FEED_COLLECTION)
                             .add(feed)
                             .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                                 @Override
                                 public void onSuccess(DocumentReference documentReference) {
                                     Log.d(TAG, "DocumentSnapshot written with ID: " + documentReference.getId());
-                                    Toast.makeText(getContext(), "Updated", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(getContext(), R.string.updated, Toast.LENGTH_SHORT).show();
                                     if (getFragmentManager() != null)
                                         getFragmentManager().popBackStackImmediate();
                                 }
@@ -278,7 +278,7 @@ public class CreateFeedFragment extends Fragment implements FABProgressListener 
                                 public void onFailure(@NonNull Exception e) {
                                     Log.w(TAG, "Error adding document", e);
                                     Toast.makeText(mContext,
-                                            "Internal error, please try after some time", Toast.LENGTH_SHORT).show();
+                                            R.string.internal_error, Toast.LENGTH_SHORT).show();
                                 }
                             });
                 }
@@ -324,10 +324,10 @@ public class CreateFeedFragment extends Fragment implements FABProgressListener 
                             if (!TextUtils.isEmpty(mNameOfFile))
                                 btSelectImage.setText(mNameOfFile);
                             else
-                                btSelectImage.setText("Image selected");
+                                btSelectImage.setText(R.string.image_selected);
                             cursor.close();
                         } else {
-                            btSelectImage.setText("Image selected");
+                            btSelectImage.setText(R.string.image_selected);
                         }
                     }
                 }

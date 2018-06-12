@@ -10,9 +10,6 @@ import com.google.firebase.auth.FirebaseUser;
 
 import javax.inject.Inject;
 
-/**
- * Created by 20125350 on 11/16/2017.
- */
 
 public class PlaceAutoCompletePresenter implements PlaceAutoCompleteContract.Presenter {
 

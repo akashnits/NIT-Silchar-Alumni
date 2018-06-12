@@ -1,11 +1,19 @@
 apply plugin: 'com.android.application'
 
 android {
+    signingConfigs {
+        config {
+            keyAlias 'key0'
+            keyPassword 'testtest'
+            storeFile file('/Users/akash/Desktop/android.jks')
+            storePassword 'testtest'
+        }
+    }
     compileSdkVersion 27
     buildToolsVersion "26.0.2"
     defaultConfig {
         applicationId "com.akash.android.nitsilcharalumni"
-        minSdkVersion 21
+        minSdkVersion 19
         targetSdkVersion 27
         versionCode 1
         versionName "1.0"
@@ -15,16 +23,16 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.config
         }
     }
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile fileTree(include: ['*.jar'], dir: 'libs')
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-
     compile 'com.android.support:appcompat-v7:27.0.1'
     compile 'com.android.support:support-v4:27.0.1'
     compile 'com.android.support:design:27.0.1'

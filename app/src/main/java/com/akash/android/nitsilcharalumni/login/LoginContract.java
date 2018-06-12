@@ -29,6 +29,10 @@ public class LoginContract {
         void saveLoggedInUsername(String name);
 
         void showSocialLoginFragment(String email);
+
+        void showProgressBar();
+
+        void hideProgressBar();
     }
 
     public interface Presenter extends BasePresenter {
@@ -53,5 +57,8 @@ public class LoginContract {
 
         void loadSocialLoginForm(String email);
 
+        void loadProgressBar();
+
+        void hideProgressBar();
     }
 }

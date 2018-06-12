@@ -168,7 +168,7 @@ public class AlumniFragment extends Fragment implements AlumniAdapter.OnAlumniCl
                             .addOnFailureListener(new OnFailureListener() {
                                 @Override
                                 public void onFailure(@NonNull Exception e) {
-                                    Toast.makeText(mContext, "Failed to Load data", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(mContext, R.string.failed_to_load_data, Toast.LENGTH_SHORT).show();
                                     if (pbAlumniFragment != null)
                                         pbAlumniFragment.setVisibility(View.INVISIBLE);
                                     isLoading = false;
@@ -228,7 +228,7 @@ public class AlumniFragment extends Fragment implements AlumniAdapter.OnAlumniCl
                         .addOnFailureListener(new OnFailureListener() {
                             @Override
                             public void onFailure(@NonNull Exception e) {
-                                Toast.makeText(mContext, "Failed to Load data", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(mContext, R.string.failed_to_load_data, Toast.LENGTH_SHORT).show();
                                 if (pbAlumniFragment != null)
                                     pbAlumniFragment.setVisibility(View.INVISIBLE);
                                 isLoading = false;
@@ -330,7 +330,7 @@ public class AlumniFragment extends Fragment implements AlumniAdapter.OnAlumniCl
                         .addOnFailureListener(new OnFailureListener() {
                             @Override
                             public void onFailure(@NonNull Exception e) {
-                                Toast.makeText(mContext, "Failed to Load data", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(mContext, R.string.failed_to_load_data, Toast.LENGTH_SHORT).show();
                                 if (pbAlumniFragment != null)
                                     pbAlumniFragment.setVisibility(View.INVISIBLE);
                                 isLoading = false;
@@ -358,7 +358,7 @@ public class AlumniFragment extends Fragment implements AlumniAdapter.OnAlumniCl
         inflater.inflate(R.menu.alumnimenu, menu);
         final MenuItem searchItem = menu.findItem(R.id.searchAlumni);
         mSearchView = (SearchView) MenuItemCompat.getActionView(searchItem);
-        mSearchView.setQueryHint("Type a name...");
+        mSearchView.setQueryHint(getString(R.string.type_a_name));
 
         EditText etSearch = (EditText) mSearchView.findViewById(android.support.v7.appcompat.R.id.search_src_text);
         etSearch.setHintTextColor(Color.DKGRAY);
@@ -445,7 +445,7 @@ public class AlumniFragment extends Fragment implements AlumniAdapter.OnAlumniCl
     private void setupDrawer() {
         MainActivity mainActivity = (MainActivity) getActivity();
         drawerViewAlumni
-                .addView(new DrawerHeader())
+                .addView(new DrawerHeader(mContext))
                 .addView(new DrawerMenuItem(mContext, DrawerMenuItem.DRAWER_MENU_ITEM_PROFILE, mainActivity, this))
                 .addView(new DrawerMenuItem(mContext, DrawerMenuItem.DRAWER_MENU_ITEM_RATE_US, mainActivity, this))
                 .addView(new DrawerMenuItem(mContext, DrawerMenuItem.DRAWER_MENU_ITEM_CONTACT_US, mainActivity, this))
@@ -532,7 +532,7 @@ public class AlumniFragment extends Fragment implements AlumniAdapter.OnAlumniCl
                     @Override
                     public void onFailure(@NonNull Exception e) {
                         e.printStackTrace();
-                        Toast.makeText(mContext, "Failed to search", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(mContext, R.string.failed_to_search, Toast.LENGTH_SHORT).show();
                     }
                 });
     }
@@ -567,7 +567,7 @@ public class AlumniFragment extends Fragment implements AlumniAdapter.OnAlumniCl
                         @Override
                         public void onFailure(@NonNull Exception e) {
                             e.printStackTrace();
-                            Toast.makeText(mContext, "Failed to search", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(mContext, R.string.failed_to_search, Toast.LENGTH_SHORT).show();
                         }
                     });
         } else if (mLocationConstraint != null) {
@@ -597,7 +597,7 @@ public class AlumniFragment extends Fragment implements AlumniAdapter.OnAlumniCl
                         @Override
                         public void onFailure(@NonNull Exception e) {
                             e.printStackTrace();
-                            Toast.makeText(mContext, "Failed to search", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(mContext, R.string.failed_to_search, Toast.LENGTH_SHORT).show();
                         }
                     });
         } else if (mClassConstraint != null) {
@@ -627,7 +627,7 @@ public class AlumniFragment extends Fragment implements AlumniAdapter.OnAlumniCl
                         @Override
                         public void onFailure(@NonNull Exception e) {
                             e.printStackTrace();
-                            Toast.makeText(mContext, "Failed to search", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(mContext, R.string.failed_to_search, Toast.LENGTH_SHORT).show();
                         }
                     });
         }

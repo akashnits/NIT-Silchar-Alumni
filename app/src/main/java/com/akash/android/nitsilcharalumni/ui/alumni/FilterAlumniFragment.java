@@ -233,7 +233,7 @@ public class FilterAlumniFragment extends Fragment {
 
     private void showClassOfAlertDialog() {
         final AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
-        builder.setTitle("Choose a graduation year");
+        builder.setTitle(R.string.choose_a_graduation_year);
 
         LayoutInflater inflater = LayoutInflater.from(mContext);
         View content = inflater.inflate(R.layout.dialog_select_alumni_classof, null);

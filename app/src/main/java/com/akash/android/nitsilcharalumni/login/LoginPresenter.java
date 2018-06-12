@@ -92,4 +92,14 @@ public class LoginPresenter implements LoginContract.Presenter {
     public void loadSocialLoginForm(String email) {
         mLoginView.showSocialLoginFragment(email);
     }
+
+    @Override
+    public void loadProgressBar() {
+        mLoginView.showProgressBar();
+    }
+
+    @Override
+    public void hideProgressBar() {
+        mLoginView.hideProgressBar();
+    }
 }

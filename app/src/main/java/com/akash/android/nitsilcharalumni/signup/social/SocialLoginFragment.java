@@ -143,7 +143,7 @@ public class SocialLoginFragment extends Fragment implements SocialLoginContract
 
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
-        Toast.makeText(getContext(), "Nothing selected", Toast.LENGTH_SHORT).show();
+        Toast.makeText(getContext(), R.string.nothing_selected, Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -168,9 +168,10 @@ public class SocialLoginFragment extends Fragment implements SocialLoginContract
             user.setmGender(mGender);
             user.setmTypeOfUser(mTypeOfUser);
             user.setmEmail(mEmail);
+            user.setmName(mDataManager.getUserName());
             mPresenter.loadPlaceAutoCompleteFragment(user);
         }else{
-            Toast.makeText(getContext(), "Please complete the form", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), R.string.please_complete_the_form, Toast.LENGTH_SHORT).show();
         }
     }
 

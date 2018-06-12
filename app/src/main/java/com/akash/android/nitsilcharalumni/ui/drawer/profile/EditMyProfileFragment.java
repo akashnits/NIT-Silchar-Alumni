@@ -392,7 +392,7 @@ public class EditMyProfileFragment extends Fragment {
                         @Override
                         public void onFailure(@NonNull Exception e) {
                             e.printStackTrace();
-                            Toast.makeText(mContext, "Upload failed", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(mContext, R.string.upload_failed, Toast.LENGTH_SHORT).show();
                             if (pbEditMyProfileFragment != null)
                                 pbEditMyProfileFragment.setVisibility(View.GONE);
                             mEditDoneVisible = true;
@@ -401,7 +401,7 @@ public class EditMyProfileFragment extends Fragment {
                         }
                     });
                 } else {
-                    Toast.makeText(mContext, "Please select a image to upload", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(mContext, R.string.please_select_a_image_to_upload, Toast.LENGTH_SHORT).show();
                 }
             }
         }

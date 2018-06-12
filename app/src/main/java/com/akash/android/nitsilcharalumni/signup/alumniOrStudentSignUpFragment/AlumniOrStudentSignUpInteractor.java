@@ -15,9 +15,6 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 
-/**
- * Created by akash on 19/11/17.
- */
 
 public class AlumniOrStudentSignUpInteractor {
 

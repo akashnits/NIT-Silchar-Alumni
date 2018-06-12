@@ -181,7 +181,7 @@ public class SignUpFragment extends Fragment implements SignUpContract.View, Ada
                     mPresenter.loadPlaceAutoCompleteFragment(mUser, password);
                 }
                 else
-                    Snackbar.make(getView(), "Please enter details correctly",
+                    Snackbar.make(getView(), R.string.please_enter_details_correctly,
                             BaseTransientBottomBar.LENGTH_SHORT).show();
         }
     }
@@ -215,7 +215,7 @@ public class SignUpFragment extends Fragment implements SignUpContract.View, Ada
 
     @Override
     public void onNothingSelected(AdapterView<?> adapterView) {
-        Toast.makeText(getContext(), "Nothing selected", Toast.LENGTH_SHORT).show();
+        Toast.makeText(getContext(), R.string.nothing_selected, Toast.LENGTH_SHORT).show();
     }
 
     @Override

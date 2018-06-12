@@ -37,7 +37,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Gender"
+                    android:text="@string/gender"
                     android:textColor="@android:color/black"
                     />
 
@@ -48,7 +48,7 @@
                     android:layout_marginBottom="10dp"
                     android:layout_marginStart="100dp"
                     android:buttonTint="@color/colorPrimary"
-                    android:text="Male"
+                    android:text="@string/male"
                     android:textColor="@android:color/black"
                     />
 
@@ -58,7 +58,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="10dp"
                     android:buttonTint="@color/colorPrimary"
-                    android:text="Female"
+                    android:text="@string/female"
                     android:textColor="@android:color/black" />
             </RadioGroup>
 
@@ -74,7 +74,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="10dp"
                     android:layout_marginStart="2dp"
-                    android:text="Type of user"
+                    android:text="@string/type_of_user"
                     android:textColor="@android:color/black"
                     />
 
@@ -95,7 +95,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="45dp"
                 android:background="@drawable/round_cornors_green"
-                android:text="Next"
+                android:text="@string/next"
                 android:textSize="20sp"
                 android:textColor="@android:color/white"
                 android:textAllCaps="false"

@@ -4,18 +4,17 @@ package com.akash.android.nitsilcharalumni.login;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BaseTransientBottomBar;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -25,15 +24,10 @@ import com.akash.android.nitsilcharalumni.data.DataManager;
 import com.akash.android.nitsilcharalumni.di.component.DaggerLoginFragmentComponent;
 import com.akash.android.nitsilcharalumni.di.component.LoginFragmentComponent;
 import com.akash.android.nitsilcharalumni.di.module.LoginFragmentModule;
-import com.akash.android.nitsilcharalumni.model.User;
-import com.akash.android.nitsilcharalumni.ui.MainActivity;
 import com.akash.android.nitsilcharalumni.signup.SignUpActivity;
-import com.akash.android.nitsilcharalumni.utils.Constants;
+import com.akash.android.nitsilcharalumni.ui.MainActivity;
 import com.facebook.login.widget.LoginButton;
 import com.google.android.gms.common.SignInButton;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.firestore.DocumentSnapshot;
 
 import javax.inject.Inject;
 
@@ -69,6 +63,8 @@ public class LoginFragment extends Fragment implements LoginContract.View {
     @BindView(R.id.tvSignUp)
     TextView tvSignUp;
     Unbinder unbinder;
+    @BindView(R.id.pbLoginFragment)
+    ProgressBar pbLoginFragment;
 
     private LoginContract.Presenter mLoginContractPresenter;
 
@@ -89,7 +85,7 @@ public class LoginFragment extends Fragment implements LoginContract.View {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mLoginContractPresenter= new LoginPresenter(this);
+        mLoginContractPresenter = new LoginPresenter(this);
         getLoginFragmentComponent().inject(this);
     }
 
@@ -134,13 +130,13 @@ public class LoginFragment extends Fragment implements LoginContract.View {
                 mLoginContractPresenter.signInUsingGoogle((LoginActivity) getActivity());
                 break;
             case R.id.login_button:
-                mLoginContractPresenter.signInUsingFacebook(loginButton, (LoginActivity) getActivity() );
+                mLoginContractPresenter.signInUsingFacebook(loginButton, (LoginActivity) getActivity());
                 break;
             case R.id.btSignIn:
-                boolean valid= mLoginContractPresenter.validateLoginForm(getActivity(),
+                boolean valid = mLoginContractPresenter.validateLoginForm(getActivity(),
                         username.getText(), username,
                         password.getText(), password);
-                if(!valid) {
+                if (!valid) {
                     Snackbar.make(getView(), "Please enter details correctly",
                             BaseTransientBottomBar.LENGTH_SHORT).show();
                 }
@@ -197,5 +193,15 @@ public class LoginFragment extends Fragment implements LoginContract.View {
     @Override
     public void showSocialLoginFragment(String email) {
         ((LoginActivity) getActivity()).showSocialLoginFragment(email);
+    }
+
+    @Override
+    public void showProgressBar() {
+        pbLoginFragment.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideProgressBar() {
+        pbLoginFragment.setVisibility(View.INVISIBLE);
     }
 }

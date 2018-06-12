@@ -198,7 +198,7 @@ public class CreateJobFragment extends Fragment implements FABProgressListener {
 
     @Override
     public void onFABProgressAnimationEnd() {
-        Snackbar.make(postJobFabProgressCircle, "Upload Complete", Snackbar.LENGTH_LONG)
+        Snackbar.make(postJobFabProgressCircle, R.string.upload_complete, Snackbar.LENGTH_LONG)
                 .setAction("Action", null)
                 .show();
     }
@@ -211,7 +211,7 @@ public class CreateJobFragment extends Fragment implements FABProgressListener {
                 intent.setType("image/*");
                 intent.setAction(Intent.ACTION_GET_CONTENT);
                 startActivityForResult(Intent.createChooser(intent,
-                        "Select a picture"), SELECT_JOB_PICTURE);
+                        getResources().getString(R.string.please_select_a_image_to_upload)), SELECT_JOB_PICTURE);
                 break;
             case R.id.postJobUploadFab:
                 //start uploading the selected picture
@@ -235,18 +235,18 @@ public class CreateJobFragment extends Fragment implements FABProgressListener {
                         @Override
                         public void onFailure(@NonNull Exception e) {
                             e.printStackTrace();
-                            Toast.makeText(mContext, "Upload failed", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(mContext, R.string.upload_failed, Toast.LENGTH_SHORT).show();
                             btPostJob.setEnabled(true);
                         }
                     });
                 } else {
-                    Toast.makeText(mContext, "Please select a image to upload", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(mContext, R.string.please_select_a_image_to_upload, Toast.LENGTH_SHORT).show();
                 }
                 break;
             case R.id.btPostJob:
                 Map<String, Boolean> searchKeywordMap = new HashMap<>();
                 if (TextUtils.isEmpty(editTextPostJobDescription.getText())) {
-                    Toast.makeText(getContext(), "Please enter a brief decription about the post",
+                    Toast.makeText(getContext(), R.string.brief_description_about_post,
                             Toast.LENGTH_SHORT).show();
                     return;
                 }
@@ -254,7 +254,7 @@ public class CreateJobFragment extends Fragment implements FABProgressListener {
                 if (!TextUtils.isEmpty(editTextPostJobKeywords.getText())) {
                     String jobSearchKeywords = editTextPostJobKeywords.getText().toString().trim();
                     if (!Pattern.compile("(\\w+)(,\\s*\\w+)*").matcher(jobSearchKeywords).matches()) {
-                        Toast.makeText(getContext(), "Search keywords should be alphanumeric and separated by comma",
+                        Toast.makeText(getContext(), R.string.seach_keyword_warning,
                                 Toast.LENGTH_SHORT).show();
                         return;
                     }
@@ -295,7 +295,7 @@ public class CreateJobFragment extends Fragment implements FABProgressListener {
                                 public void onFailure(@NonNull Exception e) {
                                     Log.w(TAG, "Error adding document", e);
                                     Toast.makeText(getContext(),
-                                            "Internal error, please try after some time", Toast.LENGTH_SHORT).show();
+                                            R.string.internal_error, Toast.LENGTH_SHORT).show();
                                 }
                             });
                 }
@@ -341,10 +341,10 @@ public class CreateJobFragment extends Fragment implements FABProgressListener {
                             if (!TextUtils.isEmpty(mNameOfFile))
                                 btPostJobSelectImage.setText(mNameOfFile);
                             else
-                                btPostJobSelectImage.setText("Image selected");
+                                btPostJobSelectImage.setText(R.string.image_selected);
                             cursor.close();
                         } else {
-                            btPostJobSelectImage.setText("Image selected");
+                            btPostJobSelectImage.setText(R.string.image_selected);
                         }
                     }
                 }
