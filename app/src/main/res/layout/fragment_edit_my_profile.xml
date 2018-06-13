@@ -27,14 +27,16 @@
                 android:layout_height="match_parent"
                 android:scaleType="centerCrop"
                 android:visibility="visible"
-                app:layout_collapseMode="parallax" />
+                app:layout_collapseMode="parallax"
+                android:contentDescription="@string/backgroundprofileimage"/>
 
             <ImageView
                 android:id="@+id/ivEditProfileImage"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:src="@drawable/ic_add_a_photo_white_96dp"/>
+                app:srcCompat="@drawable/ic_add_a_photo_white_96dp"
+                android:contentDescription="@string/profile_image"/>
 
             <View
                 android:layout_width="match_parent"
@@ -103,7 +105,7 @@
                     android:id="@+id/tilEditClassOfMyProfile"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="200dp"
+                    android:layout_marginStart="200dp"
                     android:layout_below="@+id/tilEditAboutYouMyProfile"
                     app:hintTextAppearance="@style/HintText">
 
@@ -129,7 +131,7 @@
                     android:id="@+id/tilEditLocationMyProfile"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="200dp"
+                    android:layout_marginStart="200dp"
                     android:layout_below="@+id/tilEditClassOfMyProfile"
                     app:hintTextAppearance="@style/HintText">
 
@@ -155,7 +157,7 @@
                     android:id="@+id/tilEditContactMyProfile"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="200dp"
+                    android:layout_marginStart="200dp"
                     android:layout_below="@+id/tilEditLocationMyProfile"
                     app:hintTextAppearance="@style/HintText">
 
@@ -182,7 +184,7 @@
                     android:id="@+id/tilEditEmailMyProfile"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="200dp"
+                    android:layout_marginStart="200dp"
                     android:layout_below="@+id/tilEditContactMyProfile"
                     app:hintTextAppearance="@style/HintText"
                     android:visibility="gone">
@@ -209,7 +211,7 @@
                     android:id="@+id/tilEditOrganisationMyProfile"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="200dp"
+                    android:layout_marginStart="200dp"
                     android:layout_below="@+id/tilEditEmailMyProfile"
                     app:hintTextAppearance="@style/HintText">
 
@@ -235,7 +237,7 @@
                     android:id="@+id/tilEditDesignationMyProfile"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="200dp"
+                    android:layout_marginStart="200dp"
                     android:layout_below="@+id/tilEditOrganisationMyProfile"
                     app:hintTextAppearance="@style/HintText">
 
@@ -261,7 +263,7 @@
                     android:id="@+id/tilEditSkillsMyProfile"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="200dp"
+                    android:layout_marginStart="200dp"
                     android:layout_below="@+id/tilEditDesignationMyProfile"
                     app:hintTextAppearance="@style/HintText">
 

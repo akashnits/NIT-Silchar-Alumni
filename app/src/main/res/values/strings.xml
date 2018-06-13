@@ -170,6 +170,18 @@
     <string name="type_of_user">Type of user</string>
     <string name="already_have_an_account">Already have an account?</string>
     <string name="job_description">Job description:</string>
+    <string name="profile_icon">profile icon</string>
+    <string name="feed_image">feed image</string>
+    <string name="backgroundstyle">backgroundStyle</string>
+    <string name="job_title">Job title</string>
+    <string name="backgroundprofileimage">backgroundProfileImage</string>
+    <string name="profile_image">profile image</string>
+    <string name="close">close</string>
+    <string name="alumni_profile_icon">alumni profile icon</string>
+    <string name="name">Akash Gupta</string>
+    <string name="profile_icon_job">profile icon job</string>
+    <string name="name_job">Akash Raj</string>
+    <string name="job_descriptions">job description</string>
 
     <string-array name="location">
         <item>Delhi</item>

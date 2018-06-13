@@ -1,7 +1,7 @@
 package com.akash.android.nitsilcharalumni;
 
-import android.app.Application;
 import android.content.Context;
+import android.support.multidex.MultiDexApplication;
 
 import com.akash.android.nitsilcharalumni.di.component.AppComponent;
 import com.akash.android.nitsilcharalumni.di.component.DaggerAppComponent;
@@ -9,7 +9,7 @@ import com.akash.android.nitsilcharalumni.di.module.AppModule;
 import com.squareup.leakcanary.LeakCanary;
 
 
-public class NITSilcharAlumniApp extends Application {
+public class NITSilcharAlumniApp extends MultiDexApplication {
 
     protected AppComponent appComponent;
 
