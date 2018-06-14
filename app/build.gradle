@@ -52,7 +52,7 @@ dependencies {
     implementation 'com.github.jorgecastilloprz:fabprogresscircle:1.01@aar'
     implementation 'javax.inject:javax.inject:1'
     implementation 'de.hdodenhof:circleimageview:2.2.0'
-    implementation 'com.mindorks:placeholderview:0.2.7'
+    implementation 'com.mindorks:placeholderview:0.6.1'
     implementation 'com.google.firebase:firebase-firestore:17.0.1'
     implementation 'com.google.firebase:firebase-storage:16.0.1'
     implementation 'com.squareup.leakcanary:leakcanary-android:1.5.4'
