@@ -32,6 +32,7 @@ import android.widget.Toast;
 import com.akash.android.nitsilcharalumni.R;
 import com.akash.android.nitsilcharalumni.model.User;
 import com.akash.android.nitsilcharalumni.utils.Constants;
+import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -363,14 +364,14 @@ public class EditMyProfileFragment extends Fragment {
                     if (getActivity() != null)
                         getActivity().invalidateOptionsMenu();
 
-                    StorageReference storageReference = mFirebaseStorage.getReference()
+                    final StorageReference storageReference = mFirebaseStorage.getReference()
                             .child(Constants.PROFILE_IMAGE_COLLECTION + mSelectedImageUri.getLastPathSegment());
 
                     //show progress bar while uploading the profile picture
                     pbEditMyProfileFragment.setVisibility(View.VISIBLE);
                     UploadTask uploadTask = storageReference.putFile(mSelectedImageUri);
 
-                    uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                    /*uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                         @Override
                         public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                             mDownloadUri = taskSnapshot.getDownloadUrl();
@@ -398,6 +399,47 @@ public class EditMyProfileFragment extends Fragment {
                             mEditDoneVisible = true;
                             if (getActivity() != null)
                                 getActivity().invalidateOptionsMenu();
+                        }
+                    });*/
+
+                    Task<Uri> urlTask = uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+                        @Override
+                        public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                            if (!task.isSuccessful()) {
+                                throw task.getException();
+                            }
+
+                            // Continue with the task to get the download URL
+                            return storageReference.getDownloadUrl();
+                        }
+                    }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Uri> task) {
+                            if (task.isSuccessful()) {
+                                mDownloadUri = task.getResult();
+                                Log.v(TAG, "Download uri is" + mDownloadUri);
+
+                                if (pbEditMyProfileFragment != null)
+                                    pbEditMyProfileFragment.setVisibility(View.GONE);
+                                //show done icon
+                                mEditDoneVisible = true;
+                                if (getActivity() != null)
+                                    getActivity().invalidateOptionsMenu();
+
+                                //update the image on backdropEditProfileImage
+                                Picasso.with(mContext).load(mDownloadUri.toString()).fit()
+                                        .placeholder(R.drawable.loading)
+                                        .into(backdropEditProfileImage);
+                            } else {
+                                // Handle failures
+                                // ...
+                                Toast.makeText(mContext, "Error", Toast.LENGTH_SHORT).show();
+                                if (pbEditMyProfileFragment != null)
+                                    pbEditMyProfileFragment.setVisibility(View.GONE);
+                                mEditDoneVisible = true;
+                                if (getActivity() != null)
+                                    getActivity().invalidateOptionsMenu();
+                            }
                         }
                     });
                 } else {

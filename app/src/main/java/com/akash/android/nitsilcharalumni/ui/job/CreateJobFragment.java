@@ -38,8 +38,11 @@ import com.akash.android.nitsilcharalumni.model.User;
 import com.akash.android.nitsilcharalumni.utils.Constants;
 import com.github.jorgecastilloprz.FABProgressCircle;
 import com.github.jorgecastilloprz.listeners.FABProgressListener;
+import com.google.android.gms.tasks.Continuation;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -219,24 +222,33 @@ public class CreateJobFragment extends Fragment implements FABProgressListener {
                     btPostJob.setEnabled(false);
                     //show animation that upload is in progress
                     postJobFabProgressCircle.show();
-                    StorageReference selectedFeedImagesReference = mFirebaseStorage.getReference()
+                    final StorageReference selectedFeedImagesReference = mFirebaseStorage.getReference()
                             .child(Constants.FEED_IMAGE_COLLECTION + mSelectedImageUri.getLastPathSegment());
                     UploadTask uploadTask = selectedFeedImagesReference.putFile(mSelectedImageUri);
 
-                    uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                    Task<Uri> urlTask = uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
                         @Override
-                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                            mDownloadUri = taskSnapshot.getDownloadUrl();
-                            Log.v(TAG, "Download uri is" + mDownloadUri);
-                            postJobFabProgressCircle.beginFinalAnimation();
-                            btPostJob.setEnabled(true);
+                        public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                            if (!task.isSuccessful()) {
+                                throw task.getException();
+                            }
+
+                            // Continue with the task to get the download URL
+                            return selectedFeedImagesReference.getDownloadUrl();
                         }
-                    }).addOnFailureListener(new OnFailureListener() {
+                    }).addOnCompleteListener(new OnCompleteListener<Uri>() {
                         @Override
-                        public void onFailure(@NonNull Exception e) {
-                            e.printStackTrace();
-                            Toast.makeText(mContext, R.string.upload_failed, Toast.LENGTH_SHORT).show();
-                            btPostJob.setEnabled(true);
+                        public void onComplete(@NonNull Task<Uri> task) {
+                            if (task.isSuccessful()) {
+                                mDownloadUri = task.getResult();
+                                postJobFabProgressCircle.beginFinalAnimation();
+                                btPostJob.setEnabled(true);
+                            } else {
+                                // Handle failures
+                                // ...
+                                Toast.makeText(mContext, "Error", Toast.LENGTH_SHORT).show();
+                                btPostJob.setEnabled(true);
+                            }
                         }
                     });
                 } else {

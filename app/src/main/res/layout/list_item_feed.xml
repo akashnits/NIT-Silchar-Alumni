@@ -11,7 +11,8 @@
         android:layout_width="80dp"
         android:layout_height="80dp"
         android:layout_marginStart="4dp"
-        android:layout_marginTop="8dp" />
+        android:layout_marginTop="8dp"
+        android:contentDescription="@string/profile_icon"/>
 
     <TextView
         android:id="@+id/tvName"
@@ -21,7 +22,7 @@
         android:layout_marginTop="19dp"
         android:layout_toEndOf="@+id/ivProfileIcon"
         android:padding="5dp"
-        tools:text="Akash Gupta" />
+        tools:text="@string/name" />
 
     <TextView
         android:id="@+id/tvTimeStamp"
@@ -30,7 +31,7 @@
         android:padding="5dp"
         android:layout_marginStart="4dp"
         android:layout_below="@+id/tvName"
-        android:layout_toRightOf="@+id/ivProfileIcon"
+        android:layout_toEndOf="@+id/ivProfileIcon"
         tools:text="July 6, 2017" />
 
     <TextView
@@ -64,6 +65,7 @@
         android:layout_marginTop="8dp"
         android:layout_below="@id/tvSearchHashtag"
         android:src="@drawable/loading"
+        android:contentDescription="@string/feed_image"
         />
 
     <CheckBox
@@ -71,7 +73,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="4dp"
-        android:layout_marginRight="4dp"
         android:layout_marginTop="19dp"
         android:layout_alignParentEnd="true"
         android:button="@drawable/bookmark_checkbox_selector"
